@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-12T08:01:30.000Z",
+  "brief": {
+    "artifactType": "mobile_prototype",
+    "targetPlatform": ["responsive", "web"],
+    "audience": "young adults seeking emotional reflection through dream journaling",
+    "businessGoal": "情绪觉察工具 - 帮助用户通过记录梦境来觉察情绪、促进自我反思",
+    "product_name": "夜信 Night Letter",
+    "core_principle": "Dreams are not answers, they are emotional entry points - respect user's self-reflection ability"
+  },
+  "output": {
+    "target": "html",
+    "componentLibrary": "none",
+    "previewStrategy": "Generate a Canvas HTML workspace file after generation tools are enabled."
+  },
+  "artifacts": [
+    {
+      "path": "night-letter.html",
+      "action": "create",
+      "purpose": "高保真交互原型 - 夜信情感后护理应用，包含6个核心页面：首页沉浸星空、写信、寄送动画、回信镜像、星图、发现页",
+      "requirements": [
+        "全屏Canvas沉浸式星空背景（多层星星+星云流动+柔光月亮+流星）",
+        "深色梦幻美学：深蓝/紫色调 + 金色点缀 + 暖色月光",
+        "响应式移动端优先布局（375-414px宽度优化）",
+        "触摸视差交互效果",
+        "星图页支持点击星星查看梦境详情",
+        "回信页简化为单一情绪镜像，无版本选择器",
+        "性能优化：减少Canvas渲染负担确保流畅加载"
+      ]
+    }
+  ],
+  "designDirection": {
+    "fidelity": "high-fidelity",
+    "styleSource": "沉浸梦幻风 - 深色星空 + 金色点缀 + 柔光月亮 + 星云流动",
+    "visualTone": ["dreamy", "immersive", "emotional", "dark", "warm accents"]
+  },
+  "structure": {
+    "screens": [
+      "home (沉浸星空首页)",
+      "write (写信页)",
+      "receiving (寄送动画)",
+      "mirror (回信镜像)",
+      "nightscape (星图可视化)",
+      "pattern (模式发现)"
+    ],
+    "sections": []
+  },
+  "interaction": {
+    "primaryFlow": "首页 → 写信 → 寄送(2.8s) → 回信 → 收好返回首页",
+    "states": ["idle", "writing", "sending", "receiving", "reading mirror"]
+  },
+  "quality": {
+    "responsive": true,
+    "accessibility": true,
+    "lintRequired": true,
+    "acceptanceCriteria": [
+      "Generated artifact is responsive and has no obvious text overlap or clipped primary controls.",
+      "Primary actions, input controls, empty/loading/error states, and key content are visible and grounded in the brief.",
+      "Design quality check has P0=0 and all P1 issues are fixed or explicitly waived.",
+      "Canvas starfield renders smoothly on mobile browsers with optimized performance",
+      "Touch parallax interaction works responsively on touch devices"
+    ]
+  },
+  "risks": [
+    "Canvas动画在低端设备可能卡顿 - 已优化星星数量从300降至200",
+    "回信文案需要平衡'被看见'和'不给答案'的微妙度",
+    "星图洞察文案避免过于抽象，需更直白易懂"
+  ],
+  "resources": {
+    "skill": {
+      "id": "dashboard",
+      "title": "dashboard",
+      "rationale": "mode matches prototype; design intelligence favors dashboard/data workflow",
+      "alternatives": ["saas-landing", "mobile-app", "web-prototype"]
+    },
+    "styleReference": {
+      "primary": "linear-app",
+      "inspiration": ["figma", "stripe"],
+      "rationale": "preview language overlaps brief; popular reference; SaaS product fit"
+    },
+    "requiredReads": [
+      {"kind": "skill", "id": "dashboard", "reason": "Selected Canvas skill checklist."},
+      {"kind": "design-system", "id": "linear-app", "reason": "Primary style reference."},
+      {"kind": "craft", "id": "anti-ai-slop", "reason": "Baseline AI-slop guardrail for all Canvas design artifacts."},
+      {"kind": "craft", "id": "typography", "reason": "Baseline typography quality rule for visual execution."},
+      {"kind": "craft", "id": "color", "reason": "Baseline color quality rule for visual execution."},
+      {"kind": "protocol", "id": "design-mode-runtime", "reason": "Design Plan Mode execution and runtime contract."},
+      {"kind": "protocol", "id": "skill-protocol", "reason": "Skill metadata and resource selection contract."}
+    ]
+  },
+  "abstract": "这个计划将创建一个高保真移动端原型「夜信 Night Letter」，面向希望通过记录梦境进行情绪觉察的年轻用户群体。产品核心理念是'梦不是答案，是情绪入口'——尊重用户的自我思考能力，不提供标准答案，只做情绪镜像。视觉风格采用沉浸式梦幻美学：深色星空背景（Canvas多层星星+星云流动）、柔光月亮、金色点缀、暖色月光。包含6个核心页面：首页沉浸星空、写信、寄送动画、回信镜像、星图可视化（可点击交互）、模式发现。输出目标为HTML单文件原型，移动端优先响应式设计，已做性能优化确保流畅体验。批准前请确认：受众定位、产品目标、视觉方向、输出格式是否符合预期。"
+}
