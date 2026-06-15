@@ -379,6 +379,19 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   background-size:200% 100%;animation:hfade 1.2s ease-out forwards,shimmer 3s ease-in-out 1.5s infinite}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
+/* DREAM CARD EXPORT OVERLAY */
+.card-overlay{position:fixed;inset:0;z-index:800;background:rgba(5,5,16,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility 0s .4s;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
+.card-overlay.on{opacity:1;visibility:visible;transition:opacity .4s var(--ease),visibility 0s 0s}
+.card-preview{width:100%;max-width:360px;border-radius:24px;overflow:hidden;box-shadow:0 0 60px rgba(202,169,122,.15),0 20px 80px rgba(0,0,0,.5);margin-bottom:24px;position:relative;background:#0d0d1f}
+.card-canvas{width:100%;display:block;aspect-ratio:9/16}
+.card-actions{display:flex;gap:12px;width:100%;max-width:360px}
+.card-btn{flex:1;padding:14px;border-radius:16px;font-size:14px;font-weight:400;letter-spacing:1px;transition:all .2s var(--ease);text-align:center}
+.card-btn:active{transform:scale(.96)}
+.card-btn-save{border:.8px solid var(--accent);color:var(--accent);background:linear-gradient(135deg,rgba(202,169,122,.08),rgba(202,169,122,.02))}
+.card-btn-save:active{background:rgba(202,169,122,.15)}
+.card-btn-close{border:.5px solid var(--line2);color:var(--t2);background:rgba(255,255,255,.03)}
+.card-btn-close:active{background:rgba(255,255,255,.06)}
+
 /* LOGIN / AUTH */
 .login-overlay{position:fixed;inset:0;z-index:700;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;opacity:1;visibility:visible;transition:opacity .5s var(--ease),visibility 0s 0s}
 .login-overlay.off{opacity:0;visibility:hidden;transition:opacity .5s var(--ease),visibility 0s .5s;pointer-events:none}
@@ -584,6 +597,17 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <!-- ONBOARDING -->
 <div class="onboard" id="onboard">
   <div class="ob-body" id="obBody"></div>
+</div>
+
+<!-- DREAM CARD EXPORT -->
+<div class="card-overlay" id="cardOverlay">
+  <div class="card-preview">
+    <canvas class="card-canvas" id="cardCanvas"></canvas>
+  </div>
+  <div class="card-actions">
+    <button class="card-btn card-btn-save" onclick="saveCard()">💾 保存到相册</button>
+    <button class="card-btn card-btn-close" onclick="closeCard()">关闭</button>
+  </div>
 </div>
 
 <!-- LOGIN -->
@@ -1468,6 +1492,8 @@ function timeAgo(iso){
 function refreshAll(){refreshHome()}
 
 /* === HISTORY === */
+var currentExportDream=null;
+
 function renderHistory(){
   var el=document.getElementById('histBody');
   var sub=document.getElementById('histSub');
@@ -1480,8 +1506,210 @@ function renderHistory(){
     var t=new Date(d.ts);
     var dateStr=(t.getMonth()+1)+'/'+t.getDate()+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
     var delay=Math.min(i*0.06,0.3);
-    return '<div class="hist-item" style="animation:secIn .4s ease-out '+delay+'s both"><div class="hist-dot" style="background:'+c+';color:'+c+'"></div><div class="hist-info"><div class="hist-text">'+d.text+'</div><div class="hist-meta"><span>'+dateStr+'</span><span class="hist-tag">'+d.emotion+'</span></div></div></div>';
+    return '<div class="hist-item" style="animation:secIn .4s ease-out '+delay+'s both"><div class="hist-dot" style="background:'+c+';color:'+c+'"></div><div class="hist-info"><div class="hist-text">'+d.text+'</div><div class="hist-meta"><span>'+dateStr+'</span><span class="hist-tag">'+d.emotion+'</span></div></div><button onclick="exportDreamCard('+d.id+')" style="padding:8px 12px;border-radius:10px;border:.5px solid rgba(202,169,122,.2);font-size:11px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px;flex-shrink:0;transition:all .2s var(--ease)">📤 导出</button></div>';
   }).join('');
+}
+
+function exportDreamCard(dreamId){
+  var dreams=getDreams();
+  var dream=dreams.find(function(d){return d.id===dreamId});
+  if(!dream)return;
+  
+  currentExportDream=dream;
+  
+  var canvas=document.getElementById('cardCanvas');
+  var overlay=document.getElementById('cardOverlay');
+  
+  /* Set canvas size for high quality export (9:16 aspect ratio) */
+  var width=720,height=1280;
+  canvas.width=width;canvas.height=height;
+  var ctx=canvas.getContext('2d');
+  
+  /* Draw aurora background */
+  drawCardBackground(ctx,width,height,dream.emotion);
+  
+  /* Draw dream content */
+  drawCardContent(ctx,width,height,dream);
+  
+  /* Show overlay */
+  overlay.classList.add('on');
+}
+
+function drawCardBackground(ctx,w,h,emotion){
+  /* Base gradient */
+  var bg=ctx.createLinearGradient(0,0,w,h);
+  bg.addColorStop(0,'#0f0f2e');
+  bg.addColorStop(.3,'#1a1040');
+  bg.addColorStop(.7,'#0d1535');
+  bg.addColorStop(1,'#151030');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+  
+  /* Emotion-based accent colors */
+  var emotionColors={
+    '不安':[196,112,128],
+    '想念':[148,114,196],
+    '困惑':[112,144,196],
+    '平静':[109,184,196],
+    '喜悦':[196,176,109],
+    '未知':[202,169,122]
+  };
+  
+  var baseColor=emotionColors[emotion]||emotionColors['未知'];
+  
+  /* Aurora blobs */
+  var blobs=[
+    {x:w*.3,y:h*.4,r:280,c:baseColor,a:.15},
+    {x:w*.7,y:h*.3,r:320,c:[255,140,200],a:.1},
+    {x:w*.5,y:h*.7,r:300,c:[100,200,255],a:.09},
+    {x:w*.2,y:h*.6,r:260,c:[200,100,255],a:.08},
+    {x:w*.8,y:h*.6,r:240,c:[255,180,120],a:.07},
+  ];
+  
+  blobs.forEach(function(b){
+    var g=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);
+    g.addColorStop(0,'rgba('+b.c[0]+','+b.c[1]+','+b.c[2]+','+b.a+')');
+    g.addColorStop(.5,'rgba('+b.c[0]+','+b.c[1]+','+b.c[2]+','+(b.a*.4)+')');
+    g.addColorStop(1,'rgba('+b.c[0]+','+b.c[1]+','+b.c[2]+',0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();
+  });
+  
+  /* Floating particles */
+  for(var i=0;i<50;i++){
+    var x=Math.random()*w,y=Math.random()*h;
+    var r=Math.random()*3+1;
+    var pa=Math.random()*.4+.1;
+    var hue=[
+      [180,140,255],[255,160,220],[120,220,255],[220,120,255]
+    ][Math.floor(Math.random()*4)];
+    
+    var pg=ctx.createRadialGradient(x,y,0,x,y,r*4);
+    pg.addColorStop(0,'rgba('+hue[0]+','+hue[1]+','+hue[2]+','+(pa*.8)+')');
+    pg.addColorStop(.5,'rgba('+hue[0]+','+hue[1]+','+hue[2]+','+(pa*.3)+')');
+    pg.addColorStop(1,'rgba('+hue[0]+','+hue[1]+','+hue[2]+',0)');
+    ctx.fillStyle=pg;ctx.beginPath();ctx.arc(x,y,r*4,0,Math.PI*2);ctx.fill();
+    
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle='rgba('+hue[0]+','+hue[1]+','+hue[2]+','+pa+')';
+    ctx.fill();
+  }
+}
+
+function drawCardContent(ctx,w,h,dream){
+  var padding=60;
+  var contentWidth=w-padding*2;
+  
+  /* App title at top */
+  ctx.fillStyle='rgba(255,255,255,.3)';
+  ctx.font='24px "Noto Serif SC",serif';
+  ctx.textAlign='center';
+  ctx.fillText('夜信 Night Letter',w/2,padding);
+  
+  /* Date */
+  var t=new Date(dream.ts);
+  var dateStr=t.getFullYear()+'.'+(t.getMonth()+1)+'.'+t.getDate()+' '+
+    String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+  ctx.fillStyle='rgba(255,255,255,.4)';
+  ctx.font='20px sans-serif';
+  ctx.fillText(dateStr,w/2,padding+40);
+  
+  /* Emotion badge */
+  var emotionColors={
+    '不安':'#c47080','想念':'#9472c4','困惑':'#7090c4',
+    '平静':'#6db8c4','喜悦':'#c4b06d','未知':'#caa97a'
+  };
+  var emoColor=emotionColors[dream.emotion]||'#caa97a';
+  
+  ctx.fillStyle=emoColor;
+  ctx.globalAlpha=.2;
+  ctx.beginPath();
+  ctx.roundRect(w/2-60,padding+70,120,40,20);
+  ctx.fill();
+  ctx.globalAlpha=1;
+  
+  ctx.fillStyle=emoColor;
+  ctx.font='bold 22px sans-serif';
+  ctx.fillText(dream.emotion,w/2,padding+96);
+  
+  /* Dream text - wrap and center */
+  ctx.fillStyle='rgba(255,255,255,.95)';
+  ctx.font='28px "Noto Serif SC",serif';
+  ctx.textAlign='left';
+  
+  var text=dream.text;
+  var maxWidth=contentWidth;
+  var lineHeight=48;
+  var lines=[];
+  var currentLine='';
+  
+  for(var i=0;i<text.length;i++){
+    var testLine=currentLine+text[i];
+    var metrics=ctx.measureText(testLine);
+    if(metrics.width>maxWidth&&i>0){
+      lines.push(currentLine);
+      currentLine=text[i];
+    }else{
+      currentLine=testLine;
+    }
+  }
+  lines.push(currentLine);
+  
+  /* Limit to 12 lines max */
+  if(lines.length>12){
+    lines=lines.slice(0,11);
+    lines[10]+='……';
+  }
+  
+  var startY=h*.35;
+  lines.forEach(function(line,idx){
+    ctx.fillText(line,padding,startY+idx*lineHeight);
+  });
+  
+  /* Bottom decoration */
+  var bottomY=h-padding-80;
+  ctx.strokeStyle='rgba(202,169,122,.2)';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(w/2-100,bottomY);
+  ctx.lineTo(w/2+100,bottomY);
+  ctx.stroke();
+  
+  ctx.fillStyle='rgba(255,255,255,.25)';
+  ctx.font='italic 22px "Noto Serif SC",serif';
+  ctx.textAlign='center';
+  ctx.fillText('梦不是答案，是情绪入口',w/2,bottomY+40);
+}
+
+function saveCard(){
+  var canvas=document.getElementById('cardCanvas');
+  
+  try{
+    /* Convert to blob and download */
+    canvas.toBlob(function(blob){
+      if(!blob){
+        alert('保存失败，请重试');
+        return;
+      }
+      
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url;
+      a.download='night-letter-'+Date.now()+'.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert('✅ 卡片已保存到你的相册');
+    },'image/png',0.95);
+  }catch(e){
+    console.error('Save failed:',e);
+    alert('保存失败：'+e.message);
+  }
+}
+
+function closeCard(){
+  document.getElementById('cardOverlay').classList.remove('on');
+  currentExportDream=null;
 }
 
 /* === PATTERN === */
