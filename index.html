@@ -57,16 +57,16 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .home-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;position:relative}
 .home-period{font-size:11px;font-weight:200;letter-spacing:5px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:24px;opacity:0;animation:hfade 1.2s ease-out .3s forwards}
 .home-title{font-family:var(--serif);font-size:34px;font-weight:300;line-height:1.5;text-align:center;color:rgba(255,255,255,.92);letter-spacing:3px;margin-bottom:12px;opacity:0;animation:hfade 1.2s ease-out .6s forwards}
-.home-desc{font-size:14px;font-weight:200;color:rgba(255,255,255,.4);text-align:center;line-height:2;letter-spacing:1px;margin-bottom:60px;opacity:0;animation:hfade 1.2s ease-out .9s forwards}
+.home-desc{font-size:14px;font-weight:200;color:rgba(255,255,255,.4);text-align:center;line-height:2;letter-spacing:1px;margin-bottom:40px;opacity:0;animation:hfade 1.2s ease-out .9s forwards}
 @keyframes hfade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-.ink-cta{position:relative;width:80px;height:80px;margin-bottom:8px;opacity:0;animation:hfade 1s ease-out 1.3s forwards}
+.ink-cta{position:relative;width:96px;height:96px;margin-bottom:8px;opacity:0;animation:hfade 1s ease-out 1.3s forwards}
 .ink-cta-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(202,169,122,.35);animation:ink-ring 4s ease-in-out infinite}
 .ink-cta-ring:nth-child(2){animation-delay:1.3s;border-color:rgba(202,169,122,.2)}
 .ink-cta-ring:nth-child(3){animation-delay:2.6s;border-color:rgba(202,169,122,.1)}
 @keyframes ink-ring{0%{transform:scale(1);opacity:1}100%{transform:scale(2.2);opacity:0}}
 .ink-cta-core{
-  position:absolute;inset:8px;border-radius:50%;
+  position:absolute;inset:10px;border-radius:50%;
   background:radial-gradient(circle at 40% 35%,rgba(202,169,122,.25),rgba(202,169,122,.08) 60%,transparent 80%);
   border:1px solid rgba(202,169,122,.35);
   display:flex;align-items:center;justify-content:center;
@@ -74,9 +74,21 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   transition:all .3s var(--spring);
   box-shadow:0 0 40px rgba(202,169,122,.1),0 0 80px rgba(202,169,122,.04),inset 0 0 25px rgba(202,169,122,.06);
 }
-.ink-cta-core svg{width:26px;height:26px;stroke:var(--accent);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.ink-cta-core svg{width:30px;height:30px;stroke:var(--accent);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .ink-cta-core:active{transform:scale(.88);box-shadow:0 0 40px rgba(202,169,122,.15),inset 0 0 30px rgba(202,169,122,.08)}
 .ink-cta-label{font-family:var(--serif);font-size:12px;color:rgba(255,255,255,.25);letter-spacing:4px;opacity:0;animation:hfade 1s ease-out 1.6s forwards}
+
+/* Home recent dreams */
+.home-recent{width:100%;padding:0 28px;margin-bottom:16px;opacity:0;animation:hfade 1s ease-out 1.9s forwards}
+.home-recent-title{font-size:10px;color:var(--t3);letter-spacing:2px;margin-bottom:10px}
+.home-recent-list{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.home-recent-list::-webkit-scrollbar{display:none}
+.home-recent-item{flex-shrink:0;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.03);border:.5px solid var(--line);min-width:140px;max-width:180px;transition:all .2s var(--ease)}
+.home-recent-item:active{background:rgba(255,255,255,.06);border-color:rgba(202,169,122,.15)}
+.hri-text{font-size:11px;font-weight:300;color:var(--t2);line-height:1.6;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:4px}
+.hri-meta{font-size:9px;color:var(--t3);display:flex;align-items:center;gap:4px}
+.hri-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.home-empty{font-size:11px;color:var(--t4);text-align:center;padding:12px 0;letter-spacing:.5px}
 
 .home-foot{display:flex;align-items:center;justify-content:space-between;padding:0 28px 20px;flex-shrink:0;opacity:0;animation:hfade 1s ease-out 2s forwards;position:relative;z-index:2}
 .hf-stat{display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -88,24 +100,24 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 
 .bnav{display:flex;align-items:center;justify-content:space-around;height:82px;padding-bottom:26px;flex-shrink:0;position:relative;z-index:10;background:rgba(5,5,16,.75);backdrop-filter:blur(40px) saturate(1.6);-webkit-backdrop-filter:blur(40px) saturate(1.6);border-top:.5px solid rgba(202,169,122,.06)}
 .btab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 18px;border-radius:12px;transition:all .2s var(--ease)}
-.btab svg{width:22px;height:22px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
-.btab span{font-size:9px;color:var(--t3);letter-spacing:.5px;transition:color .2s}
+.btab svg{width:26px;height:26px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.btab span{font-size:11px;color:var(--t3);letter-spacing:.5px;transition:color .2s}
 .btab.on svg{stroke:var(--accent)}.btab.on span{color:var(--accent)}
 .btab:active{background:rgba(255,255,255,.03);transform:scale(.9)}
-.bfab{width:50px;height:50px;border-radius:50%;border:1.2px solid var(--accent);display:flex;align-items:center;justify-content:center;margin-top:-18px;position:relative;transition:transform .25s var(--spring);box-shadow:0 0 20px rgba(202,169,122,.1)}
+.bfab{width:56px;height:56px;border-radius:50%;border:1.2px solid var(--accent);display:flex;align-items:center;justify-content:center;margin-top:-18px;position:relative;transition:transform .25s var(--spring);box-shadow:0 0 20px rgba(202,169,122,.1)}
 .bfab::before{content:'';position:absolute;inset:-6px;border-radius:50%;background:radial-gradient(circle,var(--aglow),transparent 70%);opacity:.25;animation:pdot 3.5s ease-in-out infinite}
-.bfab svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;position:relative;z-index:1}
+.bfab svg{width:26px;height:26px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;position:relative;z-index:1}
 .bfab:active{transform:scale(.85)}
 
 /* NAV HEADER */
 .nhdr{display:flex;align-items:center;justify-content:space-between;padding:4px 18px 8px;flex-shrink:0;z-index:10}
-.nhdr-back{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;transition:background .15s}
+.nhdr-back{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;transition:background .15s}
 .nhdr-back:active{background:rgba(255,255,255,.08)}
-.nhdr-back svg{width:18px;height:18px;stroke:var(--t2);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.nhdr-back svg{width:20px;height:20px;stroke:var(--t2);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .nhdr-c{font-size:12px;color:var(--t3);letter-spacing:1px}
-.nhdr-act{width:38px;height:38px;border-radius:50%;border:.5px solid var(--line2);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.nhdr-act{width:44px;height:44px;border-radius:50%;border:.5px solid var(--line2);display:flex;align-items:center;justify-content:center;transition:all .15s}
 .nhdr-act:active{background:rgba(255,255,255,.04);border-color:var(--accent)}
-.nhdr-act svg{width:16px;height:16px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.nhdr-act svg{width:18px;height:18px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 
 /* SUB-PAGE AMBIENT CANVAS */
 .sub-canvas{position:absolute;inset:0;z-index:0;pointer-events:none}
@@ -118,12 +130,19 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .write-field::placeholder{color:var(--t4);font-style:italic}
 .write-zone::before{content:'';position:absolute;top:50px;left:26px;right:26px;bottom:0;background:repeating-linear-gradient(transparent,transparent 35px,rgba(202,169,122,.025) 35px,rgba(202,169,122,.025) 36px);pointer-events:none;z-index:0}
 .write-bot{padding:14px 26px 34px;flex-shrink:0;z-index:1}
-.feel-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.feel-row label{font-size:12px;color:var(--t3);white-space:nowrap;letter-spacing:.5px}
-.feel-row input{flex:1;font-size:13px;font-weight:300;color:var(--t1);padding:7px 0;border-bottom:.5px solid rgba(202,169,122,.08);caret-color:var(--accent);transition:border-color .2s}
-.feel-row input:focus{border-bottom-color:var(--accent)}
-.feel-row input::placeholder{color:var(--t4)}
-.btn-send{width:100%;padding:14px;border-radius:20px;border:.8px solid var(--accent);background:linear-gradient(135deg,rgba(202,169,122,.04),rgba(202,169,122,.01));font-family:var(--serif);font-size:15px;color:var(--accent);letter-spacing:4px;position:relative;overflow:hidden;transition:all .3s var(--ease);box-shadow:0 0 20px rgba(202,169,122,.04)}
+
+/* Emotion chips */
+.write-emotions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.we-chip{padding:8px 14px;border-radius:16px;font-size:12px;letter-spacing:.5px;border:.5px solid var(--line2);color:var(--t3);transition:all .2s var(--ease);display:flex;align-items:center;gap:5px}
+.we-chip:active{transform:scale(.95)}
+.we-chip.on{border-color:var(--accent);color:var(--accent);background:var(--adim);box-shadow:0 0 12px rgba(202,169,122,.06)}
+.we-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+.write-actions{display:flex;gap:10px;align-items:center}
+.write-mic{width:52px;height:52px;border-radius:50%;border:.5px solid var(--line2);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s var(--ease)}
+.write-mic:active{background:rgba(255,255,255,.06);border-color:var(--accent);transform:scale(.92)}
+.write-mic svg{width:22px;height:22px;stroke:var(--t3);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.btn-send{flex:1;padding:18px;border-radius:20px;border:.8px solid var(--accent);background:linear-gradient(135deg,rgba(202,169,122,.04),rgba(202,169,122,.01));font-family:var(--serif);font-size:15px;color:var(--accent);letter-spacing:4px;position:relative;overflow:hidden;transition:all .3s var(--ease);box-shadow:0 0 20px rgba(202,169,122,.04)}
 .btn-send:active{background:linear-gradient(135deg,rgba(202,169,122,.1),rgba(202,169,122,.03));transform:scale(.97);box-shadow:0 0 30px rgba(202,169,122,.08)}
 
 /* RECEIVING */
@@ -136,26 +155,89 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .recv-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 30px var(--aglow),0 0 80px rgba(202,169,122,.12),0 0 120px rgba(202,169,122,.04)}
 .recv-txt{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--t2);text-align:center;line-height:2.2;letter-spacing:1.5px;animation:hfade 1.2s ease-out forwards}
 
-/* MIRROR */
-.mir-body{flex:1;padding:16px 26px;display:flex;flex-direction:column;z-index:1;overflow-y:auto;position:relative}
-.mir-body::-webkit-scrollbar{display:none}
-.mir-from{font-size:11px;color:var(--t3);letter-spacing:2px;margin-bottom:24px;display:flex;align-items:center;gap:8px}
-.mir-from::before{content:'';width:18px;height:.5px;background:var(--accent)}
-.ver-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px}
-.vchip{padding:4px 11px;border-radius:11px;font-size:9px;letter-spacing:.5px;border:.5px solid var(--line2);color:var(--t3);transition:all .2s var(--ease)}
-.vchip.on{border-color:var(--accent);color:var(--accent);background:var(--adim);box-shadow:0 0 12px rgba(202,169,122,.06)}
-.mir-text{font-family:var(--serif);font-size:18px;font-weight:300;line-height:2.2;color:var(--t1);letter-spacing:.3px;margin-bottom:32px}
-.mir-text p{margin-bottom:16px;opacity:0;animation:letterIn .8s ease-out forwards}
-.mir-text p:nth-child(1){animation-delay:.15s}.mir-text p:nth-child(2){animation-delay:.4s}.mir-text p:nth-child(3){animation-delay:.65s}.mir-text p:nth-child(4){animation-delay:.9s}
-.mir-text .hl{color:var(--accent);font-weight:400}
-@keyframes letterIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.mir-care{padding:18px 22px;border-radius:14px;background:linear-gradient(135deg,rgba(202,169,122,.04),rgba(255,255,255,.02));border:.5px solid rgba(202,169,122,.1);margin-bottom:24px;opacity:0;animation:letterIn .8s ease-out 1.4s forwards;box-shadow:0 0 20px rgba(202,169,122,.03)}
-.mir-care-l{font-size:9px;color:var(--accent);letter-spacing:2.5px;margin-bottom:8px;text-transform:uppercase;opacity:.7}
-.mir-care-t{font-family:var(--serif);font-size:14px;font-weight:300;color:var(--t2);line-height:1.9}
-.mir-acts{display:flex;gap:10px;padding:0 26px 34px;flex-shrink:0;z-index:1;opacity:0;animation:letterIn .6s ease-out 2s forwards}
-.mir-btn{flex:1;padding:13px;border-radius:18px;border:.5px solid var(--line2);font-size:13px;font-weight:300;color:var(--t2);letter-spacing:1px;transition:all .2s var(--ease);background:rgba(255,255,255,.02)}
-.mir-btn:active{background:rgba(255,255,255,.04);transform:scale(.97)}
-.mir-btn.pri{border-color:var(--accent);color:var(--accent);background:linear-gradient(135deg,rgba(202,169,122,.06),transparent);box-shadow:0 0 16px rgba(202,169,122,.04)}
+/* AI CHAT */
+.chat-body{flex:1;display:flex;flex-direction:column;z-index:1;overflow:hidden;position:relative}
+.chat-scroll{flex:1;overflow-y:auto;padding:12px 20px;display:flex;flex-direction:column;gap:12px}
+.chat-scroll::-webkit-scrollbar{display:none}
+.chat-bubble{max-width:82%;padding:14px 18px;border-radius:18px;font-size:14px;font-weight:300;line-height:1.9;letter-spacing:.3px;animation:letterIn .4s ease-out forwards;opacity:0;min-height:44px;display:flex;align-items:flex-start}
+.chat-ai{align-self:flex-start;background:linear-gradient(135deg,rgba(202,169,122,.08),rgba(202,169,122,.03));border:.5px solid rgba(202,169,122,.12);color:var(--t1);border-bottom-left-radius:6px;font-family:var(--serif)}
+.chat-user{align-self:flex-end;background:rgba(255,255,255,.06);border:.5px solid var(--line2);color:var(--t1);border-bottom-right-radius:6px}
+.chat-ai .hl{color:var(--accent);font-weight:400}
+.typing-indicator{align-self:flex-start;padding:14px 20px;border-radius:18px;border-bottom-left-radius:6px;background:linear-gradient(135deg,rgba(202,169,122,.06),rgba(202,169,122,.02));border:.5px solid rgba(202,169,122,.08);display:flex;gap:5px;align-items:center}
+.typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:.4;animation:typeDot 1.4s ease-in-out infinite}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+@keyframes typeDot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:.8;transform:translateY(-4px)}}
+.chat-input-bar{padding:10px 16px 34px;display:flex;gap:10px;align-items:flex-end;flex-shrink:0;z-index:2;background:rgba(5,5,16,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:.5px solid var(--line)}
+.chat-input{flex:1;padding:12px 16px;border-radius:20px;background:rgba(255,255,255,.05);border:.5px solid var(--line2);font-size:14px;font-weight:300;color:var(--t1);caret-color:var(--accent);transition:border-color .2s}
+.chat-input:focus{border-color:rgba(202,169,122,.3)}
+.chat-input::placeholder{color:var(--t4)}
+.chat-send-btn{width:48px;height:48px;border-radius:50%;border:.5px solid var(--accent);background:linear-gradient(135deg,rgba(202,169,122,.08),rgba(202,169,122,.02));display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s var(--ease)}
+.chat-send-btn:active{background:rgba(202,169,122,.15);transform:scale(.9)}
+.chat-send-btn svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.chat-done{text-align:center;padding:8px 20px 4px;font-size:11px;color:var(--t3);letter-spacing:1px}
+.chat-done-btn{display:inline-block;margin-top:10px;padding:12px 28px;border-radius:18px;border:.5px solid var(--accent);font-family:var(--serif);font-size:14px;color:var(--accent);letter-spacing:2px;background:linear-gradient(135deg,rgba(202,169,122,.06),transparent);transition:all .2s var(--ease)}
+.chat-done-btn:active{background:rgba(202,169,122,.1);transform:scale(.97)}
+
+/* VOICE OVERLAY */
+.voice-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,5,16,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .4s var(--ease);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
+.voice-overlay.on{opacity:1;visibility:visible}
+.voice-ring{width:160px;height:160px;border-radius:50%;border:1.5px solid rgba(202,169,122,.3);display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:32px}
+.voice-ring::before{content:'';position:absolute;inset:-15px;border-radius:50%;border:1px solid rgba(202,169,122,.1);animation:voicePulse 2s ease-in-out infinite}
+.voice-ring::after{content:'';position:absolute;inset:-30px;border-radius:50%;border:1px solid rgba(202,169,122,.05);animation:voicePulse 2s ease-in-out infinite .5s}
+@keyframes voicePulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.1);opacity:1}}
+.voice-core{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(202,169,122,.2),rgba(202,169,122,.06) 70%);border:1px solid rgba(202,169,122,.3);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 0 40px rgba(202,169,122,.08)}
+.voice-core svg{width:36px;height:36px;stroke:var(--accent);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.voice-status{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--t2);letter-spacing:2px;margin-bottom:8px}
+.voice-time{font-size:12px;color:var(--t3);letter-spacing:1px;margin-bottom:8px}
+.voice-preview{font-size:13px;font-weight:300;color:var(--t2);text-align:center;max-width:280px;line-height:1.8;min-height:40px;margin-bottom:28px}
+.voice-stop{width:64px;height:64px;border-radius:50%;border:1px solid rgba(202,169,122,.3);background:rgba(202,169,122,.06);display:flex;align-items:center;justify-content:center;transition:all .2s var(--ease)}
+.voice-stop:active{background:rgba(202,169,122,.12);transform:scale(.9)}
+.voice-stop svg{width:24px;height:24px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.voice-fallback{font-size:12px;color:var(--t3);text-align:center;max-width:240px;line-height:1.8;margin-top:16px;padding:12px 16px;border-radius:12px;border:.5px solid var(--line);background:rgba(255,255,255,.02)}
+
+/* ONBOARDING */
+.onboard{position:fixed;inset:0;z-index:600;background:var(--bg);display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:all .5s var(--ease)}
+.onboard.on{opacity:1;visibility:visible}
+.ob-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px;text-align:center}
+.ob-icon{width:80px;height:80px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(202,169,122,.15),rgba(202,169,122,.04) 70%);border:1px solid rgba(202,169,122,.2);display:flex;align-items:center;justify-content:center;margin-bottom:28px;box-shadow:0 0 40px rgba(202,169,122,.06)}
+.ob-icon svg{width:36px;height:36px;stroke:var(--accent);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.ob-title{font-family:var(--serif);font-size:24px;font-weight:300;color:var(--t1);letter-spacing:2px;margin-bottom:14px;line-height:1.6}
+.ob-desc{font-size:14px;font-weight:300;color:var(--t2);line-height:2;letter-spacing:.5px;margin-bottom:40px}
+.ob-dots{display:flex;gap:8px;margin-bottom:32px}
+.ob-dot{width:6px;height:6px;border-radius:50%;background:var(--t4);transition:all .3s var(--ease)}
+.ob-dot.on{background:var(--accent);width:18px;border-radius:3px}
+.ob-btn{padding:16px 48px;border-radius:22px;border:.8px solid var(--accent);font-family:var(--serif);font-size:15px;color:var(--accent);letter-spacing:3px;background:linear-gradient(135deg,rgba(202,169,122,.04),transparent);transition:all .3s var(--ease)}
+.ob-btn:active{background:rgba(202,169,122,.1);transform:scale(.97)}
+.ob-skip{margin-top:16px;font-size:12px;color:var(--t3);letter-spacing:1px;padding:8px 16px}
+
+/* HISTORY */
+.hist-body{flex:1;padding:4px 22px 18px;overflow-y:auto;z-index:1}
+.hist-body::-webkit-scrollbar{display:none}
+.hist-item{display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:.5px solid rgba(202,169,122,.08);margin-bottom:10px;transition:all .2s var(--ease);position:relative;overflow:hidden}
+.hist-item:active{background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border-color:rgba(202,169,122,.15)}
+.hist-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;box-shadow:0 0 10px currentColor}
+.hist-info{flex:1;min-width:0}
+.hist-text{font-size:13px;font-weight:300;color:var(--t1);line-height:1.8;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hist-meta{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:8px;letter-spacing:.3px}
+.hist-tag{font-size:9px;padding:3px 10px;border-radius:10px;background:rgba(202,169,122,.06);color:var(--accent);border:.5px solid rgba(202,169,122,.1);letter-spacing:.5px}
+.hist-empty{text-align:center;padding:60px 20px;color:var(--t3);font-size:14px;font-weight:300;line-height:2}
+
+/* SETTINGS */
+.set-body{flex:1;padding:8px 22px 18px;overflow-y:auto;z-index:1}
+.set-body::-webkit-scrollbar{display:none}
+.set-section{margin-bottom:28px}
+.set-section-title{font-family:var(--serif);font-size:13px;font-weight:300;color:var(--accent);letter-spacing:2px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.set-section-title::after{content:'';flex:1;height:.5px;background:linear-gradient(90deg,var(--line),transparent)}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:14px;background:rgba(255,255,255,.03);border:.5px solid var(--line);margin-bottom:8px}
+.set-label{font-size:13px;font-weight:300;color:var(--t1);letter-spacing:.3px}
+.set-sub{font-size:10px;color:var(--t3);margin-top:2px;letter-spacing:.2px}
+.set-toggle{width:48px;height:28px;border-radius:14px;background:rgba(255,255,255,.1);position:relative;transition:background .2s var(--ease);flex-shrink:0}
+.set-toggle.on{background:rgba(202,169,122,.35)}
+.set-toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--t1);transition:transform .2s var(--ease);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.set-toggle.on::after{transform:translateX(20px)}
+.set-val{font-size:12px;color:var(--t3);letter-spacing:.3px}
+.set-about{text-align:center;padding:20px;font-size:11px;color:var(--t3);line-height:2;letter-spacing:.3px}
 
 /* NIGHTSCAPE */
 .ns-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 18px 8px;flex-shrink:0;z-index:10}
@@ -172,52 +254,70 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .ns-li{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--t3);letter-spacing:.5px}
 .ns-ld{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
-/* PATTERN */
+/* PATTERN DISCOVERY */
 .pat-body{flex:1;padding:4px 22px 18px;overflow-y:auto;z-index:1}
 .pat-body::-webkit-scrollbar{display:none}
-.pat-sec{margin-bottom:26px}
-.pat-st{font-family:var(--serif);font-size:13px;font-weight:300;color:var(--accent);letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.pat-st::after{content:'';flex:1;height:.5px;background:var(--line)}
-.ins-card{padding:20px;border-radius:14px;background:linear-gradient(135deg,rgba(202,169,122,.06),rgba(202,169,122,.01) 80%);border:.5px solid rgba(202,169,122,.1);box-shadow:0 0 24px rgba(202,169,122,.03)}
-.ins-txt{font-family:var(--serif);font-size:15px;font-weight:300;line-height:2;color:var(--t1)}
-.ins-txt em{color:var(--accent);font-style:normal;font-weight:400}
-.img-list{display:flex;flex-direction:column;gap:8px}
-.img-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.03);border:.5px solid var(--line);transition:background .15s}
-.img-row:active{background:rgba(255,255,255,.05)}
-.img-emoji{width:40px;height:40px;border-radius:50%;background:rgba(202,169,122,.04);border:.5px solid rgba(202,169,122,.08);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 0 12px rgba(202,169,122,.03)}
+.pat-sec{margin-bottom:28px;position:relative;opacity:0;animation:patFadeIn .6s ease-out forwards}
+.pat-sec:nth-child(1){animation-delay:.1s}
+.pat-sec:nth-child(2){animation-delay:.2s}
+.pat-sec:nth-child(3){animation-delay:.3s}
+.pat-sec:nth-child(4){animation-delay:.4s}
+@keyframes patFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.pat-st{font-family:var(--serif);font-size:13px;font-weight:300;color:var(--accent);letter-spacing:2.5px;margin-bottom:14px;display:flex;align-items:center;gap:10px;position:relative}
+.pat-st-icon{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,rgba(202,169,122,.15),rgba(202,169,122,.05));border:.5px solid rgba(202,169,122,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 12px rgba(202,169,122,.08)}
+.pat-st-icon svg{width:12px;height:12px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pat-st-text{flex:1}
+.pat-st::after{content:'';flex:1;height:.5px;background:linear-gradient(90deg,var(--line),transparent)}
+.ins-card{padding:22px 24px;border-radius:16px;background:linear-gradient(135deg,rgba(202,169,122,.08),rgba(202,169,122,.02) 60%,rgba(255,255,255,.02));border:.5px solid rgba(202,169,122,.15);box-shadow:0 0 28px rgba(202,169,122,.04),inset 0 0 40px rgba(202,169,122,.02);position:relative;overflow:hidden}
+.ins-card::before{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(202,169,122,.06),transparent 70%);pointer-events:none}
+.ins-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(202,169,122,.2),transparent)}
+.ins-txt{font-family:var(--serif);font-size:15px;font-weight:300;line-height:2.1;color:var(--t1);position:relative;z-index:1}
+.ins-txt em{color:var(--accent);font-style:normal;font-weight:400;position:relative;padding:0 2px}
+.ins-txt em::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
+.img-list{display:flex;flex-direction:column;gap:10px}
+.img-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:.5px solid rgba(202,169,122,.08);transition:all .2s var(--ease);position:relative;overflow:hidden}
+.img-row:active{background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.03));transform:scale(.98);border-color:rgba(202,169,122,.15)}
+.img-emoji{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,rgba(202,169,122,.08),rgba(202,169,122,.03));border:.5px solid rgba(202,169,122,.12);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 0 16px rgba(202,169,122,.05)}
 .img-info{flex:1;min-width:0}
-.img-name{font-family:var(--serif);font-size:14px;font-weight:400;letter-spacing:.5px;margin-bottom:2px}
-.img-det{font-size:10px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.img-bar{width:44px;flex-shrink:0}.img-bar-t{height:3px;border-radius:2px;background:var(--line)}.img-bar-f{height:100%;border-radius:2px;background:var(--accent)}
-.w-chips{display:flex;gap:7px;flex-wrap:wrap}
-.w-chip{padding:8px 14px;border-radius:18px;border:.5px solid var(--line);background:rgba(255,255,255,.02);font-size:11px;font-weight:300;color:var(--t2);display:flex;align-items:center;gap:6px}
-.w-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.let-list{display:flex;flex-direction:column;gap:7px}
-.let-row{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:14px;background:rgba(255,255,255,.03);border:.5px solid var(--line);transition:background .15s}
-.let-row:active{background:rgba(255,255,255,.05)}
-.let-d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.img-name{font-family:var(--serif);font-size:14px;font-weight:400;letter-spacing:.5px;margin-bottom:3px;color:var(--t1)}
+.img-det{font-size:10px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.3px}
+.img-bar{width:48px;flex-shrink:0}
+.img-bar-t{height:4px;border-radius:2px;background:rgba(202,169,122,.08);overflow:hidden}
+.img-bar-f{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),rgba(202,169,122,.7));transition:width .6s var(--ease)}
+.w-chips{display:flex;gap:9px;flex-wrap:wrap}
+.w-chip{padding:10px 16px;border-radius:20px;border:.5px solid rgba(202,169,122,.1);background:rgba(255,255,255,.03);font-size:11px;font-weight:300;color:var(--t2);display:flex;align-items:center;gap:7px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.w-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px currentColor}
+.let-list{display:flex;flex-direction:column;gap:9px}
+.let-row{display:flex;align-items:center;gap:12px;padding:15px 16px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:.5px solid rgba(202,169,122,.08);transition:all .2s var(--ease)}
+.let-row:active{background:rgba(255,255,255,.06);transform:translateX(2px);border-color:rgba(202,169,122,.15)}
+.let-d{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor}
 .let-m{flex:1;min-width:0}
-.let-p{font-size:12px;font-weight:300;color:var(--t1);margin-bottom:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.let-t{font-size:9px;color:var(--t3)}
-.let-tag{font-size:9px;padding:3px 9px;border-radius:9px;background:rgba(255,255,255,.03);color:var(--t3);flex-shrink:0}
+.let-p{font-size:12px;font-weight:300;color:var(--t1);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.3px;line-height:1.6}
+.let-t{font-size:9px;color:var(--t3);letter-spacing:.3px;opacity:.8}
+.let-tag{font-size:9px;padding:4px 10px;border-radius:10px;background:rgba(202,169,122,.06);color:var(--accent);flex-shrink:0;border:.5px solid rgba(202,169,122,.1);letter-spacing:.5px}
+
+@keyframes letterIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 
 <div class="pbar">
-  <div class="pbar-l"><div class="pbar-d"></div><span>夜信 · 原型</span></div>
+  <div class="pbar-l"><div class="pbar-d"></div><span>夜信 · MVP</span></div>
   <div class="pbar-btns">
     <button class="pb on" data-s="home" onclick="go('home')">首页</button>
     <button class="pb" data-s="write" onclick="go('write')">写信</button>
     <button class="pb" data-s="recv" onclick="go('recv')">寄送</button>
-    <button class="pb" data-s="mirror" onclick="go('mirror')">回信</button>
+    <button class="pb" data-s="chat" onclick="go('chat')">对话</button>
     <button class="pb" data-s="ns" onclick="go('ns')">星图</button>
     <button class="pb" data-s="pat" onclick="go('pat')">发现</button>
+    <button class="pb" data-s="hist" onclick="go('hist')">历史</button>
+    <button class="pb" data-s="set" onclick="go('set')">设置</button>
   </div>
 </div>
 
 <div id="app">
 
+<!-- HOME -->
 <div class="scr on" id="s-home">
   <div class="home-canvas"><canvas id="homeCanvas"></canvas></div>
   <div class="home-overlay">
@@ -232,10 +332,11 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
       </button>
       <div class="ink-cta-label">写一封信</div>
     </div>
+    <div class="home-recent" id="homeRecent"></div>
     <div class="home-foot">
-      <div class="hf-stat"><b>12</b><small>已寄出</small></div>
+      <div class="hf-stat"><b id="statSent">0</b><small>已寄出</small></div>
       <button class="hf-globe" onclick="go('ns')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg>查看星图</button>
-      <div class="hf-stat"><b>7</b><small>天</small></div>
+      <div class="hf-stat"><b id="statDays">0</b><small>天</small></div>
     </div>
     <div class="bnav">
       <button class="btab on" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button>
@@ -245,63 +346,567 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   </div>
 </div>
 
+<!-- WRITE -->
 <div class="scr" id="s-write">
   <div class="sub-canvas"><canvas id="writeC"></canvas></div>
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
-  <div class="nhdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="nhdr-c" id="writeDate">6月12日 周四</span><div style="width:38px"></div></div>
+  <div class="nhdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="nhdr-c" id="writeDate">6月15日 周日</span><button class="nhdr-act" onclick="startVoice()"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button></div>
   <div class="write-zone"><div class="write-sal">亲爱的夜：</div><textarea class="write-field" id="dreamIn" placeholder="把梦写下来吧，不用完整，不用合理……&#10;&#10;想到什么就写什么，哪怕只记得一种感觉。"></textarea></div>
-  <div class="write-bot"><div class="feel-row"><label>醒来时</label><input placeholder="现在是什么感觉？（不安 / 想念 / 困惑 / 平静...）"></div><button class="btn-send" onclick="sendLetter()">寄 出</button></div>
+  <div class="write-bot">
+    <div class="write-emotions" id="emotionChips"></div>
+    <div class="write-actions">
+      <button class="write-mic" onclick="startVoice()"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
+      <button class="btn-send" onclick="sendLetter()">寄 出</button>
+    </div>
+  </div>
 </div>
 
+<!-- RECEIVING -->
 <div class="scr" id="s-recv">
   <div class="sbar"><span></span></div>
   <div class="recv-wrap"><div class="sub-canvas"><canvas id="recvC"></canvas></div><div class="recv-rings"><div class="recv-r"></div><div class="recv-r"></div><div class="recv-r"></div><div class="recv-r"></div><div class="recv-dot"></div></div><div class="recv-txt">你的信正在路上<br>有人正在认真读它</div></div>
 </div>
 
-<div class="scr" id="s-mirror">
-  <div class="sub-canvas"><canvas id="mirC"></canvas></div>
+<!-- AI CHAT -->
+<div class="scr" id="s-chat">
+  <div class="sub-canvas"><canvas id="chatC"></canvas></div>
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
-  <div class="nhdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="nhdr-c">回信</span><div style="width:38px"></div></div>
-  <div class="mir-body">
-    <div class="mir-from">来自一个懂你的人</div>
-    <div class="mir-text" id="mirTxt"></div>
-    <div class="mir-care"><div class="mir-care-l">今天的轻轻提醒</div><div class="mir-care-t" id="mirCare"></div></div>
+  <div class="nhdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="nhdr-c">回信</span><div style="width:44px"></div></div>
+  <div class="chat-body">
+    <div class="chat-scroll" id="chatScroll"></div>
+    <div id="chatDoneArea"></div>
+    <div class="chat-input-bar" id="chatInputBar">
+      <input class="chat-input" id="chatInput" placeholder="说点什么……" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send-btn" onclick="sendChat()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
   </div>
-  <div class="mir-acts"><button class="mir-btn pri" onclick="go('home')">收好</button></div>
 </div>
 
+<!-- NIGHTSCAPE -->
 <div class="scr" id="s-ns">
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
-  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">你的星图</div><div class="ns-sub">最近 7 天 · 12 封信</div></div><div style="width:38px"></div></div>
+  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">你的星图</div><div class="ns-sub" id="nsSub">最近 7 天 · 0 封信</div></div><div style="width:44px"></div></div>
   <div class="ns-vp"><canvas id="starC"></canvas></div>
-  <div class="ns-info"><div class="ns-icard"><div class="ns-ititle">本周发现</div><div class="ns-itext">你最近的梦反复出现两种情绪：<strong>不安</strong>和<strong>想念</strong>。周三和周五的梦最密集——也许那两天白天发生了什么让你在意的事。</div></div></div>
+  <div class="ns-info"><div class="ns-icard"><div class="ns-ititle">本周发现</div><div class="ns-itext" id="nsInsight">记录更多梦境后，这里会出现你的情绪模式洞察。</div></div></div>
   <div class="ns-legend"><div class="ns-li"><div class="ns-ld" style="background:var(--ec)"></div>平静</div><div class="ns-li"><div class="ns-ld" style="background:var(--ef)"></div>不安</div><div class="ns-li"><div class="ns-ld" style="background:var(--ej)"></div>喜悦</div><div class="ns-li"><div class="ns-ld" style="background:var(--el)"></div>思念</div><div class="ns-li"><div class="ns-ld" style="background:var(--ek)"></div>困惑</div></div>
   <div class="bnav"><button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button><button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="btab on" onclick="go('ns')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/></svg><span>星图</span></button></div>
 </div>
 
+<!-- PATTERN -->
 <div class="scr" id="s-pat">
+  <div class="sub-canvas"><canvas id="patC"></canvas></div>
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
-  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦的发现</div><div class="ns-sub">7 天模式</div></div><div style="width:38px"></div></div>
-  <div class="pat-body">
-    <div class="pat-sec"><div class="pat-st">一句洞察</div><div class="ins-card"><div class="ins-txt">这周你的梦一直在<em>靠近一个你白天不敢碰的地方</em>。不是恐惧，更像是——一种还没被好好感受过的<em>想念</em>。</div></div></div>
-    <div class="pat-sec"><div class="pat-st">反复出现的意象</div><div class="img-list"><div class="img-row"><div class="img-emoji">🌊</div><div class="img-info"><div class="img-name">水</div><div class="img-det">出现 5 次 · 大海、雨、河流、泪水</div></div><div class="img-bar"><div class="img-bar-t"><div class="img-bar-f" style="width:100%"></div></div></div></div><div class="img-row"><div class="img-emoji">🚪</div><div class="img-info"><div class="img-name">门</div><div class="img-det">出现 3 次 · 打不开的门、身后的门</div></div><div class="img-bar"><div class="img-bar-t"><div class="img-bar-f" style="width:60%"></div></div></div></div><div class="img-row"><div class="img-emoji">🌙</div><div class="img-info"><div class="img-name">夜晚的路</div><div class="img-det">出现 3 次 · 走不完的路、找不到方向</div></div><div class="img-bar"><div class="img-bar-t"><div class="img-bar-f" style="width:60%"></div></div></div></div></div></div>
-    <div class="pat-sec"><div class="pat-st">情绪天气</div><div class="w-chips"><div class="w-chip"><div class="w-dot" style="background:var(--el)"></div>想念 · 40%</div><div class="w-chip"><div class="w-dot" style="background:var(--ef)"></div>不安 · 25%</div><div class="w-chip"><div class="w-dot" style="background:var(--ek)"></div>困惑 · 20%</div><div class="w-chip"><div class="w-dot" style="background:var(--ec)"></div>平静 · 15%</div></div></div>
-    <div class="pat-sec"><div class="pat-st">你的信</div><div class="let-list"><div class="let-row"><div class="let-d" style="background:var(--el)"></div><div class="let-m"><div class="let-p">梦到一个人，好像在对我笑……</div><div class="let-t">今天 06:28</div></div><div class="let-tag">想念</div></div><div class="let-row"><div class="let-d" style="background:var(--ef)"></div><div class="let-m"><div class="let-p">在一个很深的地方，水一直涨上来</div><div class="let-t">昨天 05:51</div></div><div class="let-tag">不安</div></div><div class="let-row"><div class="let-d" style="background:var(--ek)"></div><div class="let-m"><div class="let-p">一直走一直走，找不到出口</div><div class="let-t">前天 06:15</div></div><div class="let-tag">困惑</div></div><div class="let-row"><div class="let-d" style="background:var(--ec)"></div><div class="let-m"><div class="let-p">阳光很好，我在一个花园里</div><div class="let-t">3天前 07:02</div></div><div class="let-tag">平静</div></div><div class="let-row"><div class="let-d" style="background:var(--el)"></div><div class="let-m"><div class="let-p">有人叫我的名字，但我看不见</div><div class="let-t">4天前 06:44</div></div><div class="let-tag">想念</div></div></div></div>
+  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦的发现</div><div class="ns-sub">7 天模式</div></div><div style="width:44px"></div></div>
+  <div class="pat-body" id="patBody">
+    <div class="pat-sec">
+      <div class="pat-st"><div class="pat-st-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div><div class="pat-st-text">一句洞察</div></div>
+      <div class="ins-card"><div class="ins-txt" id="patInsight">记录更多梦境后，这里会出现专属于你的梦境洞察。</div></div>
+    </div>
+    <div class="pat-sec">
+      <div class="pat-st"><div class="pat-st-icon"><svg viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg></div><div class="pat-st-text">情绪天气</div></div>
+      <div class="w-chips" id="patWeather"><div class="w-chip" style="color:var(--t3)">记录更多梦境后自动生成</div></div>
+    </div>
+    <div class="pat-sec">
+      <div class="pat-st"><div class="pat-st-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div class="pat-st-text">你的信</div></div>
+      <div class="let-list" id="patLetters"><div style="font-size:12px;color:var(--t3);padding:12px 0">还没有记录，去写第一封信吧</div></div>
+    </div>
   </div>
   <div class="bnav"><button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button><button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="btab on" onclick="go('pat')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>发现</span></button></div>
 </div>
 
+<!-- HISTORY -->
+<div class="scr" id="s-hist">
+  <div class="sub-canvas"><canvas id="histC"></canvas></div>
+  <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
+  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦境记录</div><div class="ns-sub" id="histSub">0 封信</div></div><div style="width:44px"></div></div>
+  <div class="hist-body" id="histBody"><div class="hist-empty">还没有梦境记录<br>写下你的第一个梦吧</div></div>
+  <div class="bnav"><button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button><button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="btab on" onclick="go('hist')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>历史</span></button></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="scr" id="s-set">
+  <div class="sub-canvas"><canvas id="setC"></canvas></div>
+  <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
+  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">设置</div></div><div style="width:44px"></div></div>
+  <div class="set-body">
+    <div class="set-section">
+      <div class="set-section-title">偏好</div>
+      <div class="set-row"><div><div class="set-label">梦境提醒</div><div class="set-sub">每天清晨提醒你记录梦境</div></div><div class="set-toggle on" id="togNotif" onclick="toggleSetting(this,'notif')"></div></div>
+      <div class="set-row"><div><div class="set-label">字体大小</div></div><div class="set-val" id="fontSizeVal">标准</div></div>
+    </div>
+    <div class="set-section">
+      <div class="set-section-title">隐私</div>
+      <div class="set-row"><div><div class="set-label">数据说明</div><div class="set-sub">你的梦境数据仅存储在本设备</div></div></div>
+      <div class="set-row"><div><div class="set-label">清除所有数据</div><div class="set-sub">删除所有梦境记录（不可恢复）</div></div><button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(196,112,128,.3);font-size:12px;color:#c47080;background:rgba(196,112,128,.06);letter-spacing:.5px" onclick="clearAllData()">清除</button></div>
+    </div>
+    <div class="set-section">
+      <div class="set-section-title">关于</div>
+      <div class="set-about">夜信 Night Letter v0.1 MVP<br>一个温柔的梦境情绪觉察工具<br><br>梦不是答案，是情绪入口。<br>尊重你自己思考的能力。</div>
+    </div>
+  </div>
+  <div class="bnav"><button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button><button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="btab on" onclick="go('set')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>设置</span></button></div>
+</div>
+
+</div>
+
+<!-- VOICE OVERLAY -->
+<div class="voice-overlay" id="voiceOverlay">
+  <div class="voice-ring"><div class="voice-core"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div></div>
+  <div class="voice-status" id="voiceStatus">正在聆听……</div>
+  <div class="voice-time" id="voiceTime">00:00</div>
+  <div class="voice-preview" id="voicePreview"></div>
+  <button class="voice-stop" onclick="stopVoice()"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+  <div class="voice-fallback" id="voiceFallback" style="display:none"></div>
+</div>
+
+<!-- ONBOARDING -->
+<div class="onboard" id="onboard">
+  <div class="ob-body" id="obBody"></div>
 </div>
 
 <script>
+/* ============================================
+   夜信 Night Letter — MVP
+   ============================================ */
+
+/* === DATA LAYER === */
+var STORE_KEY='nightletter_dreams';
+var ONBOARD_KEY='nightletter_onboard';
+
+function getDreams(){try{return JSON.parse(localStorage.getItem(STORE_KEY))||[]}catch(e){return[]}}
+function saveDream(text,emotion){
+  var ds=getDreams();
+  ds.unshift({id:Date.now(),text:text,emotion:emotion||'未知',ts:new Date().toISOString(),aiTurns:0});
+  localStorage.setItem(STORE_KEY,JSON.stringify(ds));
+  return ds;
+}
+function getStats(){
+  var ds=getDreams();
+  var days={};ds.forEach(function(d){days[d.ts.slice(0,10)]=1});
+  return{total:ds.length,days:Object.keys(days).length}
+}
+function clearAllData(){
+  if(confirm('确定要清除所有梦境数据吗？此操作不可恢复。')){
+    localStorage.removeItem(STORE_KEY);
+    refreshAll();go('home');
+  }
+}
+
+/* === EMOTION DETECTION === */
+var emotionMap={
+  '不安':['害怕','恐惧','掉','追','黑暗','深','水涨','迷路','坠落','困住','窒息','紧张','焦虑','慌','危险','逃','摔','沉'],
+  '想念':['梦到人','笑','远方','旧','名字','看不见','等','回来','离开','思念','想','回忆','过去','小时候','故人','叫我'],
+  '困惑':['走不完','找不到','迷宫','雾','方向','转圈','不知道','为什么','复杂','混乱','矛盾','不明白','矛盾'],
+  '平静':['阳光','花园','安静','湖边','坐','慢','温暖','舒服','轻松','自在','绿色','风','散步','柔和'],
+  '喜悦':['飞','开心','笑','跳舞','庆祝','礼物','拥抱','奔跑','自由','光','彩色','花开','唱歌']
+};
+var emotionColors={'不安':'var(--ef)','想念':'var(--el)','困惑':'var(--ek)','平静':'var(--ec)','喜悦':'var(--ej)','未知':'var(--t3)'};
+
+function detectEmotion(text){
+  if(!text)return'未知';
+  var scores={};
+  Object.keys(emotionMap).forEach(function(em){
+    scores[em]=0;
+    emotionMap[em].forEach(function(kw){if(text.indexOf(kw)>=0)scores[em]++});
+  });
+  var best='未知',max=0;
+  Object.keys(scores).forEach(function(em){if(scores[em]>max){max=scores[em];best=em}});
+  return best;
+}
+
+/* === NAVIGATION === */
 var cur='home';
-function go(n){if(n===cur)return;var f=document.getElementById('s-'+cur),t=document.getElementById('s-'+n);if(!t)return;f.classList.remove('on');f.classList.add('leave');setTimeout(()=>f.classList.remove('leave'),550);setTimeout(()=>{t.classList.add('on');t.scrollTop=0},70);cur=n;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('on',b.dataset.s===n));if(n==='ns')initStars();if(n==='mirror'){renderM();initAmbient('mirC')}if(n==='write')initAmbient('writeC');if(n==='recv')initAmbient('recvC');if(n==='home'&&!homeInited)initHome()}
-function sendLetter(){go('recv');setTimeout(()=>go('mirror'),2800)}
+function go(n){
+  if(n===cur)return;
+  var f=document.getElementById('s-'+cur),t=document.getElementById('s-'+n);
+  if(!t)return;
+  f.classList.remove('on');f.classList.add('leave');
+  setTimeout(function(){f.classList.remove('leave')},550);
+  setTimeout(function(){t.classList.add('on');t.scrollTop=0},70);
+  cur=n;
+  document.querySelectorAll('.pb').forEach(function(b){b.classList.toggle('on',b.dataset.s===n)});
+  if(n==='ns')initStars();
+  if(n==='chat'){initChat();initAmbient('chatC')}
+  if(n==='write'){initAmbient('writeC');renderEmotionChips()}
+  if(n==='recv')initAmbient('recvC');
+  if(n==='pat'){initAmbient('patC');renderPattern()}
+  if(n==='hist'){initAmbient('histC');renderHistory()}
+  if(n==='set')initAmbient('setC');
+  if(n==='home'){refreshHome();if(!homeInited)initHome()}
+}
 
+function sendLetter(){
+  var text=document.getElementById('dreamIn').value.trim();
+  if(!text){document.getElementById('dreamIn').placeholder='先写点什么吧，哪怕只有一句话……';return}
+  var emotion=detectEmotion(text);
+  saveDream(text,emotion);
+  document.getElementById('dreamIn').value='';
+  lastDreamText=text;lastDreamEmotion=emotion;
+  go('recv');
+  setTimeout(function(){go('chat')},2400);
+}
+
+/* === CLOCK & DATE === */
 function tick(){var d=new Date();document.getElementById('clk').textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}tick();setInterval(tick,30000);
-(function(){var d=new Date(),ms=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],ds=['日','一','二','三','四','五','六'];var el=document.getElementById('writeDate');if(el)el.textContent=ms[d.getMonth()]+d.getDate()+'日 周'+ds[d.getDay()];var h=d.getHours(),p='深夜';if(h>=5&&h<9)p='清晨';else if(h>=9&&h<12)p='上午';else if(h>=12&&h<14)p='午后';else if(h>=14&&h<18)p='下午';else if(h>=18&&h<22)p='夜晚';var pe=document.getElementById('period');if(pe)pe.textContent=p})();
+(function(){
+  var d=new Date(),ms=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],ds=['日','一','二','三','四','五','六'];
+  var el=document.getElementById('writeDate');if(el)el.textContent=ms[d.getMonth()]+d.getDate()+'日 周'+ds[d.getDay()];
+  var h=d.getHours(),p='深夜';
+  if(h>=5&&h<9)p='清晨';else if(h>=9&&h<12)p='上午';else if(h>=12&&h<14)p='午后';else if(h>=14&&h<18)p='下午';else if(h>=18&&h<22)p='夜晚';
+  var pe=document.getElementById('period');if(pe)pe.textContent=p;
+})();
 
-/* === HOME CANVAS — FULL IMMERSIVE STARFIELD v2 === */
+/* === EMOTION CHIPS === */
+var selectedEmotion='';
+function renderEmotionChips(){
+  var el=document.getElementById('emotionChips');if(!el)return;
+  var ems=['平静','不安','想念','困惑','喜悦'];
+  el.innerHTML=ems.map(function(e){
+    var c=emotionColors[e];
+    return '<button class="we-chip'+(selectedEmotion===e?' on':'')+'" onclick="toggleEmotion(\''+e+'\')"><div class="we-dot" style="background:'+c+'"></div>'+e+'</button>';
+  }).join('');
+}
+function toggleEmotion(e){
+  selectedEmotion=selectedEmotion===e?'':e;
+  renderEmotionChips();
+}
+
+/* === AI CHAT === */
+var lastDreamText='';
+var lastDreamEmotion='未知';
+var chatTurn=0;
+var maxTurns=3;
+var chatInited=false;
+
+var aiResponses={
+  '不安':[
+    '你提到了<span class="hl">一种被包围的感觉</span>。这很像是一种身体里还没处理完的紧张。梦没有让你解决它，只是让你看到了它在那里。',
+    '那种<span class="hl">不确定自己在哪里的感觉</span>，也许不是关于梦的——更像是你最近在某件事上，也有一点点类似的迷失。',
+    '你说的那些画面，让我觉得你的身体在<span class="hl">替你记住一些白天来不及感受的东西</span>。不需要分析它，只是知道它在就好。'
+  ],
+  '想念':[
+    '梦里出现的那个人，也许不代表你真的在想谁——更像是你心里有一个<span class="hl">柔软的角落被碰到了</span>。',
+    '那种<span class="hl">远远的看着、却走不过去</span>的感觉，在梦里和醒着的时候可能都出现过。它是一种还没说出口的东西。',
+    '你写下来的这些，像是在<span class="hl">对一个不在场的人悄悄说话</span>。也许今天可以允许自己想一会儿，不用有负担。'
+  ],
+  '困惑':[
+    '你梦里那种<span class="hl">一直走却找不到方向</span>的感觉，听起来很像你最近在思考的某件事。答案可能还没到，但你在靠近它。',
+    '迷宫、雾、转圈——这些画面都在说同一件事：<span class="hl">你还在找，还没找到，但这本身没有错</span>。',
+    '有时候梦不会给你答案，它只是让你知道：<span class="hl">有些问题值得慢慢想</span>，不用急着解决。'
+  ],
+  '平静':[
+    '你梦里的安静，听起来像是一种<span class="hl">难得的放松</span>。也许你的身体在告诉你：此刻你是安全的。',
+    '那些温暖的画面——阳光、花园、湖——它们说明你心里有一个<span class="hl">可以回去的地方</span>。记住它在哪里。',
+    '今天醒来时的平静是很珍贵的。不用非得做什么，<span class="hl">就让这种感觉多待一会儿</span>。'
+  ],
+  '喜悦':[
+    '梦里的飞翔和笑声——你的身体在<span class="hl">释放一些被压住的快乐</span>。也许最近的你比想象中更值得开心。',
+    '那种<span class="hl">自由自在的感觉</span>，不管是梦里还是醒来，都是真的。你今天可以带着它出门。',
+    '你描述的这些画面让我觉得，你心里有一些<span class="hl">很好的东西正在生长</span>。继续让它长着就好。'
+  ],
+  '未知':[
+    '你写下来的这些，<span class="hl">不是为了让谁给你答案</span>。更像是一种把心里某个地方轻轻摊开的动作。',
+    '梦不会告诉你"应该怎么做"，但它会让你<span class="hl">感觉到一些白天被忽略的东西</span>。这已经够了。',
+    '也许今天可以<span class="hl">不用想太多</span>。你记录了，你感受了，这就是一件很好的事。'
+  ]
+};
+
+function initChat(){
+  if(chatInited)return;
+  chatInited=true;chatTurn=0;
+  var scroll=document.getElementById('chatScroll');
+  var done=document.getElementById('chatDoneArea');
+  var bar=document.getElementById('chatInputBar');
+  scroll.innerHTML='';done.innerHTML='';bar.style.display='flex';
+
+  var dream=lastDreamText||'一个还没被说出口的梦';
+  var em=lastDreamEmotion||'未知';
+  var opener='你写下了这些：「'+dream.slice(0,40)+(dream.length>40?'……':'')+'」';
+
+  addBubble('ai',opener,0);
+  setTimeout(function(){
+    var resp=getAIResponse(em,0);
+    addBubble('ai',resp,1);
+  },1200);
+}
+
+function getAIResponse(emotion,turn){
+  var pool=aiResponses[emotion]||aiResponses['未知'];
+  return pool[Math.min(turn,pool.length-1)];
+}
+
+function addBubble(type,html,delay){
+  var scroll=document.getElementById('chatScroll');
+  if(type==='ai'&&delay>0){
+    showTyping();
+    setTimeout(function(){
+      hideTyping();
+      var div=document.createElement('div');
+      div.className='chat-bubble chat-'+type;
+      div.innerHTML=html;
+      div.style.animationDelay='0s';
+      scroll.appendChild(div);
+      scroll.scrollTop=scroll.scrollHeight;
+    },1000+Math.random()*800);
+  } else {
+    var div=document.createElement('div');
+    div.className='chat-bubble chat-'+type;
+    div.innerHTML=html;
+    scroll.appendChild(div);
+    scroll.scrollTop=scroll.scrollHeight;
+  }
+}
+
+function showTyping(){
+  var scroll=document.getElementById('chatScroll');
+  var t=document.createElement('div');
+  t.className='typing-indicator';t.id='typingInd';
+  t.innerHTML='<span></span><span></span><span></span>';
+  scroll.appendChild(t);scroll.scrollTop=scroll.scrollHeight;
+}
+function hideTyping(){
+  var t=document.getElementById('typingInd');if(t)t.remove();
+}
+
+function sendChat(){
+  var inp=document.getElementById('chatInput');
+  var text=inp.value.trim();
+  if(!text)return;
+  inp.value='';
+  chatTurn++;
+
+  addBubble('user',text,0);
+
+  if(chatTurn>=maxTurns){
+    setTimeout(function(){
+      addBubble('ai','你今天已经说了很多了。把这些好好带着就好。<span class="hl">不用急着找到答案</span>。',1);
+      setTimeout(finishChat,2500);
+    },600);
+    return;
+  }
+
+  var userEm=detectEmotion(text);
+  var em=userEm!=='未知'?userEm:(lastDreamEmotion||'未知');
+  setTimeout(function(){
+    var resp=getAIResponse(em,chatTurn);
+    addBubble('ai',resp,1);
+  },600);
+}
+
+function finishChat(){
+  document.getElementById('chatInputBar').style.display='none';
+  var done=document.getElementById('chatDoneArea');
+  done.innerHTML='<div class="chat-done"><div>对话结束了</div><button class="chat-done-btn" onclick="chatInited=false;go(\'home\')">收好</button></div>';
+}
+
+/* === VOICE RECORDING === */
+var voiceRec=null;
+var voiceTimer=null;
+var voiceSec=0;
+var voiceSupported=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+
+function startVoice(){
+  var overlay=document.getElementById('voiceOverlay');
+  var fb=document.getElementById('voiceFallback');
+  var preview=document.getElementById('voicePreview');
+  var status=document.getElementById('voiceStatus');
+
+  overlay.classList.add('on');
+  preview.textContent='';
+  document.getElementById('voiceTime').textContent='00:00';
+  fb.style.display='none';
+  status.textContent='正在聆听……';
+  voiceSec=0;
+
+  if(!voiceSupported){
+    status.textContent='语音不可用';
+    fb.style.display='block';
+    fb.innerHTML='你的浏览器不支持语音识别<br>请使用 Chrome 浏览器<br>或手动输入文字';
+    return;
+  }
+
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  voiceRec=new SR();
+  voiceRec.lang='zh-CN';
+  voiceRec.continuous=true;
+  voiceRec.interimResults=true;
+  voiceRec.maxAlternatives=1;
+
+  var fullText='';
+  voiceRec.onresult=function(e){
+    var interim='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)fullText+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    preview.textContent=fullText+interim;
+  };
+  voiceRec.onerror=function(e){
+    status.textContent='出错了，请重试';
+    console.warn('Voice error:',e.error);
+  };
+  voiceRec.onend=function(){
+    if(voiceRec&&voiceRec._active){
+      try{voiceRec.start()}catch(e){}
+    }
+  };
+
+  voiceRec._active=true;
+  try{voiceRec.start()}catch(e){status.textContent='启动失败'}
+
+  voiceTimer=setInterval(function(){
+    voiceSec++;
+    var m=String(Math.floor(voiceSec/60)).padStart(2,'0');
+    var s=String(voiceSec%60).padStart(2,'0');
+    document.getElementById('voiceTime').textContent=m+':'+s;
+  },1000);
+}
+
+function stopVoice(){
+  var overlay=document.getElementById('voiceOverlay');
+  var preview=document.getElementById('voicePreview');
+  var text=preview.textContent.trim();
+
+  if(voiceRec){voiceRec._active=false;try{voiceRec.stop()}catch(e){voiceRec=null}}
+  if(voiceTimer){clearInterval(voiceTimer);voiceTimer=null}
+  overlay.classList.remove('on');
+
+  if(text){
+    var field=document.getElementById('dreamIn');
+    field.value=field.value?(field.value+'\n'+text):text;
+    if(cur!=='write')go('write');
+  }
+}
+
+/* === HOME REFRESH === */
+function refreshHome(){
+  var stats=getStats();
+  document.getElementById('statSent').textContent=stats.total;
+  document.getElementById('statDays').textContent=stats.days;
+
+  var el=document.getElementById('homeRecent');
+  var dreams=getDreams();
+  if(!dreams.length){
+    el.innerHTML='<div class="home-empty">还没有梦境记录</div>';
+    return;
+  }
+  var recent=dreams.slice(0,4);
+  el.innerHTML='<div class="home-recent-title">最近的梦</div><div class="home-recent-list">'+
+    recent.map(function(d){
+      var c=emotionColors[d.emotion]||'var(--t3)';
+      var ago=timeAgo(d.ts);
+      return '<div class="home-recent-item" onclick="go(\'hist\')"><div class="hri-text">'+d.text.slice(0,20)+(d.text.length>20?'……':'')+'</div><div class="hri-meta"><div class="hri-dot" style="background:'+c+'"></div>'+d.emotion+' · '+ago+'</div></div>';
+    }).join('')+'</div>';
+}
+
+function timeAgo(iso){
+  var now=Date.now(),then=new Date(iso).getTime();
+  var diff=Math.floor((now-then)/1000);
+  if(diff<60)return'刚刚';
+  if(diff<3600)return Math.floor(diff/60)+'分钟前';
+  if(diff<86400)return Math.floor(diff/3600)+'小时前';
+  if(diff<604800)return Math.floor(diff/86400)+'天前';
+  return new Date(iso).toLocaleDateString('zh-CN');
+}
+
+function refreshAll(){refreshHome()}
+
+/* === HISTORY === */
+function renderHistory(){
+  var el=document.getElementById('histBody');
+  var sub=document.getElementById('histSub');
+  var dreams=getDreams();
+  sub.textContent=dreams.length+' 封信';
+  if(!dreams.length){el.innerHTML='<div class="hist-empty">还没有梦境记录<br>写下你的第一个梦吧</div>';return}
+  el.innerHTML=dreams.map(function(d){
+    var c=emotionColors[d.emotion]||'var(--t3)';
+    var ago=timeAgo(d.ts);
+    var t=new Date(d.ts);
+    var dateStr=(t.getMonth()+1)+'/'+t.getDate()+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+    return '<div class="hist-item"><div class="hist-dot" style="background:'+c+';color:'+c+'"></div><div class="hist-info"><div class="hist-text">'+d.text+'</div><div class="hist-meta"><span>'+dateStr+'</span><span class="hist-tag">'+d.emotion+'</span></div></div></div>';
+  }).join('');
+}
+
+/* === PATTERN === */
+function renderPattern(){
+  var dreams=getDreams();
+  if(!dreams.length)return;
+
+  // Emotion counts
+  var counts={};var total=dreams.length;
+  dreams.forEach(function(d){counts[d.emotion]=(counts[d.emotion]||0)+1});
+
+  // Weather
+  var weather=document.getElementById('patWeather');
+  var sorted=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a]});
+  weather.innerHTML=sorted.map(function(em){
+    var pct=Math.round(counts[em]/total*100);
+    var c=emotionColors[em]||'var(--t3)';
+    return '<div class="w-chip"><div class="w-dot" style="background:'+c+';color:'+c+'"></div><span>'+em+' · '+pct+'%</span></div>';
+  }).join('');
+
+  // Insight
+  var insight=document.getElementById('patInsight');
+  if(total>=3){
+    var top=sorted[0]||'';
+    var insightTexts={
+      '不安':'最近你的梦频繁出现<em>不安</em>的信号。也许白天有什么让你绷着的事——不用解决它，<em>知道它在就够了</em>。',
+      '想念':'你的梦里反复浮现<em>某个人或某段时光</em>。不是软弱，更像是心在说：这些东西对我很重要。',
+      '困惑':'最近你的梦都在<em>寻找方向</em>。答案可能还没到，但你已经在路上了——<em>这本身就有意义</em>。',
+      '平静':'你的梦最近很<em>安静</em>。这种平静不容易——好好珍惜，让身体记住<em>安全的感觉</em>。',
+      '喜悦':'你最近的梦带着<em>快乐和自由</em>。也许有什么好事正在发生，或者你正在允许自己<em>放松下来</em>。'
+    };
+    insight.innerHTML=insightTexts[top]||'你的梦境情绪正在变化——<em>继续记录</em>，模式会越来越清晰。';
+  }
+
+  // Letters list
+  var letters=document.getElementById('patLetters');
+  var recent=dreams.slice(0,6);
+  letters.innerHTML=recent.map(function(d){
+    var c=emotionColors[d.emotion]||'var(--t3)';
+    var ago=timeAgo(d.ts);
+    return '<div class="let-row"><div class="let-d" style="background:'+c+';color:'+c+'"></div><div class="let-m"><div class="let-p">'+d.text.slice(0,24)+(d.text.length>24?'…':'')+'</div><div class="let-t">'+ago+'</div></div><div class="let-tag">'+d.emotion+'</div></div>';
+  }).join('');
+
+  // Update nightscape subtitle
+  var nsSub=document.getElementById('nsSub');
+  if(nsSub)nsSub.textContent='最近 7 天 · '+total+' 封信';
+}
+
+/* === ONBOARDING === */
+var obStep=0;
+var obPages=[
+  {icon:'<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',title:'欢迎回到夜信',desc:'这里是一个安静的地方<br>用来安放你醒来时还带着的那些感觉'},
+  {icon:'<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',title:'写下或说出你的梦',desc:'不用完整，不用合理<br>哪怕只记得一种感觉、一个画面'},
+  {icon:'<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',title:'AI 会温柔地回应你',desc:'不是给你答案<br>而是帮你看见自己心里已经知道的东西'}
+];
+
+function showOnboard(){
+  var el=document.getElementById('onboard');
+  el.classList.add('on');
+  obStep=0;renderOBStep();
+}
+function renderOBStep(){
+  var body=document.getElementById('obBody');
+  var p=obPages[obStep];
+  var dots=obPages.map(function(_,i){return '<div class="ob-dot'+(i===obStep?' on':'')+'"></div>'}).join('');
+  var isLast=obStep===obPages.length-1;
+  body.innerHTML='<div class="ob-icon">'+p.icon+'</div><div class="ob-title">'+p.title+'</div><div class="ob-desc">'+p.desc+'</div><div class="ob-dots">'+dots+'</div><button class="ob-btn" onclick="nextOB()">'+(isLast?'开始使用':'下一步')+'</button><button class="ob-skip" onclick="skipOB()">跳过</button>';
+}
+function nextOB(){
+  obStep++;
+  if(obStep>=obPages.length){skipOB();return}
+  renderOBStep();
+}
+function skipOB(){
+  document.getElementById('onboard').classList.remove('on');
+  localStorage.setItem(ONBOARD_KEY,'1');
+}
+
+/* === SETTINGS === */
+function toggleSetting(el,key){el.classList.toggle('on')}
+
+/* === HOME CANVAS — FULL IMMERSIVE STARFIELD === */
 var homeInited=false;
 function initHome(){
   if(homeInited)return;homeInited=true;
@@ -309,7 +914,6 @@ function initHome(){
   var dpr=Math.min(window.devicePixelRatio||1,2),W=c.offsetWidth,H=c.offsetHeight;
   c.width=W*dpr;c.height=H*dpr;ctx.scale(dpr,dpr);
 
-  /* 3-layer stars — optimized for performance */
   var layers=[[],[],[]];
   var counts=[120,60,20],sizes=[.8,1.8,3.4],alphas=[.28,.5,.78];
   for(var l=0;l<3;l++)for(var i=0;i<counts[l];i++){
@@ -317,7 +921,6 @@ function initHome(){
     layers[l].push({x:Math.random()*W,y:Math.random()*H,r:sizes[l]*(.4+Math.random()*.9),a:alphas[l]*(.3+Math.random()*.7),sp:.0006+Math.random()*.003,ph:Math.random()*6.28,c:col});
   }
 
-  /* nebulae — reduced count for better performance */
   var nebulae=[
     {x:.18,y:.22,rx:260,ry:170,c:[158,110,210],a:.11,sp:.00022,ph:0},
     {x:.78,y:.40,rx:280,ry:180,c:[80,190,210],a:.08,sp:.00016,ph:2},
@@ -325,23 +928,17 @@ function initHome(){
     {x:.08,y:.78,rx:180,ry:130,c:[210,105,135],a:.06,sp:.00028,ph:1},
   ];
 
-  /* floating golden dust — reduced for performance */
   var dust=[];
   for(var i=0;i<20;i++)dust.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+.6,vx:(Math.random()-.5)*.15,vy:-Math.random()*.2-.05,a:Math.random()*.35+.08,ph:Math.random()*6.28,sp:Math.random()*.008+.003});
 
-  /* moon */
   var moonX=W*.5,moonY=H*.24,moonR=52;
-
-  /* shooting stars */
   var shooters=[];
   function spawn(){
-    var angle=.3+Math.random()*.5;
-    var speed=5+Math.random()*5;
+    var angle=.3+Math.random()*.5;var speed=5+Math.random()*5;
     shooters.push({x:Math.random()*W*.6+W*.1,y:Math.random()*H*.2,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:0,max:40+Math.random()*30,trail:[],hue:Math.random()<.3?[200,220,255]:Math.random()<.5?[255,230,200]:[255,255,255]});
   }
-  var si=setInterval(function(){if(Math.random()<.25)spawn()},3000);
+  setInterval(function(){if(Math.random()<.25)spawn()},3000);
 
-  /* touch parallax */
   var px=0,py=0,tpx=0,tpy=0;
   document.getElementById('s-home').addEventListener('touchmove',function(e){var t=e.touches[0];var r=c.getBoundingClientRect();tpx=(t.clientX-r.left-W/2)/W*16;tpy=(t.clientY-r.top-H/2)/H*16},{passive:true});
   document.getElementById('s-home').addEventListener('touchend',function(){tpx=0;tpy=0},{passive:true});
@@ -352,270 +949,164 @@ function initHome(){
     t++;ctx.clearRect(0,0,W,H);
     px+=(tpx-px)*.035;py+=(tpy-py)*.035;
 
-    /* 1. Horizon glow — warm wash at bottom */
     var hz=ctx.createLinearGradient(0,H*.7,0,H);
-    hz.addColorStop(0,'rgba(20,12,30,0)');
-    hz.addColorStop(.4,'rgba(40,20,45,.06)');
-    hz.addColorStop(.7,'rgba(60,30,50,.12)');
-    hz.addColorStop(1,'rgba(30,15,35,.2)');
+    hz.addColorStop(0,'rgba(20,12,30,0)');hz.addColorStop(.4,'rgba(40,20,45,.06)');hz.addColorStop(.7,'rgba(60,30,50,.12)');hz.addColorStop(1,'rgba(30,15,35,.2)');
     ctx.fillStyle=hz;ctx.fillRect(0,H*.7,W,H*.3);
 
-    /* 2. Nebulae — richer, more visible */
     nebulae.forEach(function(n){
-      var nx=n.x*W+Math.sin(t*n.sp+n.ph)*40+px*.8;
-      var ny=n.y*H+Math.cos(t*n.sp*.7+n.ph)*30+py*.8;
+      var nx=n.x*W+Math.sin(t*n.sp+n.ph)*40+px*.8;var ny=n.y*H+Math.cos(t*n.sp*.7+n.ph)*30+py*.8;
       var br=n.a+Math.sin(t*.0007+n.ph)*.025;
       var g=ctx.createRadialGradient(nx,ny,0,nx,ny,Math.max(n.rx,n.ry));
-      g.addColorStop(0,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+br+')');
-      g.addColorStop(.35,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+(br*.45)+')');
-      g.addColorStop(.7,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+(br*.12)+')');
-      g.addColorStop(1,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+',0)');
+      g.addColorStop(0,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+br+')');g.addColorStop(.35,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+(br*.45)+')');g.addColorStop(.7,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+(br*.12)+')');g.addColorStop(1,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+',0)');
       ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(nx,ny,n.rx,n.ry,Math.sin(t*.0001+n.ph)*.2,0,Math.PI*2);ctx.fill();
     });
 
-    /* 3. Stars with colored bright ones */
     layers.forEach(function(layer,l){
       var pf=(l+1)*1.6;
       layer.forEach(function(s){
-        var sx=s.x+px*pf,sy=s.y+py*pf;
-        var tw=s.a+Math.sin(t*s.sp+s.ph)*.25;
-        tw=Math.max(0,Math.min(1,tw));
-        ctx.beginPath();ctx.arc(sx,sy,s.r,0,Math.PI*2);
-        ctx.fillStyle='rgba('+s.c[0]+','+s.c[1]+','+s.c[2]+','+tw+')';ctx.fill();
+        var sx=s.x+px*pf,sy=s.y+py*pf;var tw=s.a+Math.sin(t*s.sp+s.ph)*.25;tw=Math.max(0,Math.min(1,tw));
+        ctx.beginPath();ctx.arc(sx,sy,s.r,0,Math.PI*2);ctx.fillStyle='rgba('+s.c[0]+','+s.c[1]+','+s.c[2]+','+tw+')';ctx.fill();
         if(l===2&&s.r>2.5){ctx.beginPath();ctx.arc(sx,sy,s.r*3,0,Math.PI*2);ctx.fillStyle='rgba('+s.c[0]+','+s.c[1]+','+s.c[2]+','+(tw*.08)+')';ctx.fill()}
       });
     });
 
-    /* 4. Moon — soft glowing orb, dreamy aesthetic */
     var mx=moonX+px*2.5,my=moonY+py*2.5;
-    
-    /* massive outer glow — ethereal atmosphere */
     var mg1=ctx.createRadialGradient(mx,my,moonR*.3,mx,my,moonR*8);
     mg1.addColorStop(0,'rgba(255,240,210,.12)');mg1.addColorStop(.2,'rgba(240,220,180,.06)');mg1.addColorStop(.5,'rgba(220,200,160,.02)');mg1.addColorStop(1,'rgba(200,180,140,0)');
     ctx.fillStyle=mg1;ctx.beginPath();ctx.arc(mx,my,moonR*8,0,Math.PI*2);ctx.fill();
-    
     var mg2=ctx.createRadialGradient(mx,my,moonR*.2,mx,my,moonR*4);
     mg2.addColorStop(0,'rgba(255,245,220,.18)');mg2.addColorStop(.3,'rgba(235,215,175,.08)');mg2.addColorStop(1,'rgba(215,195,155,0)');
     ctx.fillStyle=mg2;ctx.beginPath();ctx.arc(mx,my,moonR*4,0,Math.PI*2);ctx.fill();
-    
-    /* crepuscular rays — subtle light beams */
+
     ctx.save();ctx.globalAlpha=.03;
-    for(var ri=0;ri<12;ri++){
-      var ra=ri*Math.PI/6+Math.sin(t*.0002+ri)*.1;
-      var rlen=moonR*(5+Math.sin(t*.0008+ri*1.5)*2);
-      ctx.beginPath();ctx.moveTo(mx,my);
-      ctx.lineTo(mx+Math.cos(ra-.03)*rlen,my+Math.sin(ra-.03)*rlen);
-      ctx.lineTo(mx+Math.cos(ra+.03)*rlen,my+Math.sin(ra+.03)*rlen);
-      ctx.closePath();ctx.fillStyle='rgba(255,245,220,1)';ctx.fill();
-    }
+    for(var ri=0;ri<12;ri++){var ra=ri*Math.PI/6+Math.sin(t*.0002+ri)*.1;var rlen=moonR*(5+Math.sin(t*.0008+ri*1.5)*2);ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx+Math.cos(ra-.03)*rlen,my+Math.sin(ra-.03)*rlen);ctx.lineTo(mx+Math.cos(ra+.03)*rlen,my+Math.sin(ra+.03)*rlen);ctx.closePath();ctx.fillStyle='rgba(255,245,220,1)';ctx.fill();}
     ctx.restore();
-    
-    /* moon body — smooth warm sphere with gentle gradient */
+
     var mb=ctx.createRadialGradient(mx-moonR*.25,my-moonR*.2,moonR*.08,mx,my,moonR);
     mb.addColorStop(0,'#fff5e0');mb.addColorStop(.25,'#f5e6c8');mb.addColorStop(.55,'#e8d4a8');mb.addColorStop(.85,'#c4b080');mb.addColorStop(1,'#8a7050');
     ctx.fillStyle=mb;ctx.beginPath();ctx.arc(mx,my,moonR,0,Math.PI*2);ctx.fill();
-    
-    /* subtle surface hints — very faint dark patches (not realistic craters) */
+
     ctx.save();ctx.globalAlpha=.06;
-    [[.1,-.15,.2],[-.15,.1,.18],[.2,.2,.15],[-.1,.25,.12]].forEach(function(p){
-      ctx.beginPath();ctx.arc(mx+p[0]*moonR,my+p[1]*moonR,p[2]*moonR,0,Math.PI*2);
-      ctx.fillStyle='#6a5a40';ctx.fill();
-    });
+    [[.1,-.15,.2],[-.15,.1,.18],[.2,.2,.15],[-.1,.25,.12]].forEach(function(p){ctx.beginPath();ctx.arc(mx+p[0]*moonR,my+p[1]*moonR,p[2]*moonR,0,Math.PI*2);ctx.fillStyle='#6a5a40';ctx.fill();});
     ctx.restore();
-    
-    /* bright rim highlight */
+
     ctx.strokeStyle='rgba(255,250,235,.25)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(mx,my,moonR+1,0,Math.PI*2);ctx.stroke();
     ctx.strokeStyle='rgba(255,250,235,.08)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(mx,my,moonR+3,0,Math.PI*2);ctx.stroke();
 
-    /* 5. Shooting stars with colored heads */
     shooters.forEach(function(s){
-      s.x+=s.vx;s.y+=s.vy;s.life++;s.trail.push({x:s.x,y:s.y});
-      if(s.trail.length>28)s.trail.shift();
+      s.x+=s.vx;s.y+=s.vy;s.life++;s.trail.push({x:s.x,y:s.y});if(s.trail.length>28)s.trail.shift();
       s.trail.forEach(function(tp,ti){var a=ti/s.trail.length;ctx.beginPath();ctx.arc(tp.x,tp.y,1.5*a,0,Math.PI*2);ctx.fillStyle='rgba('+s.hue[0]+','+s.hue[1]+','+s.hue[2]+','+(a*.55)+')';ctx.fill()});
-      var hg=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,9);
-      hg.addColorStop(0,'rgba('+s.hue[0]+','+s.hue[1]+','+s.hue[2]+',.9)');hg.addColorStop(.4,'rgba('+s.hue[0]+','+s.hue[1]+','+s.hue[2]+',.3)');hg.addColorStop(1,'rgba('+s.hue[0]+','+s.hue[1]+','+s.hue[2]+',0)');
+      var hg=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,9);hg.addColorStop(0,'rgba('+s.hue[0]+','+s.hue[1]+','+s.hue[2]+',.9)');hg.addColorStop(.4,'rgba('+s.hue[0]+','+s.hue[1]+','+s.hue[2]+',.3)');hg.addColorStop(1,'rgba('+s.hue[0]+','+s.hue[1]+','+s.hue[2]+',0)');
       ctx.fillStyle=hg;ctx.beginPath();ctx.arc(s.x,s.y,9,0,Math.PI*2);ctx.fill();
     });
     shooters=shooters.filter(function(s){return s.life<s.max});
 
-    /* 6. Floating golden dust */
     dust.forEach(function(d){
       d.x+=d.vx+Math.sin(t*d.sp+d.ph)*.08;d.y+=d.vy;
-      if(d.y<-5){d.y=H+5;d.x=Math.random()*W}
-      if(d.x<-5)d.x=W+5;if(d.x>W+5)d.x=-5;
-      var dx=d.x+px*3,dy=d.y+py*3;
-      var da=d.a+Math.sin(t*d.sp*2+d.ph)*.12;
-      var dg=ctx.createRadialGradient(dx,dy,0,dx,dy,d.r*3);
-      dg.addColorStop(0,'rgba(245,225,180,'+(da*.7)+')');dg.addColorStop(1,'rgba(245,225,180,0)');
+      if(d.y<-5){d.y=H+5;d.x=Math.random()*W}if(d.x<-5)d.x=W+5;if(d.x>W+5)d.x=-5;
+      var dx=d.x+px*3,dy=d.y+py*3;var da=d.a+Math.sin(t*d.sp*2+d.ph)*.12;
+      var dg=ctx.createRadialGradient(dx,dy,0,dx,dy,d.r*3);dg.addColorStop(0,'rgba(245,225,180,'+(da*.7)+')');dg.addColorStop(1,'rgba(245,225,180,0)');
       ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dx,dy,d.r*3,0,Math.PI*2);ctx.fill();
       ctx.beginPath();ctx.arc(dx,dy,d.r*.7,0,Math.PI*2);ctx.fillStyle='rgba(255,240,210,'+da+')';ctx.fill();
     });
 
-    /* 7. Vignette */
     var vig=ctx.createRadialGradient(W/2,H/2,W*.25,W/2,H/2,W*.9);
     vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(.6,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(5,5,16,.55)');
     ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
-
     requestAnimationFrame(draw);
   }
   draw();
 }
 initHome();
 
-/* === STAR CANVAS (Nightscape) — Enhanced === */
-var starsInited=false;
-var selectedDream=null;
+/* === STAR CANVAS (NIGHTSCAPE) === */
+var starsInited=false;var selectedDream=null;
 function initStars(){
   if(starsInited)return;starsInited=true;
   var c=document.getElementById('starC'),ctx=c.getContext('2d');
   var dpr=Math.min(window.devicePixelRatio||1,2),W=c.offsetWidth,H=c.offsetHeight;
   c.width=W*dpr;c.height=H*dpr;ctx.scale(dpr,dpr);
   var ec={calm:'#6db8c4',fear:'#c47080',joy:'#c4b06d',long:'#9472c4',conf:'#7090c4'};
-  var dreams=[
-    {x:.12,y:.10,e:'calm',r:5,title:'平静的花园',desc:'阳光很好，我在一个花园里'},
-    {x:.68,y:.14,e:'long',r:6,title:'远方的呼唤',desc:'梦到一个人，好像在对我笑……'},
-    {x:.32,y:.24,e:'fear',r:5,title:'涨潮',desc:'在一个很深的地方，水一直涨上来'},
-    {x:.55,y:.34,e:'conf',r:4.5,title:'迷路',desc:'一直走一直走，找不到出口'},
-    {x:.18,y:.44,e:'fear',r:7,title:'深海',desc:'被水包围，但不知道在哪里'},
-    {x:.76,y:.48,e:'long',r:5.5,title:'看不见的人',desc:'有人叫我的名字，但我看不见'},
-    {x:.42,y:.58,e:'conf',r:5,title:'迷雾',desc:'周围都是雾，看不清方向'},
-    {x:.60,y:.18,e:'long',r:4,title:'旧时光',desc:'回到小时候的地方'},
-    {x:.86,y:.30,e:'calm',r:3.5,title:'湖边',desc:'坐在湖边，很安静'},
-    {x:.26,y:.68,e:'fear',r:6,title:'坠落',desc:'从很高的地方往下掉'},
-    {x:.50,y:.78,e:'long',r:8,title:'等待',desc:'在车站等一辆永远不会来的车'},
-    {x:.15,y:.85,e:'conf',r:4.5,title:'迷宫',desc:'在一个复杂的建筑里转圈'}
-  ];
-  var conns=[[0,1],[1,7],[2,3],[3,8],[4,9],[5,10],[6,3],[9,11],[7,5],[2,4]];
+  var emoToKey={'平静':'calm','不安':'fear','喜悦':'joy','想念':'long','困惑':'conf','未知':'calm'};
+
+  // Build dream data from localStorage
+  var stored=getDreams();
+  var dreams=[];
+  var positions=[[.12,.10],[.68,.14],[.32,.24],[.55,.34],[.18,.44],[.76,.48],[.42,.58],[.60,.18],[.86,.30],[.26,.68],[.50,.78],[.15,.85]];
+  stored.forEach(function(d,i){
+    if(i>=positions.length)return;
+    var k=emoToKey[d.emotion]||'calm';
+    dreams.push({x:positions[i][0],y:positions[i][1],e:k,r:4+Math.random()*3,title:d.emotion,desc:d.text.slice(0,30)});
+  });
+  // Add demo stars if empty
+  if(!dreams.length){
+    var demoDreams=[
+      {x:.12,y:.10,e:'calm',r:5,title:'平静',desc:'一个安静的梦'},
+      {x:.68,y:.14,e:'long',r:6,title:'想念',desc:'梦到了一个远方的人'},
+      {x:.32,y:.24,e:'fear',r:5,title:'不安',desc:'水一直涨上来'},
+      {x:.55,y:.34,e:'conf',r:4.5,title:'困惑',desc:'找不到出口'},
+      {x:.76,y:.48,e:'long',r:5.5,title:'想念',desc:'有人叫我名字'},
+      {x:.42,y:.58,e:'calm',r:4,title:'平静',desc:'阳光很好的下午'},
+    ];
+    dreams=demoDreams;
+  }
+
+  var conns=[];
+  for(var i=0;i<dreams.length-1;i++)conns.push([i,i+1]);
+  if(dreams.length>3)conns.push([0,Math.floor(dreams.length/2)]);
+
   var bg=[];for(var i=0;i<100;i++)bg.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,a:Math.random()*.35+.1,sp:Math.random()*.002+.0005,ph:Math.random()*6.28});
   var pts=dreams.map(function(d){return{x:d.x*W,y:d.y*H}});
-  /* nebula wisps for nightscape */
   var nsNeb=[{x:.3,y:.2,c:[148,114,196],rx:120,ry:80,a:.04},{x:.7,y:.5,c:[109,184,196],rx:100,ry:70,a:.03},{x:.2,y:.7,c:[196,112,128],rx:90,ry:60,a:.025}];
-  
-  /* click handler for dream stars */
+
   c.addEventListener('click',function(e){
-    var rect=c.getBoundingClientRect();
-    var mx=(e.clientX-rect.left)*(W/rect.width);
-    var my=(e.clientY-rect.top)*(H/rect.height);
-    /* check if clicked on a star */
-    for(var i=0;i<dreams.length;i++){
-      var dx=mx-pts[i].x,dy=my-pts[i].y;
-      if(Math.sqrt(dx*dx+dy*dy)<dreams[i].r*3){
-        selectedDream=i;
-        showDreamDetail(dreams[i]);
-        return;
-      }
-    }
+    var rect=c.getBoundingClientRect();var mx=(e.clientX-rect.left)*(W/rect.width);var my=(e.clientY-rect.top)*(H/rect.height);
+    for(var i=0;i<dreams.length;i++){var dx=mx-pts[i].x,dy=my-pts[i].y;if(Math.sqrt(dx*dx+dy*dy)<dreams[i].r*3){selectedDream=i;showDreamDetail(dreams[i]);return}}
     selectedDream=null;
   });
-  
+
   function showDreamDetail(dream){
-    /* create or update detail popup */
-    var existing=document.getElementById('dreamPopup');
-    if(existing)existing.remove();
-    
-    var popup=document.createElement('div');
-    popup.id='dreamPopup';
+    var existing=document.getElementById('dreamPopup');if(existing)existing.remove();
+    var popup=document.createElement('div');popup.id='dreamPopup';
     popup.style.cssText='position:absolute;left:20px;right:20px;bottom:100px;padding:16px 20px;border-radius:14px;background:rgba(5,5,16,.92);backdrop-filter:blur(20px);border:.5px solid rgba(202,169,122,.15);box-shadow:0 0 30px rgba(0,0,0,.5);z-index:100;animation:letterIn .4s ease-out forwards;';
-    popup.innerHTML='<div style="font-family:var(--serif);font-size:14px;font-weight:400;color:var(--accent);margin-bottom:8px;">'+dream.title+'</div><div style="font-size:13px;font-weight:300;color:var(--t2);line-height:1.8;">'+dream.desc+'</div><button onclick="this.parentElement.remove()" style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-    
+    popup.innerHTML='<div style="font-family:var(--serif);font-size:14px;font-weight:400;color:var(--accent);margin-bottom:8px;">'+dream.title+'</div><div style="font-size:13px;font-weight:300;color:var(--t2);line-height:1.8;">'+dream.desc+'</div><button onclick="this.parentElement.remove()" style="position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
     document.getElementById('s-ns').appendChild(popup);
   }
-  
+
   var t=0;
   function draw(){t++;ctx.clearRect(0,0,W,H);
-    /* nebula wisps */
-    nsNeb.forEach(function(n){
-      var nx=n.x*W+Math.sin(t*.0002)*15,ny=n.y*H+Math.cos(t*.00015)*10;
-      var g=ctx.createRadialGradient(nx,ny,0,nx,ny,Math.max(n.rx,n.ry));
-      var br=n.a+Math.sin(t*.001)*.008;
-      g.addColorStop(0,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+br+')');
-      g.addColorStop(.5,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+(br*.3)+')');
-      g.addColorStop(1,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+',0)');
-      ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(nx,ny,n.rx,n.ry,0,0,Math.PI*2);ctx.fill();
-    });
-    /* background stars */
+    nsNeb.forEach(function(n){var nx=n.x*W+Math.sin(t*.0002)*15,ny=n.y*H+Math.cos(t*.00015)*10;var g=ctx.createRadialGradient(nx,ny,0,nx,ny,Math.max(n.rx,n.ry));var br=n.a+Math.sin(t*.001)*.008;g.addColorStop(0,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+br+')');g.addColorStop(.5,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+(br*.3)+')');g.addColorStop(1,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+',0)');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(nx,ny,n.rx,n.ry,0,0,Math.PI*2);ctx.fill()});
     bg.forEach(function(s){var a=s.a+Math.sin(t*s.sp+s.ph)*.18;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+Math.max(0,a)+')';ctx.fill()});
-    /* constellation lines — animated pulse */
-    ctx.lineWidth=.6;conns.forEach(function(p){
-      var ax=pts[p[0]].x,ay=pts[p[0]].y,bx=pts[p[1]].x,by=pts[p[1]].y;
-      var la=.08+Math.sin(t*.003+p[0])*.04;
-      var g=ctx.createLinearGradient(ax,ay,bx,by);
-      g.addColorStop(0,'rgba(202,169,122,'+(la*.3)+')');g.addColorStop(.5,'rgba(202,169,122,'+la+')');g.addColorStop(1,'rgba(202,169,122,'+(la*.3)+')');
-      ctx.strokeStyle=g;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
-    });
-    /* dream stars with bigger glow + labels */
-    dreams.forEach(function(d,i){
-      var px=pts[i].x,py=pts[i].y,col=ec[d.e];
-      /* highlight selected star */
-      if(selectedDream===i){
-        ctx.beginPath();ctx.arc(px,py,d.r*6,0,Math.PI*2);
-        ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1.5;ctx.stroke();
-      }
-      /* outer glow */
-      var g=ctx.createRadialGradient(px,py,0,px,py,d.r*5);
-      g.addColorStop(0,col+'40');g.addColorStop(.4,col+'18');g.addColorStop(1,col+'00');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,d.r*5,0,Math.PI*2);ctx.fill();
-      /* core */
-      var br=1+Math.sin(t*.008+i)*.1;
-      ctx.beginPath();ctx.arc(px,py,d.r*br,0,Math.PI*2);ctx.fillStyle=col;ctx.globalAlpha=.9;ctx.fill();ctx.globalAlpha=1;
-      /* inner bright spot */
-      ctx.beginPath();ctx.arc(px-d.r*.2,py-d.r*.2,d.r*.35,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.35)';ctx.fill();
-    });
+    ctx.lineWidth=.6;conns.forEach(function(p){if(p[0]>=pts.length||p[1]>=pts.length)return;var ax=pts[p[0]].x,ay=pts[p[0]].y,bx=pts[p[1]].x,by=pts[p[1]].y;var la=.08+Math.sin(t*.003+p[0])*.04;var g=ctx.createLinearGradient(ax,ay,bx,by);g.addColorStop(0,'rgba(202,169,122,'+(la*.3)+')');g.addColorStop(.5,'rgba(202,169,122,'+la+')');g.addColorStop(1,'rgba(202,169,122,'+(la*.3)+')');ctx.strokeStyle=g;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke()});
+    dreams.forEach(function(d,i){var ppx=pts[i].x,ppy=pts[i].y,col=ec[d.e];if(selectedDream===i){ctx.beginPath();ctx.arc(ppx,ppy,d.r*6,0,Math.PI*2);ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1.5;ctx.stroke()}var g=ctx.createRadialGradient(ppx,ppy,0,ppx,ppy,d.r*5);g.addColorStop(0,col+'40');g.addColorStop(.4,col+'18');g.addColorStop(1,col+'00');ctx.fillStyle=g;ctx.beginPath();ctx.arc(ppx,ppy,d.r*5,0,Math.PI*2);ctx.fill();var br=1+Math.sin(t*.008+i)*.1;ctx.beginPath();ctx.arc(ppx,ppy,d.r*br,0,Math.PI*2);ctx.fillStyle=col;ctx.globalAlpha=.9;ctx.fill();ctx.globalAlpha=1;ctx.beginPath();ctx.arc(ppx-d.r*.2,ppy-d.r*.2,d.r*.35,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.35)';ctx.fill()});
     requestAnimationFrame(draw);
   }
   draw();
 }
 
-/* === SUB-PAGE AMBIENT CANVASES === */
+/* === AMBIENT CANVAS === */
 function initAmbient(id){
   var c=document.getElementById(id);if(!c)return;
-  var ctx=c.getContext('2d');
-  var dpr=Math.min(window.devicePixelRatio||1,2),W=c.offsetWidth,H=c.offsetHeight;
-  if(W===0||H===0)return;
-  c.width=W*dpr;c.height=H*dpr;ctx.scale(dpr,dpr);
-  var stars=[];
-  for(var i=0;i<60;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.9+.3,a:Math.random()*.2+.05,sp:Math.random()*.002+.0005,ph:Math.random()*6.28});
+  var ctx=c.getContext('2d');var dpr=Math.min(window.devicePixelRatio||1,2),W=c.offsetWidth,H=c.offsetHeight;
+  if(W===0||H===0)return;c.width=W*dpr;c.height=H*dpr;ctx.scale(dpr,dpr);
+  var stars=[];for(var i=0;i<60;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.9+.3,a:Math.random()*.2+.05,sp:Math.random()*.002+.0005,ph:Math.random()*6.28});
   var neb=[{x:.3,y:.4,c:[148,114,196],rx:180,ry:120,a:.03},{x:.7,y:.6,c:[109,184,196],rx:160,ry:100,a:.02}];
   var t=0;
-  function draw(){
-    t++;ctx.clearRect(0,0,W,H);
-    neb.forEach(function(n){
-      var nx=n.x*W+Math.sin(t*.00015+n.a*10)*20,ny=n.y*H+Math.cos(t*.00012)*15;
-      var g=ctx.createRadialGradient(nx,ny,0,nx,ny,Math.max(n.rx,n.ry));
-      g.addColorStop(0,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+n.a+')');
-      g.addColorStop(1,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+',0)');
-      ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(nx,ny,n.rx,n.ry,0,0,Math.PI*2);ctx.fill();
-    });
-    stars.forEach(function(s){
-      var a=s.a+Math.sin(t*s.sp+s.ph)*.12;
-      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,255,255,'+Math.max(0,a)+')';ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
+  function draw(){t++;ctx.clearRect(0,0,W,H);neb.forEach(function(n){var nx=n.x*W+Math.sin(t*.00015+n.a*10)*20,ny=n.y*H+Math.cos(t*.00012)*15;var g=ctx.createRadialGradient(nx,ny,0,nx,ny,Math.max(n.rx,n.ry));g.addColorStop(0,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+','+n.a+')');g.addColorStop(1,'rgba('+n.c[0]+','+n.c[1]+','+n.c[2]+',0)');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(nx,ny,n.rx,n.ry,0,0,Math.PI*2);ctx.fill()});stars.forEach(function(s){var a=s.a+Math.sin(t*s.sp+s.ph)*.12;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+Math.max(0,a)+')';ctx.fill()});requestAnimationFrame(draw)}
   draw();
 }
 
-/* === MIRROR — Single emotional reflection letter === */
-var mirrorLetter={
-  t:'<p>你写下来的这些，<span class="hl">不是为了让谁给你答案</span>。</p><p>更像是一种——把心里某个地方轻轻摊开的动作。好像有些东西一直在那里，但你很少停下来好好看它一眼。</p><p>梦不会告诉你"应该怎么做"，但它会让你<span class="hl">感觉到一些白天被忽略的东西</span>。</p><p>也许是不安，也许是想念，也许只是某种说不清的情绪在浮动。<span class="hl">这已经够了</span>。</p>',
-  c:'今天如果那个感觉又冒出来，不用急着分析它。试着对自己说：哦，原来我身体里还有这个东西在。然后继续你手头的事就好。'
-};
-
-function renderM(){
-  var el=document.getElementById('mirTxt'),ca=document.getElementById('mirCare');
-  el.innerHTML=mirrorLetter.t;
-  ca.textContent=mirrorLetter.c;
-  /* animate paragraphs in */
-  el.querySelectorAll('p').forEach(function(p,j){
-    p.style.animation='none';p.offsetHeight;
-    p.style.animation='letterIn .8s ease-out '+(j*.2)+'s forwards';
-  });
-}
-renderM();
-
+/* === INIT === */
 document.getElementById('dreamIn').addEventListener('focus',function(){if(!this.value)this.placeholder='梦快忘了……好像在一个很深的水边……\n有人在远处叫我，但我走不过去……\n感觉不是害怕，更像是想哭但是哭不出来。'});
-document.addEventListener('touchstart',function(){},{ passive:true });
+document.addEventListener('touchstart',function(){},{passive:true});
+
+// Refresh home data
+refreshHome();
+renderEmotionChips();
+
+// Onboarding
+if(!localStorage.getItem(ONBOARD_KEY)){setTimeout(showOnboard,800)}
+
 </script>
 </body>
 </html>
