@@ -1255,18 +1255,38 @@ function regenerateResponse(bubble){
   bubble.innerHTML='<span style="opacity:.5">正在重新生成……</span>';
   
   setTimeout(function(){
-    callQwenAPI(lastDreamText,null,lastDreamEmotion,function(resp){
-      if(resp){
-        bubble.innerHTML=resp.replace(/\n/g,'<br>');
-        var newBtn=document.createElement('button');
-        newBtn.className='regen-btn';
-        newBtn.textContent='↻ 换一种说法';
-        newBtn.onclick=function(){regenerateResponse(bubble)};
-        bubble.appendChild(newBtn);
-      }else{
-        bubble.innerHTML=text+'<br><br><span style="color:var(--t3);font-size:12px">（重新生成失败，请重试）</span>';
-      }
-    });
+    if(qwenAvailable&&QWEN_API_KEY){
+      callQwenAPI(lastDreamText,null,lastDreamEmotion,function(resp){
+        if(resp){
+          bubble.innerHTML=resp.replace(/\n/g,'<br>');
+          var newBtn=document.createElement('button');
+          newBtn.className='regen-btn';
+          newBtn.textContent='↻ 换一种说法';
+          newBtn.onclick=function(){regenerateResponse(bubble)};
+          bubble.appendChild(newBtn);
+        }else{
+          /* Fallback to local template */
+          var pool=aiResponses[lastDreamEmotion]||aiResponses['未知'];
+          var idx=Math.floor(Math.random()*pool.length);
+          bubble.innerHTML=pool[idx];
+          var newBtn=document.createElement('button');
+          newBtn.className='regen-btn';
+          newBtn.textContent='↻ 换一种说法';
+          newBtn.onclick=function(){regenerateResponse(bubble)};
+          bubble.appendChild(newBtn);
+        }
+      });
+    }else{
+      /* Use local template directly */
+      var pool=aiResponses[lastDreamEmotion]||aiResponses['未知'];
+      var idx=Math.floor(Math.random()*pool.length);
+      bubble.innerHTML=pool[idx];
+      var newBtn=document.createElement('button');
+      newBtn.className='regen-btn';
+      newBtn.textContent='↻ 换一种说法';
+      newBtn.onclick=function(){regenerateResponse(bubble)};
+      bubble.appendChild(newBtn);
+    }
   },500);
 }
 
@@ -1571,7 +1591,118 @@ function skipOB(){
 }
 
 /* === SETTINGS === */
-function toggleSetting(el,key){el.classList.toggle('on')}
+var notifTimer=null;
+var notifEnabled=false;
+
+function toggleSetting(el,key){
+  el.classList.toggle('on');
+  if(key==='notif'){
+    notifEnabled=el.classList.contains('on');
+    if(notifEnabled){
+      requestNotificationPermission();
+    }else{
+      cancelNotification();
+    }
+  }
+}
+
+function requestNotificationPermission(){
+  if(!('Notification' in window)){
+    alert('你的浏览器不支持通知功能');
+    document.getElementById('togNotif').classList.remove('on');
+    return;
+  }
+  
+  Notification.requestPermission().then(function(permission){
+    if(permission==='granted'){
+      scheduleMorningReminder();
+      console.log('✅ 梦境提醒已开启，每天早上 7:00 会提醒你记录梦境');
+    }else{
+      alert('需要允许通知权限才能开启梦境提醒');
+      document.getElementById('togNotif').classList.remove('on');
+      notifEnabled=false;
+    }
+  }).catch(function(){
+    alert('无法请求通知权限');
+    document.getElementById('togNotif').classList.remove('on');
+    notifEnabled=false;
+  });
+}
+
+function scheduleMorningReminder(){
+  if(!notifEnabled)return;
+  
+  /* Calculate time until next 7:00 AM */
+  var now=new Date();
+  var target=new Date();
+  target.setHours(7,0,0,0);
+  
+  /* If it's already past 7:00 AM today, schedule for tomorrow */
+  if(now>=target){
+    target.setDate(target.getDate()+1);
+  }
+  
+  var delay=target.getTime()-now.getTime();
+  console.log('⏰ 下次提醒将在 '+target.toLocaleString('zh-CN')+' 触发（'+Math.round(delay/3600000)+'小时后）');
+  
+  /* Clear existing timer */
+  if(notifTimer)clearTimeout(notifTimer);
+  
+  /* Schedule notification */
+  notifTimer=setTimeout(function(){
+    if(!notifEnabled)return;
+    
+    showNotification();
+    
+    /* Reschedule for next day */
+    setTimeout(function(){
+      if(notifEnabled)scheduleMorningReminder();
+    },2000);
+  },delay);
+}
+
+function showNotification(){
+  if(Notification.permission!=='granted')return;
+  
+  var messages=[
+    '🌙 昨晚的梦还在吗？趁它没走远，先留住它',
+    '✨ 天亮了，梦里的画面还清晰吗？记录下来吧',
+    '🌅 新的一天开始了，昨晚的梦值得被记住',
+    '💫 梦是夜晚送给你的礼物，别让它溜走',
+    '🌠 醒来第一件事：抓住那些飘散的梦境'
+  ];
+  
+  var msg=messages[Math.floor(Math.random()*messages.length)];
+  
+  try{
+    var n=new Notification('夜信 Night Letter',{
+      body:msg,
+      icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d4b896"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+      badge:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d4b896"><circle cx="12" cy="12" r="8"/></svg>',
+      tag:'dream-reminder',
+      requireInteraction:false
+    });
+    
+    n.onclick=function(){
+      window.focus();
+      go('write');
+      n.close();
+    };
+    
+    /* Auto close after 10 seconds */
+    setTimeout(function(){n.close()},10000);
+  }catch(e){
+    console.warn('Notification failed:',e);
+  }
+}
+
+function cancelNotification(){
+  if(notifTimer){
+    clearTimeout(notifTimer);
+    notifTimer=null;
+  }
+  console.log('❌ 梦境提醒已关闭');
+}
 
 /* === HOME CANVAS — DREAMY AURORA GRADIENT === */
 var homeInited=false;
