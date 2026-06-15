@@ -632,9 +632,12 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="card-preview">
     <canvas class="card-canvas" id="cardCanvas"></canvas>
   </div>
-  <div class="card-actions">
-    <button class="card-btn card-btn-save" onclick="saveCard()">💾 保存到相册</button>
-    <button class="card-btn card-btn-close" onclick="closeCard()">关闭</button>
+  <div class="card-actions" style="flex-direction:column;gap:10px">
+    <div style="display:flex;gap:12px">
+      <button class="card-btn card-btn-save" onclick="saveCard()">💾 保存到相册</button>
+      <button class="card-btn card-btn-close" onclick="closeCard()">关闭</button>
+    </div>
+    <button class="card-btn card-btn-save" id="aiCardBtn" onclick="generateAICard()" style="border-color:rgba(148,114,196,.4);color:#a882d4;background:linear-gradient(135deg,rgba(148,114,196,.08),rgba(148,114,196,.02))">✨ AI 生成创意卡片</button>
   </div>
 </div>
 
@@ -1747,6 +1750,177 @@ function saveCard(){
 function closeCard(){
   document.getElementById('cardOverlay').classList.remove('on');
   currentExportDream=null;
+}
+
+/* === AI GENERATED DREAM CARD === */
+var aiCardGenerated=false;
+
+function generateAICard(){
+  if(!currentExportDream){
+    alert('请先选择一个梦境');
+    return;
+  }
+  
+  if(!qwenAvailable||!QWEN_API_KEY){
+    alert('AI 功能需要开启 Qwen API。请前往设置页面配置。');
+    return;
+  }
+  
+  var btn=document.getElementById('aiCardBtn');
+  btn.textContent='⏳ 正在生成……';
+  btn.style.opacity='.6';
+  btn.disabled=true;
+  
+  var dream=currentExportDream;
+  var prompt='请根据以下梦境内容，生成一个适合分享的精美卡片文案。\n\n梦境内容：'+dream.text+'\n情绪基调：'+dream.emotion+'\n记录时间：'+new Date(dream.ts).toLocaleString('zh-CN')+'\n\n要求：\n1. 生成一个简短的标题（10字以内），捕捉梦境的核心意象或情绪\n2. 生成一句诗意的副标题或感悟（20-30字）\n3. 建议卡片的视觉风格（从以下选择：梦幻极光、深邃星空、温暖日落、静谧湖泊、神秘森林）\n4. 输出格式为 JSON：{"title":"...","subtitle":"...","style":"..."}\n\n注意：只输出 JSON，不要其他文字。';
+  
+  callQwenAPI(dream.text,prompt,dream.emotion,function(resp){
+    btn.textContent='✨ AI 生成创意卡片';
+    btn.style.opacity='1';
+    btn.disabled=false;
+    
+    if(resp){
+      try{
+        /* Try to parse JSON from response */
+        var jsonMatch=resp.match(/\{[\s\S]*\}/);
+        if(jsonMatch){
+          var data=JSON.parse(jsonMatch[0]);
+          
+          /* Redraw card with AI-generated content */
+          var canvas=document.getElementById('cardCanvas');
+          var ctx=canvas.getContext('2d');
+          var width=canvas.width,height=canvas.height;
+          
+          drawAICardBackground(ctx,width,height,data.style,dream.emotion);
+          drawAICardContent(ctx,width,height,data,dream);
+          
+          aiCardGenerated=true;
+          alert('✅ AI 卡片已生成！\n\n标题：'+data.title+'\n风格：'+data.style);
+        }else{
+          alert('AI 返回格式异常，请重试');
+        }
+      }catch(e){
+        console.error('Parse AI response failed:',e);
+        alert('解析 AI 回复失败，请重试');
+      }
+    }else{
+      alert('AI 生成失败，请检查网络连接后重试');
+    }
+  });
+}
+
+function drawAICardBackground(ctx,w,h,style,emotion){
+  /* Different background styles based on AI suggestion */
+  var styleConfigs={
+    '梦幻极光':{colors:[[15,15,46],[26,16,64],[13,21,53]],blobs:[[160,120,255],[255,140,200],[100,200,255]]},
+    '深邃星空':{colors:[[8,8,24],[12,12,36],[6,6,18]],blobs:[[100,150,255],[180,120,255],[80,120,200]]},
+    '温暖日落':{colors:[[40,20,30],[60,30,20],[30,15,25]],blobs:[[255,140,100],[255,180,120],[255,120,80]]},
+    '静谧湖泊':{colors:[[10,25,35],[15,35,45],[8,20,30]],blobs:[[100,200,220],[80,180,200],[120,220,240]]},
+    '神秘森林':{colors:[[15,25,15],[20,35,20],[12,20,12]],blobs:[[100,200,120],[80,180,100],[120,220,140]]}
+  };
+  
+  var config=styleConfigs[style]||styleConfigs['梦幻极光'];
+  
+  /* Base gradient */
+  var bg=ctx.createLinearGradient(0,0,w,h);
+  config.colors.forEach(function(c,i){
+    bg.addColorStop(i/(config.colors.length-1),'rgb('+c[0]+','+c[1]+','+c[2]+')');
+  });
+  ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+  
+  /* Aurora blobs */
+  config.blobs.forEach(function(b,i){
+    var x=w*(0.3+i*0.2)+Math.sin(i*2)*50;
+    var y=h*(0.4+i*0.15)+Math.cos(i*1.5)*40;
+    var r=250+i*30;
+    var g=ctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,'rgba('+b[0]+','+b[1]+','+b[2]+',.15)');
+    g.addColorStop(.5,'rgba('+b[0]+','+b[1]+','+b[2]+',.06)');
+    g.addColorStop(1,'rgba('+b[0]+','+b[1]+','+b[2]+',0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  });
+}
+
+function drawAICardContent(ctx,w,h,data,dream){
+  var padding=60;
+  
+  /* Title - large and centered at top */
+  ctx.fillStyle='rgba(255,255,255,.95)';
+  ctx.font='bold 42px "Noto Serif SC",serif';
+  ctx.textAlign='center';
+  ctx.fillText(data.title,w/2,h*.25);
+  
+  /* Subtitle - italic below title */
+  ctx.fillStyle='rgba(255,255,255,.6)';
+  ctx.font='italic 26px "Noto Serif SC",serif';
+  ctx.fillText(data.subtitle,w/2,h*.33);
+  
+  /* Dream text - wrapped in middle */
+  ctx.fillStyle='rgba(255,255,255,.9)';
+  ctx.font='26px "Noto Serif SC",serif';
+  ctx.textAlign='left';
+  
+  var text=dream.text;
+  var maxWidth=w-padding*2;
+  var lineHeight=44;
+  var lines=[];
+  var currentLine='';
+  
+  for(var i=0;i<text.length;i++){
+    var testLine=currentLine+text[i];
+    var metrics=ctx.measureText(testLine);
+    if(metrics.width>maxWidth&&i>0){
+      lines.push(currentLine);
+      currentLine=text[i];
+    }else{
+      currentLine=testLine;
+    }
+  }
+  lines.push(currentLine);
+  
+  /* Limit to 10 lines */
+  if(lines.length>10){
+    lines=lines.slice(0,9);
+    lines[8]+='……';
+  }
+  
+  var startY=h*.42;
+  lines.forEach(function(line,idx){
+    ctx.fillText(line,padding,startY+idx*lineHeight);
+  });
+  
+  /* Bottom decoration */
+  var bottomY=h-padding-60;
+  ctx.strokeStyle='rgba(202,169,122,.25)';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(w/2-80,bottomY);
+  ctx.lineTo(w/2+80,bottomY);
+  ctx.stroke();
+  
+  ctx.fillStyle='rgba(255,255,255,.3)';
+  ctx.font='22px "Noto Serif SC",serif';
+  ctx.textAlign='center';
+  ctx.fillText('夜信 Night Letter',w/2,bottomY+35);
+  
+  /* Emotion badge at bottom right */
+  var emotionColors={
+    '不安':'#c47080','想念':'#9472c4','困惑':'#7090c4',
+    '平静':'#6db8c4','喜悦':'#c4b06d','未知':'#caa97a'
+  };
+  var emoColor=emotionColors[dream.emotion]||'#caa97a';
+  
+  ctx.fillStyle=emoColor;
+  ctx.globalAlpha=.2;
+  ctx.beginPath();
+  ctx.roundRect(w-padding-120,bottomY-10,100,36,18);
+  ctx.fill();
+  ctx.globalAlpha=1;
+  
+  ctx.fillStyle=emoColor;
+  ctx.font='bold 20px sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(dream.emotion,w-padding-70,bottomY+13);
 }
 
 /* === WEEKLY REPORT === */
