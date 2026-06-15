@@ -387,6 +387,29 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .recv-txt{background:linear-gradient(90deg,var(--t2),var(--accent),var(--t2));
   background-size:200% 100%;animation:hfade 1.2s ease-out forwards,shimmer 3s ease-in-out 1.5s infinite}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* LOGIN / AUTH */
+.login-overlay{position:fixed;inset:0;z-index:700;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;opacity:1;visibility:visible;transition:opacity .5s var(--ease),visibility 0s 0s}
+.login-overlay.off{opacity:0;visibility:hidden;transition:opacity .5s var(--ease),visibility 0s .5s;pointer-events:none}
+.login-logo{width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(202,169,122,.15),rgba(202,169,122,.04) 70%);border:1px solid rgba(202,169,122,.2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:0 0 40px rgba(202,169,122,.06)}
+.login-logo svg{width:32px;height:32px;stroke:var(--accent);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.login-title{font-family:var(--serif);font-size:22px;font-weight:300;color:var(--t1);letter-spacing:2px;margin-bottom:8px;text-align:center}
+.login-sub{font-size:13px;font-weight:200;color:var(--t3);letter-spacing:1px;margin-bottom:36px;text-align:center;line-height:1.8}
+.login-field{width:100%;max-width:300px;padding:14px 18px;border-radius:14px;background:rgba(255,255,255,.04);border:.5px solid var(--line2);font-size:14px;font-weight:300;color:var(--t1);caret-color:var(--accent);margin-bottom:12px;transition:border-color .2s}
+.login-field:focus{border-color:rgba(202,169,122,.3);outline:none}
+.login-field::placeholder{color:var(--t4)}
+.login-btn{width:100%;max-width:300px;padding:14px;border-radius:14px;font-family:var(--serif);font-size:14px;letter-spacing:2px;transition:all .2s var(--ease);position:relative;overflow:hidden}
+.login-btn:active{transform:scale(.97)}
+.login-btn-primary{border:.8px solid var(--accent);color:var(--accent);background:linear-gradient(135deg,rgba(202,169,122,.06),rgba(202,169,122,.02))}
+.login-btn-primary:active{background:rgba(202,169,122,.1)}
+.login-btn-secondary{border:.5px solid var(--line2);color:var(--t2);background:rgba(255,255,255,.02);margin-top:8px}
+.login-btn-secondary:active{background:rgba(255,255,255,.05)}
+.login-divider{display:flex;align-items:center;gap:12px;width:100%;max-width:300px;margin:20px 0;color:var(--t4);font-size:11px;letter-spacing:1px}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:.5px;background:var(--line2)}
+.login-toggle{margin-top:12px;font-size:12px;color:var(--t3);letter-spacing:.5px;cursor:pointer;padding:6px 12px;transition:color .2s}
+.login-toggle:hover{color:var(--accent)}
+.login-error{font-size:12px;color:#c47080;text-align:center;margin-top:8px;min-height:18px;letter-spacing:.3px}
+.login-skip{position:absolute;top:20px;right:20px;font-size:12px;color:var(--t3);letter-spacing:1px;padding:8px 14px}
 </style>
 </head>
 <body>
@@ -519,6 +542,10 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
   <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">设置</div></div><div style="width:44px"></div></div>
   <div class="set-body">
+    <div class="set-section" id="accountSection">
+      <div class="set-section-title">账户</div>
+      <div id="accountInfo"></div>
+    </div>
     <div class="set-section">
       <div class="set-section-title">偏好</div>
       <div class="set-row"><div><div class="set-label">梦境提醒</div><div class="set-sub">每天清晨提醒你记录梦境</div></div><div class="set-toggle on" id="togNotif" onclick="toggleSetting(this,'notif')"></div></div>
@@ -526,7 +553,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
     </div>
     <div class="set-section">
       <div class="set-section-title">隐私</div>
-      <div class="set-row"><div><div class="set-label">数据说明</div><div class="set-sub">你的梦境数据仅存储在本设备</div></div></div>
+      <div class="set-row"><div><div class="set-label">数据说明</div><div class="set-sub">你的梦境数据加密存储在云端和本设备</div></div></div>
       <div class="set-row"><div><div class="set-label">清除所有数据</div><div class="set-sub">删除所有梦境记录（不可恢复）</div></div><button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(196,112,128,.3);font-size:12px;color:#c47080;background:rgba(196,112,128,.06);letter-spacing:.5px" onclick="clearAllData()">清除</button></div>
     </div>
     <div class="set-section">
@@ -554,6 +581,27 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="ob-body" id="obBody"></div>
 </div>
 
+<!-- LOGIN -->
+<div class="login-overlay" id="loginOverlay">
+  <button class="login-skip" onclick="loginAnonymously()">先看看 &rarr;</button>
+  <div class="login-logo"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+  <div class="login-title">夜信</div>
+  <div class="login-sub">记录梦，感受自己</div>
+  <input class="login-field" id="loginEmail" type="email" placeholder="邮箱" autocomplete="email">
+  <input class="login-field" id="loginPass" type="password" placeholder="密码（至少 6 位）" autocomplete="current-password">
+  <div class="login-error" id="loginError"></div>
+  <button class="login-btn login-btn-primary" id="loginBtn" onclick="doLogin()">登 录</button>
+  <button class="login-btn login-btn-secondary" id="regBtn" onclick="doRegister()" style="display:none">注 册</button>
+  <div class="login-toggle" id="loginToggle" onclick="toggleLoginMode()">还没有账号？注册</div>
+  <div class="login-divider">或</div>
+  <button class="login-btn login-btn-secondary" onclick="loginAnonymously()">匿名体验</button>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
 <script>
 /* ============================================
    夜信 Night Letter — MVP
@@ -566,8 +614,13 @@ var ONBOARD_KEY='nightletter_onboard';
 function getDreams(){try{return JSON.parse(localStorage.getItem(STORE_KEY))||[]}catch(e){return[]}}
 function saveDream(text,emotion){
   var ds=getDreams();
-  ds.unshift({id:Date.now(),text:text,emotion:emotion||'未知',ts:new Date().toISOString(),aiTurns:0});
+  var dream={id:Date.now(),text:text,emotion:emotion||'未知',ts:new Date().toISOString(),aiTurns:0};
+  ds.unshift(dream);
   localStorage.setItem(STORE_KEY,JSON.stringify(ds));
+  if(typeof firebase !== 'undefined' && firebase.auth() && firebase.auth().currentUser){
+    var uid=firebase.auth().currentUser.uid;
+    firebase.firestore().collection('users').doc(uid).collection('dreams').doc(String(dream.id)).set(dream).catch(function(){});
+  }
   return ds;
 }
 function getStats(){
@@ -578,8 +631,166 @@ function getStats(){
 function clearAllData(){
   if(confirm('确定要清除所有梦境数据吗？此操作不可恢复。')){
     localStorage.removeItem(STORE_KEY);
+    if(typeof firebase !== 'undefined' && firebase.auth().currentUser){
+      var uid=firebase.auth().currentUser.uid;
+      firebase.firestore().collection('users').doc(uid).collection('dreams').get().then(function(snap){
+        if(snap.empty)return;
+        var batch=firebase.firestore().batch();
+        snap.forEach(function(d){batch.delete(d.ref)});
+        return batch.commit();
+      }).catch(function(){});
+    }
     refreshAll();go('home');
   }
+}
+
+/* === FIREBASE === */
+var firebaseConfig={
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+var fbReady=false;
+try{
+  if(typeof firebase!=='undefined'&&firebaseConfig.apiKey!=='YOUR_API_KEY'){
+    firebase.initializeApp(firebaseConfig);
+    fbReady=true;
+  }
+}catch(e){console.warn('Firebase init failed:',e)}
+
+var isLoginMode=true;
+function toggleLoginMode(){
+  isLoginMode=!isLoginMode;
+  document.getElementById('loginBtn').textContent=isLoginMode?'登 录':'注 册';
+  document.getElementById('loginBtn').onclick=isLoginMode?doLogin:doRegister;
+  document.getElementById('loginToggle').textContent=isLoginMode?'还没有账号？注册':'已有账号？登录';
+  document.getElementById('loginError').textContent='';
+}
+
+function doLogin(){
+  if(!fbReady)return;
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
+  var errEl=document.getElementById('loginError');
+  errEl.textContent='';
+  if(!email||!pass){errEl.textContent='请填写邮箱和密码';return}
+  firebase.auth().signInWithEmailAndPassword(email,pass)
+    .catch(function(e){errEl.textContent=e.message.replace(/ \(auth\/.*\)/,'')});
+}
+
+function doRegister(){
+  if(!fbReady)return;
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
+  var errEl=document.getElementById('loginError');
+  errEl.textContent='';
+  if(!email||!pass){errEl.textContent='请填写邮箱和密码';return}
+  if(pass.length<6){errEl.textContent='密码至少 6 位';return}
+  firebase.auth().createUserWithEmailAndPassword(email,pass)
+    .catch(function(e){errEl.textContent=e.message.replace(/ \(auth\/.*\)/,'')});
+}
+
+function loginAnonymously(){
+  if(fbReady){
+    firebase.auth().signInAnonymously().catch(function(){});
+  }
+  document.getElementById('loginOverlay').classList.add('off');
+}
+
+function doLogout(){
+  if(fbReady){
+    firebase.auth().signOut().then(function(){
+      go('home');
+      document.getElementById('loginOverlay').classList.remove('off');
+    });
+  }
+}
+
+function loginWithEmail(){
+  document.getElementById('loginOverlay').classList.remove('off');
+  go('home');
+}
+
+function syncDreamsToCloud(dreams){
+  if(!fbReady||!firebase.auth().currentUser||!dreams.length)return Promise.resolve();
+  var uid=firebase.auth().currentUser.uid;
+  var db=firebase.firestore();
+  var batch=db.batch();
+  var count=Math.min(dreams.length,500);
+  for(var i=0;i<count;i++){
+    var d=dreams[i];
+    var ref=db.collection('users').doc(uid).collection('dreams').doc(String(d.id));
+    batch.set(ref,d,{merge:true});
+  }
+  return batch.commit();
+}
+
+function loadDreamsFromCloud(){
+  if(!fbReady||!firebase.auth().currentUser)return Promise.resolve([]);
+  var uid=firebase.auth().currentUser.uid;
+  return firebase.firestore().collection('users').doc(uid).collection('dreams')
+    .orderBy('ts','desc').get().then(function(snap){
+      var dreams=[];
+      snap.forEach(function(d){dreams.push(d.data())});
+      return dreams;
+    });
+}
+
+function mergeDreams(local,cloud){
+  var map={};
+  local.forEach(function(d){map[d.id]=d});
+  cloud.forEach(function(d){map[d.id]=d});
+  var merged=Object.keys(map).map(function(k){return map[k]});
+  merged.sort(function(a,b){return new Date(b.ts)-new Date(a.ts)});
+  return merged;
+}
+
+function renderAccountSection(){
+  var el=document.getElementById('accountInfo');
+  if(!el)return;
+  if(fbReady&&firebase.auth().currentUser){
+    var u=firebase.auth().currentUser;
+    var isAnon=u.isAnonymous;
+    el.innerHTML='<div class="set-row"><div><div class="set-label">'+(isAnon?'匿名体验':'已登录')+'</div>'
+      +(isAnon?'<div class="set-sub">注册账号可云端保存梦境</div>':'<div class="set-sub">'+u.email+'</div>')
+      +'</div>'
+      +(isAnon?'<button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(202,169,122,.3);font-size:12px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px" onclick="loginWithEmail()">注册</button>':'')
+      +'</div>'
+      +'<div class="set-row"><div><div class="set-label">退出登录</div><div class="set-sub">本地数据仍会保留</div></div>'
+      +'<button style="padding:8px 16px;border-radius:12px;border:.5px solid var(--line2);font-size:12px;color:var(--t2);background:rgba(255,255,255,.03);letter-spacing:.5px" onclick="doLogout()">退出</button></div>';
+  }else{
+    el.innerHTML='<div class="set-row"><div><div class="set-label">未登录</div><div class="set-sub">登录后可云端保存梦境</div></div>'
+      +'<button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(202,169,122,.3);font-size:12px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px" onclick="loginWithEmail()">登录</button></div>';
+  }
+}
+
+if(fbReady){
+  firebase.auth().onAuthStateChanged(function(user){
+    if(user){
+      document.getElementById('loginOverlay').classList.add('off');
+      loadDreamsFromCloud().then(function(cloudDreams){
+        if(cloudDreams.length>0){
+          var localDreams=getDreams();
+          if(localDreams.length>0){
+            var merged=mergeDreams(localDreams,cloudDreams);
+            localStorage.setItem(STORE_KEY,JSON.stringify(merged));
+          }else{
+            localStorage.setItem(STORE_KEY,JSON.stringify(cloudDreams));
+          }
+        }else{
+          var localDreams=getDreams();
+          if(localDreams.length>0){syncDreamsToCloud(localDreams)}
+        }
+        refreshHome();
+      });
+      renderAccountSection();
+    }else{
+      renderAccountSection();
+    }
+  });
 }
 
 /* === EMOTION DETECTION === */
@@ -1272,9 +1483,30 @@ document.addEventListener('touchstart',function(){},{passive:true});
 // Refresh home data
 refreshHome();
 renderEmotionChips();
+renderAccountSection();
 
-// Onboarding
-if(!localStorage.getItem(ONBOARD_KEY)){setTimeout(showOnboard,800)}
+// Onboarding — only show after login is dismissed
+if(!localStorage.getItem(ONBOARD_KEY)){
+  if(fbReady){
+    /* Wait for auth state to resolve; onAuthStateChanged will hide login overlay,
+       then we check onboarding */
+    var _obCheck=setInterval(function(){
+      if(document.getElementById('loginOverlay').classList.contains('off')){
+        clearInterval(_obCheck);
+        setTimeout(showOnboard,600);
+      }
+    },200);
+  }else{
+    /* No Firebase — skip login, show onboarding directly */
+    document.getElementById('loginOverlay').classList.add('off');
+    setTimeout(showOnboard,800);
+  }
+}else{
+  /* Already onboarded */
+  if(!fbReady){
+    document.getElementById('loginOverlay').classList.add('off');
+  }
+}
 
 </script>
 </body>
