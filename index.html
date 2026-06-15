@@ -9,11 +9,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&family=Noto+Sans+SC:wght@100;200;300;400;500&display=swap');
 
 :root{
-  --bg:#050510;--bg2:#0a0a1a;
-  --t1:rgba(255,255,255,.94);--t2:rgba(255,255,255,.58);--t3:rgba(255,255,255,.28);--t4:rgba(255,255,255,.12);
-  --accent:#caa97a;--adim:rgba(202,169,122,.12);--aglow:rgba(202,169,122,.25);
-  --line:rgba(255,255,255,.05);--line2:rgba(255,255,255,.09);
-  --ec:#6db8c4;--ef:#c47080;--ej:#c4b06d;--el:#9472c4;--ek:#7090c4;
+  --bg:#0d0d1f;--bg2:#151530;
+  --t1:rgba(255,255,255,.96);--t2:rgba(255,255,255,.72);--t3:rgba(255,255,255,.45);--t4:rgba(255,255,255,.22);
+  --accent:#d4b896;--adim:rgba(212,184,150,.15);--aglow:rgba(212,184,150,.3);
+  --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
+  --ec:#7dd4e0;--ef:#d48090;--ej:#d4c080;--el:#a882d4;--ek:#80a0d4;
   --serif:'Noto Serif SC','Songti SC',Georgia,serif;
   --sans:'Noto Sans SC',-apple-system,'PingFang SC',sans-serif;
   --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
@@ -129,6 +129,8 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .write-field{flex:1;min-height:160px;font-family:var(--serif);font-size:17px;font-weight:300;line-height:2.1;color:var(--t1);letter-spacing:.4px;resize:none;caret-color:var(--accent);background:transparent}
 .write-field::placeholder{color:var(--t4);font-style:italic}
 .write-zone::before{content:'';position:absolute;top:50px;left:26px;right:26px;bottom:0;background:repeating-linear-gradient(transparent,transparent 35px,rgba(202,169,122,.025) 35px,rgba(202,169,122,.025) 36px);pointer-events:none;z-index:0}
+.write-zone::before.insomnia-mode{background:repeating-linear-gradient(transparent,transparent 35px,rgba(120,100,200,.03) 35px,rgba(120,100,200,.03) 36px)}
+#modeToggle.on{border-color:rgba(120,100,200,.4);color:#a882d4;background:rgba(120,100,200,.1)}
 .write-bot{padding:14px 26px 34px;flex-shrink:0;z-index:1}
 
 /* Emotion chips */
@@ -178,6 +180,9 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .chat-done{text-align:center;padding:8px 20px 4px;font-size:11px;color:var(--t3);letter-spacing:1px}
 .chat-done-btn{display:inline-block;margin-top:10px;padding:12px 28px;border-radius:18px;border:.5px solid var(--accent);font-family:var(--serif);font-size:14px;color:var(--accent);letter-spacing:2px;background:linear-gradient(135deg,rgba(202,169,122,.06),transparent);transition:all .2s var(--ease)}
 .chat-done-btn:active{background:rgba(202,169,122,.1);transform:scale(.97)}
+.regen-btn{display:block;margin-top:10px;padding:6px 14px;border-radius:12px;border:.5px solid rgba(202,169,122,.2);font-size:11px;color:var(--t3);letter-spacing:.5px;background:rgba(255,255,255,.03);transition:all .2s var(--ease)}
+.regen-btn:hover{border-color:rgba(202,169,122,.4);color:var(--accent);background:rgba(202,169,122,.06)}
+.regen-btn:active{transform:scale(.95)}
 
 /* VOICE OVERLAY */
 .voice-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,5,16,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:scale(.96);transition:opacity .4s var(--ease),visibility 0s .4s,transform .4s var(--ease);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
@@ -464,7 +469,13 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="sub-canvas"><canvas id="writeC"></canvas></div>
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
   <div class="nhdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="nhdr-c" id="writeDate">6月15日 周日</span><button class="nhdr-act" onclick="startVoice()"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button></div>
-  <div class="write-zone"><div class="write-sal">亲爱的夜：</div><textarea class="write-field" id="dreamIn" placeholder="把梦写下来吧，不用完整，不用合理……&#10;&#10;想到什么就写什么，哪怕只记得一种感觉。"></textarea></div>
+  <div class="write-zone">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div class="write-sal" id="writeSalutation">亲爱的夜：</div>
+      <button class="we-chip" id="modeToggle" onclick="toggleWriteMode()" style="font-size:11px;padding:6px 12px"><span id="modeLabel">🌙 记录梦境</span></button>
+    </div>
+    <textarea class="write-field" id="dreamIn" placeholder="把梦写下来吧，不用完整，不用合理……&#10;&#10;想到什么就写什么，哪怕只记得一种感觉。"></textarea>
+  </div>
   <div class="write-bot">
     <div class="write-emotions" id="emotionChips"></div>
     <div class="write-actions">
@@ -663,9 +674,9 @@ function getBadges(){
 }
 
 function getDreams(){try{return JSON.parse(localStorage.getItem(STORE_KEY))||[]}catch(e){return[]}}
-function saveDream(text,emotion){
+function saveDream(text,emotion,type){
   var ds=getDreams();
-  var dream={id:Date.now(),text:text,emotion:emotion||'未知',ts:new Date().toISOString(),aiTurns:0};
+  var dream={id:Date.now(),text:text,emotion:emotion||'未知',ts:new Date().toISOString(),aiTurns:0,type:type||'梦境'};
   ds.unshift(dream);
   localStorage.setItem(STORE_KEY,JSON.stringify(ds));
   if(typeof firebase !== 'undefined' && firebase.auth() && firebase.auth().currentUser){
@@ -717,6 +728,14 @@ var QWEN_API_KEY='sk-80d2d09cff77454c8aab0f416a6f61ad';
 var QWEN_URL='https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
 var qwenAvailable=(typeof fetch!=='undefined');
 var qwenEnabled=qwenAvailable&&QWEN_API_KEY?true:false;
+
+/* Check if running from file:// protocol */
+if(window.location.protocol==='file:'&&qwenAvailable){
+  console.warn('⚠️ Running from file:// protocol. Qwen API may be blocked by CORS policy.');
+  console.warn('💡 Solution: Run this file through a local server, e.g.:');
+  console.warn('   python -m http.server 8765');
+  console.warn('   Then open http://localhost:8765/night-letter.html');
+}
 
 function enableQwen(){
   if(!qwenAvailable){alert('你的浏览器不支持 AI 功能，请使用 Chrome 或 Edge');return}
@@ -784,17 +803,21 @@ function callQwenAPI(dreamText,userMessage,emotion,callback){
       'X-DashScope-SSE':'disable'
     },
     body:JSON.stringify(body)
-  }).then(function(r){return r.json()})
+  }).then(function(r){
+    console.log('Qwen API response status:',r.status);
+    return r.json()})
   .then(function(data){
+    console.log('Qwen API response data:',data);
     if(data.output&&data.output.choices&&data.output.choices[0]){
       var msg=data.output.choices[0].message;
       callback(msg.content);
     }else{
+      console.warn('Qwen API no valid output:',data);
       callback(null);
     }
   })
   .catch(function(e){
-    console.warn('Qwen API error:',e);
+    console.error('Qwen API error:',e);
     callback(null);
   });
 }
@@ -995,9 +1018,10 @@ function sendLetter(){
     return;
   }
   var emotion=detectEmotion(text);
-  saveDream(text,emotion);
+  var type=writeMode==='insomnia'?'失眠':'梦境';
+  saveDream(text,emotion,type);
   document.getElementById('dreamIn').value='';
-  lastDreamText=text;lastDreamEmotion=emotion;
+  lastDreamText=text;lastDreamEmotion=emotion;lastDreamType=type;
   /* Button press feedback then transition */
   var btn=document.querySelector('.btn-send');
   if(btn){btn.style.transform='scale(.94)';btn.style.boxShadow='0 0 35px rgba(202,169,122,.15)';
@@ -1005,7 +1029,15 @@ function sendLetter(){
   }
   setTimeout(function(){
     go('recv');
-    setTimeout(function(){go('chat')},2400);
+    if(writeMode==='dream'){
+      setTimeout(function(){go('chat')},2400);
+    }else{
+      /* Insomnia mode: skip AI chat, go directly home with a gentle message */
+      setTimeout(function(){
+        alert('🌃 今晚的记录已保存。\n\n睡不着也没关系，允许自己就这样待着。\n明天醒来，如果还记得此刻的感受，随时可以再来说。');
+        go('home');
+      },2400);
+    }
   },180);
 }
 
@@ -1021,6 +1053,31 @@ function tick(){var d=new Date();document.getElementById('clk').textContent=Stri
 
 /* === EMOTION CHIPS === */
 var selectedEmotion='';
+var writeMode='dream'; /* 'dream' or 'insomnia' */
+
+function toggleWriteMode(){
+  writeMode=writeMode==='dream'?'insomnia':'dream';
+  var btn=document.getElementById('modeToggle');
+  var label=document.getElementById('modeLabel');
+  var sal=document.getElementById('writeSalutation');
+  var field=document.getElementById('dreamIn');
+  var zone=document.querySelector('.write-zone');
+  
+  if(writeMode==='insomnia'){
+    btn.classList.add('on');
+    label.textContent='🌃 记录失眠';
+    sal.textContent='亲爱的夜：';
+    field.placeholder='今晚又没睡着吗？……&#10;&#10;说说此刻的感受，或者只是静静地待着。';
+    if(zone)zone.classList.add('insomnia-mode');
+  }else{
+    btn.classList.remove('on');
+    label.textContent='🌙 记录梦境';
+    sal.textContent='亲爱的夜：';
+    field.placeholder='把梦写下来吧，不用完整，不用合理……&#10;&#10;想到什么就写什么，哪怕只记得一种感觉。';
+    if(zone)zone.classList.remove('insomnia-mode');
+  }
+}
+
 function renderEmotionChips(){
   var el=document.getElementById('emotionChips');if(!el)return;
   var ems=['平静','不安','想念','困惑','喜悦'];
@@ -1038,6 +1095,7 @@ function toggleEmotion(e){
 /* === AI CHAT === */
 var lastDreamText='';
 var lastDreamEmotion='未知';
+var lastDreamType='梦境';
 var chatTurn=0;
 var maxTurns=3;
 var chatInited=false;
@@ -1100,18 +1158,24 @@ function initChat(){
 
   var dream=lastDreamText||'一个还没被说出口的梦';
   var em=lastDreamEmotion||'未知';
+  var type=lastDreamType||'梦境';
   
-  // Smart opener based on emotion
-  var openers={
-    '不安':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>听起来昨晚不太容易。',
-    '想念':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>这些文字里带着一些柔软的东西。',
-    '困惑':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>这个梦好像有很多还没说清楚的部分。',
-    '平静':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>读起来有一种安静的感觉。',
-    '喜悦':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>这个梦带着一些很亮的光。',
-    '未知':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>谢谢你愿意把它说出来。'
-  };
-
-  addBubble('ai',openers[em]||openers['未知'],0);
+  /* Different openers for dreams vs insomnia */
+  if(type==='失眠'){
+    addBubble('ai','你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>睡不着的夜晚，时间好像变慢了。没关系，允许自己就这样待着。',0);
+  }else{
+    // Smart opener based on emotion
+    var openers={
+      '不安':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>听起来昨晚不太容易。',
+      '想念':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>这些文字里带着一些柔软的东西。',
+      '困惑':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>这个梦好像有很多还没说清楚的部分。',
+      '平静':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>读起来有一种安静的感觉。',
+      '喜悦':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>这个梦带着一些很亮的光。',
+      '未知':'你写下了这些——<br>「'+dream.slice(0,60)+(dream.length>60?'……':'')+'」<br><br>谢谢你愿意把它说出来。'
+    };
+    addBubble('ai',openers[em]||openers['未知'],0);
+  }
+  
   setTimeout(function(){
     if(qwenAvailable&&QWEN_API_KEY){
       showTyping();
@@ -1162,6 +1226,12 @@ function addBubble(type,html,delay){
       div.className='chat-bubble chat-'+type;
       div.innerHTML=html;
       div.style.animationDelay='0s';
+      /* Add regenerate button */
+      var regenBtn=document.createElement('button');
+      regenBtn.className='regen-btn';
+      regenBtn.textContent='↻ 换一种说法';
+      regenBtn.onclick=function(){regenerateResponse(div)};
+      div.appendChild(regenBtn);
       scroll.appendChild(div);
       scroll.scrollTop=scroll.scrollHeight;
     },1000+Math.random()*800);
@@ -1172,6 +1242,29 @@ function addBubble(type,html,delay){
     scroll.appendChild(div);
     scroll.scrollTop=scroll.scrollHeight;
   }
+}
+
+function regenerateResponse(bubble){
+  var btn=bubble.querySelector('.regen-btn');
+  if(btn)btn.remove();
+  
+  var text=bubble.innerHTML.replace(/<button.*?<\/button>/g,'').trim();
+  bubble.innerHTML='<span style="opacity:.5">正在重新生成……</span>';
+  
+  setTimeout(function(){
+    callQwenAPI(lastDreamText,null,lastDreamEmotion,function(resp){
+      if(resp){
+        bubble.innerHTML=resp.replace(/\n/g,'<br>');
+        var newBtn=document.createElement('button');
+        newBtn.className='regen-btn';
+        newBtn.textContent='↻ 换一种说法';
+        newBtn.onclick=function(){regenerateResponse(bubble)};
+        bubble.appendChild(newBtn);
+      }else{
+        bubble.innerHTML=text+'<br><br><span style="color:var(--t3);font-size:12px">（重新生成失败，请重试）</span>';
+      }
+    });
+  },500);
 }
 
 function showTyping(){
