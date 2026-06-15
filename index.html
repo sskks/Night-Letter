@@ -557,6 +557,10 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
       <div class="set-row"><div><div class="set-label">清除所有数据</div><div class="set-sub">删除所有梦境记录（不可恢复）</div></div><button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(196,112,128,.3);font-size:12px;color:#c47080;background:rgba(196,112,128,.06);letter-spacing:.5px" onclick="clearAllData()">清除</button></div>
     </div>
     <div class="set-section">
+      <div class="set-section-title">AI</div>
+      <div class="set-row"><div><div class="set-label">智能回信</div><div class="set-sub" id="aiStatus">'+(qwenAvailable&&QWEN_API_KEY?'已启用 Qwen AI':'使用本地模板回复')+'</div></div>'+(qwenAvailable&&QWEN_API_KEY?'<button style="padding:8px 16px;border-radius:12px;border:.5px solid var(--line2);font-size:12px;color:var(--t2);background:rgba(255,255,255,.03);letter-spacing:.5px" onclick="disableQwen()">关闭</button>':'<button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(202,169,122,.3);font-size:12px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px" onclick="enableQwen()">开启</button>')+'</div>
+    </div>
+    <div class="set-section">
       <div class="set-section-title">关于</div>
       <div class="set-about">夜信 Night Letter v0.1 MVP<br>一个温柔的梦境情绪觉察工具<br><br>梦不是答案，是情绪入口。<br>尊重你自己思考的能力。</div>
     </div>
@@ -660,6 +664,93 @@ try{
     fbReady=true;
   }
 }catch(e){console.warn('Firebase init failed:',e)}
+
+/* === QWEN AI === */
+var QWEN_API_KEY='sk-80d2d09cff77454c8aab0f416a6f61ad';
+var QWEN_URL='https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
+var qwenAvailable=(typeof fetch!=='undefined');
+var qwenEnabled=qwenAvailable&&QWEN_API_KEY?true:false;
+
+function enableQwen(){
+  if(!qwenAvailable){alert('你的浏览器不支持 AI 功能，请使用 Chrome 或 Edge');return}
+  var key=prompt('请输入 Qwen API Key：','');
+  if(key&&key.trim()){
+    QWEN_API_KEY=key.trim();
+    qwenEnabled=true;
+    document.getElementById('aiStatus').textContent='已启用 Qwen AI';
+    refreshAISettings();
+  }
+}
+
+function disableQwen(){
+  QWEN_API_KEY='';
+  qwenEnabled=false;
+  document.getElementById('aiStatus').textContent='使用本地模板回复';
+  refreshAISettings();
+}
+
+function refreshAISettings(){
+  var el=document.getElementById('aiStatus');
+  if(!el)return;
+  var btn=el.parentElement.querySelector('button');
+  if(!btn)return;
+  if(qwenEnabled){
+    el.textContent='已启用 Qwen AI';
+    btn.textContent='关闭';
+    btn.onclick=disableQwen;
+    btn.style.borderColor='var(--line2)';
+    btn.style.color='var(--t2)';
+    btn.style.background='rgba(255,255,255,.03)';
+  }else{
+    el.textContent='使用本地模板回复';
+    btn.textContent='开启';
+    btn.onclick=enableQwen;
+    btn.style.borderColor='rgba(202,169,122,.3)';
+    btn.style.color='var(--accent)';
+    btn.style.background='rgba(202,169,122,.06)';
+  }
+}
+
+var qwenSystemPrompt='你是夜信 Night Letter 的梦境回信助手。你的角色是一位温柔、敏锐、富有洞察力的倾听者。\n\n核心原则：\n1. 不要给建议或解决方案，只做觉察和陪伴\n2. 用诗意的语言，但保持自然不做作\n3. 关注情绪和感受，而非事实分析\n4. 每次回复控制在 80-150 字之间\n5. 用 <span class="hl">高亮</span> 标记关键洞察（每段最多 1-2 处）\n6. 语气像深夜里一个懂你的朋友在轻声说话\n7. 避免说教、鸡汤、陈词滥调\n8. 如果用户说的是梦的内容，从梦境意象出发做联想，不强行解读\n\n风格参考：\n- "你写下来的这些画面里，有一种紧绷的感觉在流动"\n- "梦里出现的那个人，不一定说明你在刻意想念谁"\n- "有时候身体比头脑更诚实"';
+
+function callQwenAPI(dreamText,userMessage,emotion,callback){
+  if(!qwenAvailable||!QWEN_API_KEY){callback(null);return}
+  
+  var prompt=dreamText?'昨晚的梦：'+dreamText+'\n\n':'';
+  if(userMessage)prompt+='用户说：'+userMessage+'\n\n';
+  prompt+='请根据以上内容，以温柔、觉察的语气回应。当前检测到的情绪基调是：'+emotion+'。';
+  
+  var body={
+    model:'qwen-turbo',
+    input:{messages:[
+      {role:'system',content:qwenSystemPrompt},
+      {role:'user',content:prompt}
+    ]},
+    parameters:{result_format:'message',temperature:0.7,max_tokens:300}
+  };
+  
+  fetch(QWEN_URL,{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Bearer '+QWEN_API_KEY,
+      'X-DashScope-SSE':'disable'
+    },
+    body:JSON.stringify(body)
+  }).then(function(r){return r.json()})
+  .then(function(data){
+    if(data.output&&data.output.choices&&data.output.choices[0]){
+      var msg=data.output.choices[0].message;
+      callback(msg.content);
+    }else{
+      callback(null);
+    }
+  })
+  .catch(function(e){
+    console.warn('Qwen API error:',e);
+    callback(null);
+  });
+}
 
 var isLoginMode=true;
 function toggleLoginMode(){
@@ -975,8 +1066,22 @@ function initChat(){
 
   addBubble('ai',openers[em]||openers['未知'],0);
   setTimeout(function(){
-    var resp=getAIResponse(em,0);
-    addBubble('ai',resp,1);
+    if(qwenAvailable&&QWEN_API_KEY){
+      showTyping();
+      callQwenAPI(dream,null,em,function(resp){
+        hideTyping();
+        if(resp){
+          var formatted=resp.replace(/\n/g,'<br>');
+          addBubble('ai',formatted,0);
+        }else{
+          var fallback=getAIResponse(em,0);
+          addBubble('ai',fallback,0);
+        }
+      });
+    }else{
+      var resp=getAIResponse(em,0);
+      addBubble('ai',resp,1);
+    }
   },1500);
 }
 
@@ -986,9 +1091,12 @@ function getAIResponse(emotion,turn){
 }
 
 function getFollowUpResponse(userText){
+  if(qwenAvailable&&QWEN_API_KEY){
+    /* Use Qwen for follow-ups too */
+    return null; /* Will be handled in sendChat */
+  }
   var idx=chatTurn%followUpResponses.length;
   var resp=followUpResponses[idx];
-  // Add emotion-specific follow-up if detectable
   var userEm=detectEmotion(userText);
   if(userEm!=='未知'&&userEm!==(lastDreamEmotion||'')){
     var emotionHints={'不安':'你的话里好像也有一些不安。','想念':'听起来你在想念什么。','困惑':'这种感觉确实不容易说清楚。','平静':'你说这些的时候，感觉挺平静的。','喜悦':'能感受到你话里的那份开心。'};
@@ -1041,16 +1149,39 @@ function sendChat(){
 
   if(chatTurn>=maxTurns){
     setTimeout(function(){
-      addBubble('ai','你今天说了很多，也想了很多——<span class="hl">这些都很重要</span>。把它们好好带着就好，不用急着找到答案。明天醒来，如果还记得什么，随时可以再来说。',1);
-      setTimeout(finishChat,3000);
+      if(qwenAvailable&&QWEN_API_KEY){
+        showTyping();
+        callQwenAPI(lastDreamText,text,lastDreamEmotion,function(resp){
+          hideTyping();
+          var closing=resp?resp.replace(/\n/g,'<br>'):'你今天说了很多，也想了很多——<span class="hl">这些都很重要</span>。把它们好好带着就好，不用急着找到答案。明天醒来，如果还记得什么，随时可以再来说。';
+          addBubble('ai',closing,0);
+          setTimeout(finishChat,3000);
+        });
+      }else{
+        addBubble('ai','你今天说了很多，也想了很多——<span class="hl">这些都很重要</span>。把它们好好带着就好，不用急着找到答案。明天醒来，如果还记得什么，随时可以再来说。',1);
+        setTimeout(finishChat,3000);
+      }
     },600);
     return;
   }
 
-  var resp=getFollowUpResponse(text);
-  setTimeout(function(){
-    addBubble('ai',resp,1);
-  },600);
+  if(qwenAvailable&&QWEN_API_KEY){
+    showTyping();
+    callQwenAPI(lastDreamText,text,lastDreamEmotion,function(resp){
+      hideTyping();
+      if(resp){
+        addBubble('ai',resp.replace(/\n/g,'<br>'),0);
+      }else{
+        var fallback=getFollowUpResponse(text);
+        addBubble('ai',fallback||'嗯，你说的有道理。<span class="hl">梦和醒着的生活之间，总有一些微妙的联系</span>。',0);
+      }
+    });
+  }else{
+    var resp=getFollowUpResponse(text);
+    setTimeout(function(){
+      addBubble('ai',resp,1);
+    },600);
+  }
 }
 
 function finishChat(){
