@@ -482,7 +482,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
     <div class="bnav">
       <button class="btab on" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button>
       <button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-      <button class="btab" onclick="go('pat')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>发现</span></button>
+      <button class="btab" onclick="go('square')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>广场</span></button>
     </div>
   </div>
 </div>
@@ -576,6 +576,31 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦境记录</div><div class="ns-sub" id="histSub">0 封信</div></div><div style="width:44px"></div></div>
   <div class="hist-body" id="histBody"><div class="empty-state"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="34" r="18" fill="rgba(202,169,122,.06)" stroke="rgba(202,169,122,.2)" stroke-width=".8"/><circle cx="34" cy="29" r="3.5" fill="rgba(202,169,122,.04)"/><circle cx="46" cy="38" r="2.5" fill="rgba(202,169,122,.04)"/><circle cx="17" cy="16" r="1.2" fill="rgba(255,255,255,.4)"><animate attributeName="opacity" values=".2;.9;.2" dur="2.2s" repeatCount="indefinite"/></circle><circle cx="63" cy="13" r="1" fill="rgba(255,255,255,.3)"><animate attributeName="opacity" values=".2;.8;.2" dur="2.8s" begin=".6s" repeatCount="indefinite"/></circle><circle cx="24" cy="56" r=".8" fill="rgba(255,255,255,.25)"><animate attributeName="opacity" values=".2;.7;.2" dur="3s" begin="1.2s" repeatCount="indefinite"/></circle><circle cx="57" cy="54" r="1" fill="rgba(255,255,255,.3)"><animate attributeName="opacity" values=".2;.8;.2" dur="2.5s" begin=".3s" repeatCount="indefinite"/></circle></svg><div class="empty-title">还没有梦境记录</div><div class="empty-desc">写下你的第一个梦吧</div></div></div>
   <div class="bnav"><button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button><button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="btab on" onclick="go('hist')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>历史</span></button></div>
+</div>
+
+<!-- DREAM SQUARE (Anonymous Social) -->
+<div class="scr" id="s-square">
+  <div class="sub-canvas"><canvas id="squareC"></canvas></div>
+  <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
+  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦境广场</div><div class="ns-sub" id="squareSub">匿名分享 · 温暖相遇</div></div><button class="nhdr-act" onclick="shareToSquare()" title="分享我的梦境"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></div>
+  <div class="hist-body" id="squareBody" style="padding-top:12px">
+    <div class="empty-state" id="squareEmpty">
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+        <circle cx="40" cy="34" r="18" fill="rgba(202,169,122,.06)" stroke="rgba(202,169,122,.2)" stroke-width=".8"/>
+        <circle cx="34" cy="29" r="3.5" fill="rgba(202,169,122,.04)"/>
+        <circle cx="46" cy="38" r="2.5" fill="rgba(202,169,122,.04)"/>
+      </svg>
+      <div class="empty-title">还没有人分享梦境</div>
+      <div class="empty-desc">成为第一个分享的人吧 ✨</div>
+      <button onclick="shareToSquare()" style="margin-top:20px;padding:12px 28px;border-radius:18px;border:.8px solid var(--accent);font-family:var(--serif);font-size:14px;color:var(--accent);letter-spacing:2px;background:linear-gradient(135deg,rgba(202,169,122,.06),transparent)">分享我的梦境</button>
+    </div>
+    <div id="squareList" style="display:flex;flex-direction:column;gap:12px"></div>
+  </div>
+  <div class="bnav">
+    <button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button>
+    <button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+    <button class="btab on" onclick="go('square')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>广场</span></button>
+  </div>
 </div>
 
 <!-- SETTINGS -->
@@ -1045,7 +1070,7 @@ function detectEmotion(text){
 
 /* === NAVIGATION === */
 var cur='home';
-var pageOrder=['home','write','recv','chat','ns','pat','hist','set'];
+var pageOrder=['home','write','recv','chat','ns','pat','hist','square','set'];
 function go(n){
   if(n===cur)return;
   var fi=pageOrder.indexOf(cur),ni=pageOrder.indexOf(n);
@@ -1071,6 +1096,7 @@ function go(n){
   if(n==='recv')initAmbient('recvC');
   if(n==='pat'){initAmbient('patC');renderPattern()}
   if(n==='hist'){initAmbient('histC');renderHistory()}
+  if(n==='square'){initAmbient('squareC');loadSquareDreams()}
   if(n==='set')initAmbient('setC');
   if(n==='home'){refreshHome();if(!homeInited)initHome()}
 }
@@ -2432,6 +2458,195 @@ document.addEventListener('touchstart',function(){},{passive:true});
 refreshHome();
 renderEmotionChips();
 renderAccountSection();
+
+/* === DREAM SQUARE (Anonymous Social) === */
+var squareDreams=[];
+var currentSquareDream=null;
+
+function shareToSquare(){
+  if(!fbReady||!firebase.auth().currentUser){
+    alert('请先登录后再分享梦境');
+    document.getElementById('loginOverlay').classList.remove('off');
+    return;
+  }
+  
+  var dreams=getDreams();
+  if(!dreams.length){
+    alert('还没有梦境记录，先去写一个梦吧');
+    go('write');
+    return;
+  }
+  
+  /* Show selection dialog */
+  var options=dreams.slice(0,10).map(function(d,i){
+    return (i+1)+'. '+d.text.slice(0,30)+(d.text.length>30?'……':'')+' ['+d.emotion+']';
+  }).join('\n');
+  
+  var choice=prompt('选择要分享的梦境（输入编号）：\n\n'+options+'\n\n注意：分享后将匿名显示在广场，其他人可以看到但不知道是谁写的。');
+  if(!choice)return;
+  
+  var idx=parseInt(choice)-1;
+  if(idx<0||idx>=dreams.length){
+    alert('无效的编号');
+    return;
+  }
+  
+  var dream=dreams[idx];
+  
+  /* Confirm before sharing */
+  if(!confirm('确定要分享这个梦境吗？\n\n「'+dream.text.slice(0,40)+'」\n\n分享后将以匿名形式显示在广场。'))return;
+  
+  /* Save to Firestore public collection */
+  var db=firebase.firestore();
+  var publicRef=db.collection('public_dreams').doc();
+  
+  var publicDream={
+    id:publicRef.id,
+    text:dream.text,
+    emotion:dream.emotion,
+    type:dream.type||'梦境',
+    ts:dream.ts,
+    sharedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    likes:0,
+    comments:[],
+    authorId:firebase.auth().currentUser.uid, /* Hidden from display */
+    isAnonymous:true
+  };
+  
+  publicRef.set(publicDream).then(function(){
+    alert('✅ 梦境已分享到广场！');
+    loadSquareDreams();
+  }).catch(function(e){
+    console.error('Share failed:',e);
+    alert('分享失败：'+e.message);
+  });
+}
+
+function loadSquareDreams(){
+  if(!fbReady){
+    /* Demo mode without Firebase */
+    squareDreams=[
+      {id:'demo1',text:'梦见在一片紫色的花海里奔跑，风很温柔，阳光正好。醒来时嘴角还带着笑。',emotion:'喜悦',ts:new Date(Date.now()-3600000).toISOString(),likes:12,comments:[{user:'匿名旅人',text:'好美的梦 ✨',ts:new Date().toISOString()}]},
+      {id:'demo2',text:'一直在找一扇门，怎么走都找不到。周围都是雾，心里有点慌。',emotion:'困惑',ts:new Date(Date.now()-7200000).toISOString(),likes:8,comments:[]},
+      {id:'demo3',text:'梦到小时候的家，奶奶在厨房做饭。闻到了熟悉的香味。',emotion:'想念',ts:new Date(Date.now()-10800000).toISOString(),likes:15,comments:[{user:'夜行者',text:'这种梦最温暖了 🌙',ts:new Date().toISOString()},{user:'梦中人',text:'想起我的外婆了',ts:new Date().toISOString()}]}
+    ];
+    renderSquareDreams();
+    return;
+  }
+  
+  var db=firebase.firestore();
+  db.collection('public_dreams').orderBy('sharedAt','desc').limit(50).get().then(function(snap){
+    squareDreams=[];
+    snap.forEach(function(doc){
+      var data=doc.data();
+      squareDreams.push(data);
+    });
+    renderSquareDreams();
+  }).catch(function(e){
+    console.error('Load square dreams failed:',e);
+  });
+}
+
+function renderSquareDreams(){
+  var list=document.getElementById('squareList');
+  var empty=document.getElementById('squareEmpty');
+  
+  if(!squareDreams.length){
+    empty.style.display='';
+    list.innerHTML='';
+    return;
+  }
+  
+  empty.style.display='none';
+  
+  list.innerHTML=squareDreams.map(function(d,i){
+    var t=new Date(d.ts);
+    var dateStr=(t.getMonth()+1)+'/'+t.getDate()+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+    var delay=Math.min(i*0.06,0.3);
+    
+    var commentsHTML='';
+    if(d.comments&&d.comments.length){
+      commentsHTML='<div style="margin-top:12px;padding-top:12px;border-top:.5px solid var(--line)">'+
+        d.comments.slice(0,3).map(function(c){
+          return '<div style="font-size:12px;color:var(--t2);margin-bottom:6px"><span style="color:var(--accent)">['+c.user+']</span> '+c.text+'</div>';
+        }).join('')+
+        (d.comments.length>3?'<div style="font-size:11px;color:var(--t3);margin-top:4px">还有 '+d.comments.length+' 条评论</div>':'')+
+      '</div>';
+    }
+    
+    return '<div class="hist-item" style="animation:secIn .4s ease-out '+delay+'s both;flex-direction:column;align-items:flex-start">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+        '<div class="hist-tag" style="background:'+emotionColors[d.emotion]+'20;color:'+emotionColors[d.emotion]+';border-color:'+emotionColors[d.emotion]+'40">'+d.emotion+'</div>'+
+        '<span style="font-size:10px;color:var(--t3)">'+dateStr+'</span>'+
+      '</div>'+
+      '<div style="font-size:13px;font-weight:300;color:var(--t1);line-height:1.8;margin-bottom:10px">'+d.text+'</div>'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+        '<button onclick="likeDream(\''+d.id+'\')" style="display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:10px;border:.5px solid rgba(202,169,122,.2);font-size:11px;color:var(--accent);background:rgba(202,169,122,.04)"><span>✨</span><span>'+d.likes+'</span></button>'+
+        '<button onclick="commentDream(\''+d.id+'\')" style="padding:6px 12px;border-radius:10px;border:.5px solid var(--line2);font-size:11px;color:var(--t3);background:rgba(255,255,255,.02)">💬 留言</button>'+
+      '</div>'+
+      commentsHTML+
+    '</div>';
+  }).join('');
+}
+
+function likeDream(dreamId){
+  if(!fbReady){
+    alert('演示模式下无法点赞');
+    return;
+  }
+  
+  var db=firebase.firestore();
+  var ref=db.collection('public_dreams').doc(dreamId);
+  
+  ref.update({
+    likes:firebase.firestore.FieldValue.increment(1)
+  }).then(function(){
+    loadSquareDreams();
+  }).catch(function(e){
+    console.error('Like failed:',e);
+  });
+}
+
+function commentDream(dreamId){
+  if(!fbReady){
+    alert('演示模式下无法留言');
+    return;
+  }
+  
+  var comment=prompt('写下你的留言（最多 140 字）：');
+  if(!comment||!comment.trim())return;
+  if(comment.length>140){
+    alert('留言不能超过 140 字');
+    return;
+  }
+  
+  var db=firebase.firestore();
+  var ref=db.collection('public_dreams').doc(dreamId);
+  
+  ref.get().then(function(doc){
+    if(!doc.exists)return;
+    var data=doc.data();
+    var comments=data.comments||[];
+    
+    if(comments.length>=3){
+      alert('该梦境的留言已达上限（3 条）');
+      return;
+    }
+    
+    comments.push({
+      user:'匿名旅人',
+      text:comment.trim(),
+      ts:new Date().toISOString()
+    });
+    
+    return ref.update({comments:comments});
+  }).then(function(){
+    if(arguments.length>0)loadSquareDreams();
+  }).catch(function(e){
+    console.error('Comment failed:',e);
+    alert('留言失败：'+e.message);
+  });
+}
 
 // Onboarding — only show after login is dismissed
 if(!localStorage.getItem(ONBOARD_KEY)){
