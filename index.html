@@ -318,6 +318,86 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .let-t{font-size:9px;color:var(--t3);letter-spacing:.3px;opacity:.8}
 .let-tag{font-size:9px;padding:4px 10px;border-radius:10px;background:rgba(202,169,122,.06);color:var(--accent);flex-shrink:0;border:.5px solid rgba(202,169,122,.1);letter-spacing:.5px}
 
+/* SQUARE (Dream Square) */
+.sq-list{display:flex;flex-direction:column;gap:14px}
+.sq-card{
+  padding:18px 20px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(255,255,255,.018));
+  border:.5px solid rgba(202,169,122,.1);
+  margin-bottom:0;transition:all .25s var(--ease);position:relative;overflow:hidden
+}
+.sq-card:active{background:linear-gradient(135deg,rgba(255,255,255,.065),rgba(255,255,255,.03));border-color:rgba(202,169,122,.18)}
+.sq-card-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sq-emo-tag{font-size:10px;padding:4px 12px;border-radius:12px;letter-spacing:.5px;font-weight:400}
+.sq-emo-tag[data-emo="不安"]{background:rgba(212,128,144,.12);color:var(--ef);border:.5px solid rgba(212,128,144,.25)}
+.sq-emo-tag[data-emo="想念"]{background:rgba(168,130,212,.12);color:var(--el);border:.5px solid rgba(168,130,212,.25)}
+.sq-emo-tag[data-emo="困惑"]{background:rgba(128,160,212,.12);color:var(--ek);border:.5px solid rgba(128,160,212,.25)}
+.sq-emo-tag[data-emo="平静"]{background:rgba(125,212,224,.12);color:var(--ec);border:.5px solid rgba(125,212,224,.25)}
+.sq-emo-tag[data-emo="喜悦"]{background:rgba(212,192,128,.12);color:var(--ej);border:.5px solid rgba(212,192,128,.25)}
+.sq-emo-tag[data-emo="未知"]{background:rgba(255,255,255,.06);color:var(--t3);border:.5px solid var(--line2)}
+.sq-date{font-size:10px;color:var(--t3);letter-spacing:.3px}
+.sq-text{font-size:13px;font-weight:300;color:var(--t1);line-height:1.9;margin-bottom:12px;letter-spacing:.2px}
+.sq-actions{display:flex;align-items:center;gap:10px}
+.sq-act-btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:12px;font-size:11px;letter-spacing:.3px;transition:all .2s var(--ease)}
+.sq-act-btn:active{transform:scale(.94)}
+.sq-like{border:.5px solid rgba(202,169,122,.2);color:var(--accent);background:rgba(202,169,122,.04)}
+.sq-like:active{background:rgba(202,169,122,.1)}
+.sq-like.liked{background:rgba(202,169,122,.12);border-color:rgba(202,169,122,.35)}
+.sq-comment{border:.5px solid var(--line2);color:var(--t3);background:rgba(255,255,255,.02)}
+.sq-comment:active{background:rgba(255,255,255,.05)}
+.sq-comments-wrap{margin-top:12px;padding-top:12px;border-top:.5px solid var(--line)}
+.sq-comment-item{font-size:12px;color:var(--t2);margin-bottom:6px;line-height:1.7}
+.sq-comment-user{color:var(--accent);font-weight:400}
+.sq-comment-more{font-size:11px;color:var(--t3);margin-top:4px}
+@keyframes sqLikePop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.sq-like-pop{animation:sqLikePop .3s ease-out}
+
+/* SETTINGS ENHANCEMENTS */
+.set-section{opacity:0;animation:setSecIn .5s ease-out forwards}
+.set-section:nth-child(1){animation-delay:.05s}
+.set-section:nth-child(2){animation-delay:.1s}
+.set-section:nth-child(3){animation-delay:.15s}
+.set-section:nth-child(4){animation-delay:.2s}
+.set-section:nth-child(5){animation-delay:.25s}
+@keyframes setSecIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.set-toggle{transition:background .25s var(--spring)}
+.set-toggle::after{transition:transform .25s var(--spring),background .2s}
+.set-row{transition:background .15s,border-color .15s}
+.set-row:active{background:rgba(255,255,255,.05);border-color:rgba(202,169,122,.12)}
+.set-danger-btn{padding:8px 16px;border-radius:12px;border:.5px solid rgba(196,112,128,.3);font-size:12px;color:#c47080;background:rgba(196,112,128,.06);letter-spacing:.5px;transition:all .2s var(--ease)}
+.set-danger-btn:active{background:rgba(196,112,128,.15);transform:scale(.95)}
+.set-accent-btn{padding:8px 16px;border-radius:12px;border:.5px solid rgba(202,169,122,.3);font-size:12px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px;transition:all .2s var(--ease)}
+.set-accent-btn:active{background:rgba(202,169,122,.12);transform:scale(.95)}
+.set-neutral-btn{padding:8px 16px;border-radius:12px;border:.5px solid var(--line2);font-size:12px;color:var(--t2);background:rgba(255,255,255,.03);letter-spacing:.5px;transition:all .2s var(--ease)}
+.set-neutral-btn:active{background:rgba(255,255,255,.06);transform:scale(.95)}
+/* Confirm modal */
+.confirm-modal{position:fixed;inset:0;z-index:900;background:rgba(5,5,16,.85);display:flex;align-items:center;justify-content:center;padding:0 32px;opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility 0s .3s;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.confirm-modal.on{opacity:1;visibility:visible;transition:opacity .3s var(--ease),visibility 0s 0s}
+.confirm-box{max-width:300px;width:100%;padding:28px 24px;border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:.5px solid rgba(202,169,122,.12);text-align:center;transform:scale(.9);transition:transform .3s var(--spring)}
+.confirm-modal.on .confirm-box{transform:scale(1)}
+.confirm-title{font-family:var(--serif);font-size:16px;font-weight:400;color:var(--t1);letter-spacing:1px;margin-bottom:10px}
+.confirm-desc{font-size:13px;font-weight:300;color:var(--t2);line-height:1.8;margin-bottom:24px}
+.confirm-actions{display:flex;gap:10px}
+.confirm-cancel{flex:1;padding:12px;border-radius:14px;border:.5px solid var(--line2);font-size:13px;color:var(--t2);background:rgba(255,255,255,.03);letter-spacing:.5px;transition:all .15s}
+.confirm-cancel:active{background:rgba(255,255,255,.06)}
+.confirm-ok{flex:1;padding:12px;border-radius:14px;border:.5px solid rgba(196,112,128,.4);font-size:13px;color:#c47080;background:rgba(196,112,128,.08);letter-spacing:.5px;transition:all .15s}
+.confirm-ok:active{background:rgba(196,112,128,.18)}
+
+/* HISTORY ENHANCEMENTS */
+.hist-item{position:relative;overflow:hidden}
+.hist-item .hist-expand{max-height:0;overflow:hidden;transition:max-height .35s var(--ease);font-size:13px;font-weight:300;color:var(--t2);line-height:1.9;margin-top:0;letter-spacing:.2px}
+.hist-item.expanded .hist-expand{max-height:200px;margin-top:8px}
+.hist-item.expanded .hist-text{-webkit-line-clamp:unset}
+.hist-type-badge{font-size:9px;padding:3px 8px;border-radius:8px;letter-spacing:.5px;font-weight:400}
+.hist-type-badge[data-type="失眠"]{background:rgba(120,100,200,.1);color:#a882d4;border:.5px solid rgba(120,100,200,.2)}
+.hist-type-badge[data-type="梦境"]{background:rgba(202,169,122,.06);color:var(--accent);border:.5px solid rgba(202,169,122,.1)}
+
+/* WRITE ENHANCEMENTS */
+.write-field{transition:text-shadow .3s}
+.write-field:focus{text-shadow:0 0 30px rgba(202,169,122,.06)}
+.write-charcount{font-size:10px;color:var(--t4);text-align:right;margin-top:4px;letter-spacing:.5px;transition:color .2s}
+.write-charcount.warn{color:rgba(196,112,128,.6)}
+
 @keyframes letterIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
 /* === UI POLISH: Direction-aware Transitions === */
@@ -337,6 +417,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .scr.on .hist-body{animation:secIn .4s ease-out .05s both}
 .scr.on .set-body{animation:secIn .4s ease-out .05s both}
 .scr.on .pat-body{animation:secIn .4s ease-out both}
+.scr.on .sq-list{animation:secIn .4s ease-out .1s both}
 .scr.on .ns-vp{animation:secIn .5s ease-out .08s both}
 .scr.on .ns-info{animation:secIn .5s ease-out .18s both}
 .scr.on .ns-legend{animation:secIn .5s ease-out .25s both}
@@ -525,7 +606,8 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
       <div class="write-sal" id="writeSalutation">亲爱的夜：</div>
       <button class="we-chip" id="modeToggle" onclick="toggleWriteMode()" style="font-size:11px;padding:6px 12px"><span id="modeLabel">🌙 记录梦境</span></button>
     </div>
-    <textarea class="write-field" id="dreamIn" placeholder="把梦写下来吧，不用完整，不用合理……&#10;&#10;想到什么就写什么，哪怕只记得一种感觉。"></textarea>
+    <textarea class="write-field" id="dreamIn" placeholder="把梦写下来吧，不用完整，不用合理……&#10;&#10;想到什么就写什么，哪怕只记得一种感觉。" oninput="updateCharCount()"></textarea>
+    <div class="write-charcount" id="charCount"></div>
   </div>
   <div class="write-bot">
     <div class="write-emotions" id="emotionChips"></div>
@@ -591,7 +673,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
     </div>
     <div class="pat-sec" id="weeklyReportSection" style="display:none">
       <div class="pat-st"><div class="pat-st-icon"><svg viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/></svg></div><div class="pat-st-text">本周报告</div></div>
-      <button onclick="showWeeklyReport()" style="width:100%;padding:16px;border-radius:16px;border:.8px solid var(--accent);font-family:var(--serif);font-size:14px;color:var(--accent);letter-spacing:2px;background:linear-gradient(135deg,rgba(202,169,122,.06),transparent);transition:all .2s var(--ease)">📊 查看本周情绪报告</button>
+      <button onclick="showWeeklyReport()" class="set-accent-btn" style="width:100%;padding:16px;font-family:var(--serif);font-size:14px;letter-spacing:2px;border-width:.8px">📊 查看本周情绪报告</button>
     </div>
     <div class="pat-sec">
       <div class="pat-st"><div class="pat-st-icon"><svg viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg></div><div class="pat-st-text">情绪天气</div></div>
@@ -627,10 +709,10 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
         <circle cx="46" cy="38" r="2.5" fill="rgba(202,169,122,.04)"/>
       </svg>
       <div class="empty-title">还没有人分享梦境</div>
-      <div class="empty-desc">成为第一个分享的人吧 ✨</div>
-      <button onclick="shareToSquare()" style="margin-top:20px;padding:12px 28px;border-radius:18px;border:.8px solid var(--accent);font-family:var(--serif);font-size:14px;color:var(--accent);letter-spacing:2px;background:linear-gradient(135deg,rgba(202,169,122,.06),transparent)">分享我的梦境</button>
+      <div class="empty-desc">成为第一个分享的人吧</div>
+      <button onclick="shareToSquare()" class="set-accent-btn" style="margin-top:20px;padding:12px 28px;font-family:var(--serif);font-size:14px;letter-spacing:2px">分享我的梦境</button>
     </div>
-    <div id="squareList" style="display:flex;flex-direction:column;gap:12px"></div>
+    <div id="squareList" class="sq-list"></div>
   </div>
   <div class="bnav">
     <button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button>
@@ -657,11 +739,11 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
     <div class="set-section">
       <div class="set-section-title">隐私</div>
       <div class="set-row"><div><div class="set-label">数据说明</div><div class="set-sub">你的梦境数据加密存储在云端和本设备</div></div></div>
-      <div class="set-row"><div><div class="set-label">清除所有数据</div><div class="set-sub">删除所有梦境记录（不可恢复）</div></div><button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(196,112,128,.3);font-size:12px;color:#c47080;background:rgba(196,112,128,.06);letter-spacing:.5px" onclick="clearAllData()">清除</button></div>
+      <div class="set-row"><div><div class="set-label">清除所有数据</div><div class="set-sub">删除所有梦境记录（不可恢复）</div></div><button class="set-danger-btn" onclick="showClearConfirm()">清除</button></div>
     </div>
     <div class="set-section">
       <div class="set-section-title">AI</div>
-      <div class="set-row"><div><div class="set-label">智能回信</div><div class="set-sub" id="aiStatus">'+(qwenAvailable&&QWEN_API_KEY?'已启用 Qwen AI':'使用本地模板回复')+'</div></div>'+(qwenAvailable&&QWEN_API_KEY?'<button style="padding:8px 16px;border-radius:12px;border:.5px solid var(--line2);font-size:12px;color:var(--t2);background:rgba(255,255,255,.03);letter-spacing:.5px" onclick="disableQwen()">关闭</button>':'<button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(202,169,122,.3);font-size:12px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px" onclick="enableQwen()">开启</button>')+'</div>
+      <div class="set-row" id="aiRow"><div><div class="set-label">智能回信</div><div class="set-sub" id="aiStatus"></div></div><span id="aiBtnWrap"></span></div>
     </div>
     <div class="set-section">
       <div class="set-section-title">关于</div>
@@ -723,6 +805,18 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <button class="login-btn login-btn-secondary" id="regBtn" onclick="doRegister()" style="display:none">注 册</button>
   <div class="login-toggle" id="loginToggle" onclick="toggleLoginMode()">还没有账号？注册</div>
   <button class="login-btn" id="skipBtn" onclick="loginAnonymously()" style="border:none;color:var(--t3);background:none;margin-top:24px;font-size:13px;letter-spacing:1px">先看看，不登录也能用 &rarr;</button>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-modal" id="confirmModal">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirmTitle">确认</div>
+    <div class="confirm-desc" id="confirmDesc"></div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="closeConfirm()">取消</button>
+      <button class="confirm-ok" id="confirmOk">确认</button>
+    </div>
+  </div>
 </div>
 
 <!-- Firebase SDK -->
@@ -817,19 +911,29 @@ function getStats(){
   return{total:ds.length,days:Object.keys(days).length}
 }
 function clearAllData(){
-  if(confirm('确定要清除所有梦境数据吗？此操作不可恢复。')){
-    localStorage.removeItem(STORE_KEY);
-    if(typeof firebase !== 'undefined' && firebase.auth().currentUser){
-      var uid=firebase.auth().currentUser.uid;
-      firebase.firestore().collection('users').doc(uid).collection('dreams').get().then(function(snap){
-        if(snap.empty)return;
-        var batch=firebase.firestore().batch();
-        snap.forEach(function(d){batch.delete(d.ref)});
-        return batch.commit();
-      }).catch(function(){});
-    }
-    refreshAll();go('home');
+  closeConfirm();
+  localStorage.removeItem(STORE_KEY);
+  if(typeof firebase !== 'undefined' && firebase.auth().currentUser){
+    var uid=firebase.auth().currentUser.uid;
+    firebase.firestore().collection('users').doc(uid).collection('dreams').get().then(function(snap){
+      if(snap.empty)return;
+      var batch=firebase.firestore().batch();
+      snap.forEach(function(d){batch.delete(d.ref)});
+      return batch.commit();
+    }).catch(function(){});
   }
+  refreshAll();go('home');
+}
+
+function showClearConfirm(){
+  document.getElementById('confirmTitle').textContent='清除所有数据';
+  document.getElementById('confirmDesc').textContent='确定要清除所有梦境数据吗？此操作不可恢复。';
+  document.getElementById('confirmOk').onclick=clearAllData;
+  document.getElementById('confirmModal').classList.add('on');
+}
+
+function closeConfirm(){
+  document.getElementById('confirmModal').classList.remove('on');
 }
 
 /* === FIREBASE === */
@@ -893,23 +997,14 @@ function disableQwen(){
 
 function refreshAISettings(){
   var el=document.getElementById('aiStatus');
+  var wrap=document.getElementById('aiBtnWrap');
   if(!el)return;
-  var btn=el.parentElement.querySelector('button');
-  if(!btn)return;
-  if(qwenEnabled){
+  if(qwenEnabled&&QWEN_API_KEY){
     el.textContent='已启用 Qwen AI';
-    btn.textContent='关闭';
-    btn.onclick=disableQwen;
-    btn.style.borderColor='var(--line2)';
-    btn.style.color='var(--t2)';
-    btn.style.background='rgba(255,255,255,.03)';
+    if(wrap)wrap.innerHTML='<button class="set-neutral-btn" onclick="disableQwen()">关闭</button>';
   }else{
     el.textContent='使用本地模板回复';
-    btn.textContent='开启';
-    btn.onclick=enableQwen;
-    btn.style.borderColor='rgba(202,169,122,.3)';
-    btn.style.color='var(--accent)';
-    btn.style.background='rgba(202,169,122,.06)';
+    if(wrap)wrap.innerHTML='<button class="set-accent-btn" onclick="enableQwen()">开启</button>';
   }
 }
 
@@ -1122,13 +1217,13 @@ function renderAccountSection(){
     el.innerHTML='<div class="set-row"><div><div class="set-label">'+(isAnon?'匿名体验':'已登录')+'</div>'
       +(isAnon?'<div class="set-sub">注册账号可云端保存梦境</div>':'<div class="set-sub">'+u.email+'</div>')
       +'</div>'
-      +(isAnon?'<button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(202,169,122,.3);font-size:12px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px" onclick="loginWithEmail()">注册</button>':'')
+      +(isAnon?'<button class="set-accent-btn" onclick="loginWithEmail()">注册</button>':'')
       +'</div>'
       +'<div class="set-row"><div><div class="set-label">退出登录</div><div class="set-sub">本地数据仍会保留</div></div>'
-      +'<button style="padding:8px 16px;border-radius:12px;border:.5px solid var(--line2);font-size:12px;color:var(--t2);background:rgba(255,255,255,.03);letter-spacing:.5px" onclick="doLogout()">退出</button></div>';
+      +'<button class="set-neutral-btn" onclick="doLogout()">退出</button></div>';
   }else{
     el.innerHTML='<div class="set-row"><div><div class="set-label">未登录</div><div class="set-sub">登录后可云端保存梦境</div></div>'
-      +'<button style="padding:8px 16px;border-radius:12px;border:.5px solid rgba(202,169,122,.3);font-size:12px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px" onclick="loginWithEmail()">登录</button></div>';
+      +'<button class="set-accent-btn" onclick="loginWithEmail()">登录</button></div>';
   }
 }
 
@@ -1226,6 +1321,7 @@ function sendLetter(){
   var type=writeMode==='insomnia'?'失眠':'梦境';
   saveDream(text,emotion,type);
   document.getElementById('dreamIn').value='';
+  var cc=document.getElementById('charCount');if(cc)cc.textContent='';
   lastDreamText=text;lastDreamEmotion=emotion;lastDreamType=type;
   /* Button press feedback then transition */
   var btn=document.querySelector('.btn-send');
@@ -1705,8 +1801,19 @@ function renderHistory(){
     var t=new Date(d.ts);
     var dateStr=(t.getMonth()+1)+'/'+t.getDate()+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
     var delay=Math.min(i*0.06,0.3);
-    return '<div class="hist-item" style="animation:secIn .4s ease-out '+delay+'s both"><div class="hist-dot" style="background:'+c+';color:'+c+'"></div><div class="hist-info"><div class="hist-text">'+d.text+'</div><div class="hist-meta"><span>'+dateStr+'</span><span class="hist-tag">'+d.emotion+'</span></div></div><button onclick="exportDreamCard('+d.id+')" style="padding:8px 12px;border-radius:10px;border:.5px solid rgba(202,169,122,.2);font-size:11px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px;flex-shrink:0;transition:all .2s var(--ease)">📤 导出</button></div>';
+    var isLong=d.text.length>60;
+    var typeTag=d.type?'<span class="hist-type-badge" data-type="'+d.type+'">'+d.type+'</span>':'';
+    var expandDiv=isLong?'<div class="hist-expand">'+d.text+'</div>':'';
+    return '<div class="hist-item" style="animation:secIn .4s ease-out '+delay+'s both" onclick="toggleHistExpand(this)"><div class="hist-dot" style="background:'+c+';color:'+c+'"></div><div class="hist-info"><div class="hist-text">'+d.text+'</div><div class="hist-meta"><span>'+dateStr+'</span><span class="hist-tag">'+d.emotion+'</span>'+typeTag+'</div>'+expandDiv+'</div><button onclick="event.stopPropagation();exportDreamCard('+d.id+')" class="set-accent-btn" style="flex-shrink:0">📤 导出</button></div>';
   }).join('');
+}
+
+function toggleHistExpand(item){
+  if(!item.classList.contains('hist-item'))return;
+  var wasExpanded=item.classList.contains('expanded');
+  /* Collapse all first */
+  document.querySelectorAll('.hist-item.expanded').forEach(function(el){el.classList.remove('expanded')});
+  if(!wasExpanded)item.classList.add('expanded');
 }
 
 function exportDreamCard(dreamId){
@@ -2186,8 +2293,9 @@ function renderPattern(){
   var badgeSec=document.getElementById('badgesSection');
   if(badges.length>0&&badgeEl&&badgeSec){
     badgeSec.style.display='';
-    badgeEl.innerHTML=badges.map(function(b){
-      return '<div class="w-chip" style="border-color:rgba(202,169,122,.2);background:linear-gradient(135deg,rgba(202,169,122,.08),rgba(202,169,122,.02))"><span style="font-size:16px;margin-right:4px">'+b.icon+'</span><span>'+b.name+' · '+b.desc+'</span></div>';
+    badgeEl.innerHTML=badges.map(function(b,i){
+      var delay=i*0.08;
+      return '<div class="w-chip" style="animation:secIn .4s ease-out '+delay+'s both;border-color:rgba(202,169,122,.25);background:linear-gradient(135deg,rgba(202,169,122,.1),rgba(202,169,122,.03));box-shadow:0 0 16px rgba(202,169,122,.04)"><span style="font-size:18px;margin-right:6px;display:inline-block;animation:moonFloat 3s ease-in-out '+(i*0.3)+'s infinite">'+b.icon+'</span><span style="color:var(--accent);font-weight:400">'+b.name+'</span><span style="color:var(--t3);margin-left:4px;font-size:10px">'+b.desc+'</span></div>';
     }).join('');
   }
   
@@ -2215,10 +2323,11 @@ function renderPattern(){
   // Weather
   var weather=document.getElementById('patWeather');
   var sorted=Object.keys(counts).sort(function(a,b){return counts[b]-counts[a]});
-  weather.innerHTML=sorted.map(function(em){
+  weather.innerHTML=sorted.map(function(em,i){
     var pct=Math.round(counts[em]/total*100);
     var c=emotionColors[em]||'var(--t3)';
-    return '<div class="w-chip"><div class="w-dot" style="background:'+c+';color:'+c+'"></div><span>'+em+' · '+pct+'%</span></div>';
+    var delay=i*0.06;
+    return '<div class="w-chip" style="animation:secIn .4s ease-out '+delay+'s both;flex-direction:column;align-items:flex-start;gap:6px;padding:12px 16px"><div style="display:flex;align-items:center;gap:7px;width:100%"><div class="w-dot" style="background:'+c+';color:'+c+'"></div><span style="flex:1">'+em+'</span><span style="font-size:11px;color:var(--t3);font-weight:400">'+pct+'%</span></div><div style="width:100%;height:3px;border-radius:2px;background:rgba(255,255,255,.06);overflow:hidden"><div style="width:'+pct+'%;height:100%;border-radius:2px;background:'+c+';transition:width .6s var(--ease)"></div></div></div>';
   }).join('');
 
   // Insight
@@ -2233,6 +2342,9 @@ function renderPattern(){
       '喜悦':'你最近的梦带着<em>快乐和自由</em>。也许有什么好事正在发生，或者你正在允许自己<em>放松下来</em>。'
     };
     insight.innerHTML=insightTexts[top]||'你的梦境情绪正在变化——<em>继续记录</em>，模式会越来越清晰。';
+    /* Add subtle reveal animation */
+    var insCard=insight.closest('.ins-card');
+    if(insCard){insCard.style.animation='none';void insCard.offsetHeight;insCard.style.animation='patFadeIn .6s ease-out .2s both'}
   }
 
   // Letters list
@@ -2584,6 +2696,16 @@ function initAmbient(id){
 }
 
 /* === INIT === */
+function updateCharCount(){
+  var field=document.getElementById('dreamIn');
+  var el=document.getElementById('charCount');
+  if(!field||!el)return;
+  var len=field.value.length;
+  if(len===0){el.textContent='';el.classList.remove('warn');return}
+  el.textContent=len+' 字';
+  el.classList.toggle('warn',len>500);
+}
+
 document.getElementById('dreamIn').addEventListener('focus',function(){if(!this.value)this.placeholder='梦快忘了……好像在一个很深的水边……\n有人在远处叫我，但我走不过去……\n感觉不是害怕，更像是想哭但是哭不出来。'});
 document.addEventListener('touchstart',function(){},{passive:true});
 
@@ -2591,6 +2713,7 @@ document.addEventListener('touchstart',function(){},{passive:true});
 refreshHome();
 renderEmotionChips();
 renderAccountSection();
+refreshAISettings();
 
 /* === DREAM SQUARE (Anonymous Social) === */
 var squareDreams=[];
@@ -2699,30 +2822,33 @@ function renderSquareDreams(){
     
     var commentsHTML='';
     if(d.comments&&d.comments.length){
-      commentsHTML='<div style="margin-top:12px;padding-top:12px;border-top:.5px solid var(--line)">'+
+      commentsHTML='<div class="sq-comments-wrap">'+
         d.comments.slice(0,3).map(function(c){
-          return '<div style="font-size:12px;color:var(--t2);margin-bottom:6px"><span style="color:var(--accent)">['+c.user+']</span> '+c.text+'</div>';
+          return '<div class="sq-comment-item"><span class="sq-comment-user">['+c.user+']</span> '+c.text+'</div>';
         }).join('')+
-        (d.comments.length>3?'<div style="font-size:11px;color:var(--t3);margin-top:4px">还有 '+d.comments.length+' 条评论</div>':'')+
+        (d.comments.length>3?'<div class="sq-comment-more">还有 '+d.comments.length+' 条评论</div>':'')+
       '</div>';
     }
     
-    return '<div class="hist-item" style="animation:secIn .4s ease-out '+delay+'s both;flex-direction:column;align-items:flex-start">'+
-      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-        '<div class="hist-tag" style="background:'+emotionColors[d.emotion]+'20;color:'+emotionColors[d.emotion]+';border-color:'+emotionColors[d.emotion]+'40">'+d.emotion+'</div>'+
-        '<span style="font-size:10px;color:var(--t3)">'+dateStr+'</span>'+
+    return '<div class="sq-card" style="animation:secIn .4s ease-out '+delay+'s both">'+
+      '<div class="sq-card-hdr">'+
+        '<div class="sq-emo-tag" data-emo="'+d.emotion+'">'+d.emotion+'</div>'+
+        '<span class="sq-date">'+dateStr+'</span>'+
       '</div>'+
-      '<div style="font-size:13px;font-weight:300;color:var(--t1);line-height:1.8;margin-bottom:10px">'+d.text+'</div>'+
-      '<div style="display:flex;align-items:center;gap:12px">'+
-        '<button onclick="likeDream(\''+d.id+'\')" style="display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:10px;border:.5px solid rgba(202,169,122,.2);font-size:11px;color:var(--accent);background:rgba(202,169,122,.04)"><span>✨</span><span>'+d.likes+'</span></button>'+
-        '<button onclick="commentDream(\''+d.id+'\')" style="padding:6px 12px;border-radius:10px;border:.5px solid var(--line2);font-size:11px;color:var(--t3);background:rgba(255,255,255,.02)">💬 留言</button>'+
+      '<div class="sq-text">'+d.text+'</div>'+
+      '<div class="sq-actions">'+
+        '<button class="sq-act-btn sq-like" onclick="likeDream(\''+d.id+'\',this)" data-id="'+d.id+'"><span>✨</span><span>'+d.likes+'</span></button>'+
+        '<button class="sq-act-btn sq-comment" onclick="commentDream(\''+d.id+'\')">💬 留言</button>'+
       '</div>'+
       commentsHTML+
     '</div>';
   }).join('');
 }
 
-function likeDream(dreamId){
+function likeDream(dreamId,btn){
+  /* Visual feedback */
+  if(btn){btn.classList.add('sq-like-pop','liked');setTimeout(function(){btn.classList.remove('sq-like-pop')},350)}
+  
   if(!fbReady){
     alert('演示模式下无法点赞');
     return;
