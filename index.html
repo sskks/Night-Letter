@@ -547,6 +547,10 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .login-toggle{margin-top:12px;font-size:12px;color:var(--t3);letter-spacing:.5px;cursor:pointer;padding:6px 12px;transition:color .2s}
 .login-toggle:hover{color:var(--accent)}
 .login-error{font-size:12px;color:#c47080;text-align:center;margin-top:8px;min-height:18px;letter-spacing:.3px}
+.login-mode{font-size:10px;color:var(--t4);text-align:center;margin-top:16px;letter-spacing:.5px;opacity:0;transition:opacity .3s}
+.login-mode.show{opacity:1}
+.login-mode .mode-local{color:rgba(125,212,224,.6)}
+.login-mode .mode-cloud{color:rgba(202,169,122,.5)}
 </style>
 </head>
 <body>
@@ -804,7 +808,8 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <button class="login-btn login-btn-primary" id="loginBtn" onclick="doLogin()">登 录</button>
   <button class="login-btn login-btn-secondary" id="regBtn" onclick="doRegister()" style="display:none">注 册</button>
   <div class="login-toggle" id="loginToggle" onclick="toggleLoginMode()">还没有账号？注册</div>
-  <button class="login-btn" id="skipBtn" onclick="loginAnonymously()" style="border:none;color:var(--t3);background:none;margin-top:24px;font-size:13px;letter-spacing:1px">先看看，不登录也能用 &rarr;</button>
+  <div class="login-mode" id="loginMode"></div>
+  <button class="login-btn" id="skipBtn" onclick="loginAnonymously()" style="border:none;color:var(--t3);background:none;margin-top:16px;font-size:13px;letter-spacing:1px">先看看，不登录也能用 &rarr;</button>
 </div>
 
 <!-- CONFIRM MODAL -->
@@ -823,14 +828,9 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <script>
 var _fbSdkLoaded=false;
 function _fbSdkFailed(src){
-  console.error('Firebase SDK failed to load: '+src);
+  console.warn('Firebase SDK failed to load: '+src+', will use local auth');
   _fbSdkLoaded=false;
-  var errEl=document.getElementById('loginError');
-  if(errEl)errEl.textContent='网络服务加载失败，请先点击「先看看」体验';
-  document.getElementById('loginBtn').disabled=true;
-  document.getElementById('loginBtn').style.opacity='.4';
-  document.getElementById('regBtn').disabled=true;
-  document.getElementById('regBtn').style.opacity='.4';
+  _useLocalAuth=true;
 }
 function _fbSdkReady(){
   _fbSdkLoaded=true;
@@ -899,8 +899,9 @@ function saveDream(text,emotion,type){
   var dream={id:Date.now(),text:text,emotion:emotion||'未知',ts:new Date().toISOString(),aiTurns:0,type:type||'梦境'};
   ds.unshift(dream);
   localStorage.setItem(STORE_KEY,JSON.stringify(ds));
-  if(typeof firebase !== 'undefined' && firebase.auth() && firebase.auth().currentUser){
-    var uid=firebase.auth().currentUser.uid;
+  var user=_getCurrentUser();
+  if(fbReady&&user&&!user.isLocal){
+    var uid=user.uid;
     firebase.firestore().collection('users').doc(uid).collection('dreams').doc(String(dream.id)).set(dream).catch(function(){});
   }
   return ds;
@@ -913,8 +914,9 @@ function getStats(){
 function clearAllData(){
   closeConfirm();
   localStorage.removeItem(STORE_KEY);
-  if(typeof firebase !== 'undefined' && firebase.auth().currentUser){
-    var uid=firebase.auth().currentUser.uid;
+  var user=_getCurrentUser();
+  if(fbReady&&user&&!user.isLocal){
+    var uid=user.uid;
     firebase.firestore().collection('users').doc(uid).collection('dreams').get().then(function(snap){
       if(snap.empty)return;
       var batch=firebase.firestore().batch();
@@ -946,21 +948,150 @@ var firebaseConfig={
   appId: "1:226143611390:web:d27a0e737e010a1878f8af"
 };
 var fbReady=false;
+var _useLocalAuth=false;
+
+/* --- Local Auth System (fallback for China / no Firebase) --- */
+var LOCAL_ACCOUNTS_KEY='nightletter_accounts';
+var LOCAL_SESSION_KEY='nightletter_session';
+var _localUser=null;
+
+function _hashPassword(password,salt){
+  /* Simple but adequate hash for local-only auth */
+  var str=password+':'+salt;
+  var hash=0;
+  for(var i=0;i<str.length;i++){
+    var ch=str.charCodeAt(i);
+    hash=((hash<<5)-hash)+ch;
+    hash=hash&hash;
+  }
+  return Math.abs(hash).toString(36)+salt;
+}
+
+function _getLocalAccounts(){
+  try{return JSON.parse(localStorage.getItem(LOCAL_ACCOUNTS_KEY))||{}}catch(e){return{}}
+}
+
+function _saveLocalAccounts(accounts){
+  localStorage.setItem(LOCAL_ACCOUNTS_KEY,JSON.stringify(accounts));
+}
+
+function _localSignUp(email,password){
+  var accounts=_getLocalAccounts();
+  var key=email.toLowerCase().trim();
+  if(accounts[key])return Promise.reject({code:'auth/email-already-in-use',message:'该邮箱已被注册'});
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(key))return Promise.reject({code:'auth/invalid-email',message:'邮箱格式不正确'});
+  if(password.length<6)return Promise.reject({code:'auth/weak-password',message:'密码至少 6 位'});
+  var salt=Date.now().toString(36);
+  accounts[key]={email:key,hashedPwd:_hashPassword(password,salt),salt:salt,createdAt:Date.now()};
+  _saveLocalAccounts(accounts);
+  _localUser={uid:'local_'+key,email:key,isAnonymous:false,isLocal:true};
+  localStorage.setItem(LOCAL_SESSION_KEY,key);
+  return Promise.resolve(_localUser);
+}
+
+function _localSignIn(email,password){
+  var accounts=_getLocalAccounts();
+  var key=email.toLowerCase().trim();
+  if(!accounts[key])return Promise.reject({code:'auth/user-not-found',message:'未找到该账号'});
+  var account=accounts[key];
+  if(_hashPassword(password,account.salt)!==account.hashedPwd){
+    return Promise.reject({code:'auth/wrong-password',message:'密码错误'});
+  }
+  _localUser={uid:'local_'+key,email:key,isAnonymous:false,isLocal:true};
+  localStorage.setItem(LOCAL_SESSION_KEY,key);
+  return Promise.resolve(_localUser);
+}
+
+function _localSignOut(){
+  _localUser=null;
+  localStorage.removeItem(LOCAL_SESSION_KEY);
+  return Promise.resolve();
+}
+
+function _restoreLocalSession(){
+  var session=localStorage.getItem(LOCAL_SESSION_KEY);
+  if(session){
+    if(session==='__anon__'){
+      _localUser={uid:'local_anon',email:null,isAnonymous:true,isLocal:true};
+    }else{
+      var accounts=_getLocalAccounts();
+      if(accounts[session]){
+        _localUser={uid:'local_'+session,email:session,isAnonymous:false,isLocal:true};
+      }
+    }
+  }
+}
+
+function _getCurrentUser(){
+  if(fbReady&&typeof firebase!=='undefined'&&firebase.auth().currentUser)return firebase.auth().currentUser;
+  if(_useLocalAuth&&_localUser)return _localUser;
+  return null;
+}
+
+/* Try to initialize Firebase */
 try{
   if(typeof firebase!=='undefined'&&_fbSdkLoaded&&firebaseConfig.apiKey!=='YOUR_API_KEY'){
     firebase.initializeApp(firebaseConfig);
     fbReady=true;
     console.log('✅ Firebase initialized successfully');
   }else{
-    console.warn('⚠️ Firebase SDK not available, running in offline mode');
-    /* Show error to user but don't auto-close login overlay */
-    var errEl=document.getElementById('loginError');
-    if(errEl)errEl.textContent='网络服务加载失败，请先点击「先看看」体验';
+    console.warn('⚠️ Firebase SDK not available, will use local auth');
+    _useLocalAuth=true;
   }
 }catch(e){
   console.warn('Firebase init failed:',e);
-  var errEl=document.getElementById('loginError');
-  if(errEl)errEl.textContent='服务初始化失败，请先点击「先看看」体验';
+  _useLocalAuth=true;
+}
+
+/* If Firebase SDK loaded, test if Google Auth API is actually reachable (China may block it) */
+var _authModeReady=false; /* true when we know which auth mode to use */
+function _onAuthModeReady(){
+  _authModeReady=true;
+  console.log('Auth mode: '+(_useLocalAuth?'LOCAL':'FIREBASE'));
+  /* Update login UI with mode indicator */
+  var modeEl=document.getElementById('loginMode');
+  if(modeEl){
+    modeEl.classList.add('show');
+    if(_useLocalAuth){
+      modeEl.innerHTML='<span class="mode-local">本地模式 · 数据保存在设备上</span>';
+    }else{
+      modeEl.innerHTML='<span class="mode-cloud">云端模式 · 数据可跨设备同步</span>';
+    }
+  }
+  /* If local auth, restore session and dismiss login */
+  if(_useLocalAuth){
+    _restoreLocalSession();
+    if(_localUser){
+      document.getElementById('loginOverlay').classList.add('off');
+    }
+  }
+  /* Trigger onboarding check */
+  _checkOnboarding();
+}
+
+if(fbReady){
+  /* Quick test: can we reach Google's auth endpoint? */
+  (function(){
+    var testDone=false;
+    var timer=setTimeout(function(){
+      if(testDone)return;testDone=true;
+      console.warn('Google Auth API unreachable (timeout) — switching to local auth');
+      _useLocalAuth=true;
+      _onAuthModeReady();
+    },3000);
+    fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=test',{method:'POST',body:'{}'}).then(function(){
+      if(testDone)return;testDone=true;clearTimeout(timer);
+      _onAuthModeReady();
+    }).catch(function(){
+      if(testDone)return;testDone=true;clearTimeout(timer);
+      console.warn('Google Auth API unreachable — switching to local auth');
+      _useLocalAuth=true;
+      _onAuthModeReady();
+    });
+  })();
+}else{
+  /* Firebase SDK not loaded at all — use local auth immediately */
+  _onAuthModeReady();
 }
 
 /* === QWEN AI === */
@@ -1072,10 +1203,6 @@ function toggleLoginMode(){
 function doLogin(){
   var errEl=document.getElementById('loginError');
   errEl.textContent='';
-  if(!fbReady){
-    errEl.textContent='网络服务未就绪，请检查网络后重试，或点击「先看看」体验';
-    return;
-  }
   var email=document.getElementById('loginEmail').value.trim();
   var pass=document.getElementById('loginPass').value;
   if(!email||!pass){errEl.textContent='请填写邮箱和密码';return}
@@ -1084,20 +1211,36 @@ function doLogin(){
   var loginBtn=document.getElementById('loginBtn');
   loginBtn.disabled=true;loginBtn.style.opacity='.5';
   
+  var _resetBtn=function(){loginBtn.disabled=false;loginBtn.style.opacity='1'};
+  
+  if(_useLocalAuth||!fbReady){
+    /* Local auth mode */
+    _localSignIn(email,pass).then(function(){
+      errEl.textContent='';
+      _resetBtn();
+      document.getElementById('loginOverlay').classList.add('off');
+    }).catch(function(e){
+      _resetBtn();
+      errEl.textContent=e.message||'登录失败';
+    });
+    return;
+  }
+  
+  /* Firebase auth */
   var loginTimeout=setTimeout(function(){
     errEl.textContent='连接超时，可能因为网络环境无法访问 Google 服务。建议点击「先看看」使用本地模式（数据保存在设备上）';
-    loginBtn.disabled=false;loginBtn.style.opacity='1';
+    _resetBtn();
   },12000);
   
   firebase.auth().signInWithEmailAndPassword(email,pass)
     .then(function(){
       clearTimeout(loginTimeout);
       errEl.textContent='';
-      loginBtn.disabled=false;loginBtn.style.opacity='1';
+      _resetBtn();
     })
     .catch(function(e){
       clearTimeout(loginTimeout);
-      loginBtn.disabled=false;loginBtn.style.opacity='1';
+      _resetBtn();
       console.error('Login error:',e.code,e.message);
       var msg=e.message||'登录失败';
       if(e.code==='auth/user-not-found')msg='未找到该账号';
@@ -1114,10 +1257,6 @@ function doLogin(){
 function doRegister(){
   var errEl=document.getElementById('loginError');
   errEl.textContent='';
-  if(!fbReady){
-    errEl.textContent='网络服务未就绪，请检查网络后重试，或点击「先看看」体验';
-    return;
-  }
   var email=document.getElementById('loginEmail').value.trim();
   var pass=document.getElementById('loginPass').value;
   if(!email||!pass){errEl.textContent='请填写邮箱和密码';return}
@@ -1127,20 +1266,36 @@ function doRegister(){
   var regBtn=document.getElementById('regBtn');
   regBtn.disabled=true;regBtn.style.opacity='.5';
   
+  var _resetBtn=function(){regBtn.disabled=false;regBtn.style.opacity='1'};
+  
+  if(_useLocalAuth||!fbReady){
+    /* Local auth mode */
+    _localSignUp(email,pass).then(function(){
+      errEl.textContent='';
+      _resetBtn();
+      document.getElementById('loginOverlay').classList.add('off');
+    }).catch(function(e){
+      _resetBtn();
+      errEl.textContent=e.message||'注册失败';
+    });
+    return;
+  }
+  
+  /* Firebase auth */
   var regTimeout=setTimeout(function(){
     errEl.textContent='连接超时，可能因为网络环境无法访问 Google 服务。建议点击「先看看」使用本地模式';
-    regBtn.disabled=false;regBtn.style.opacity='1';
+    _resetBtn();
   },12000);
   
   firebase.auth().createUserWithEmailAndPassword(email,pass)
     .then(function(){
       clearTimeout(regTimeout);
       errEl.textContent='';
-      regBtn.disabled=false;regBtn.style.opacity='1';
+      _resetBtn();
     })
     .catch(function(e){
       clearTimeout(regTimeout);
-      regBtn.disabled=false;regBtn.style.opacity='1';
+      _resetBtn();
       console.error('Register error:',e.code,e.message);
       var msg=e.message||'注册失败';
       if(e.code==='auth/email-already-in-use')msg='该邮箱已被注册';
@@ -1152,17 +1307,27 @@ function doRegister(){
 }
 
 function loginAnonymously(){
-  if(fbReady){
+  if(fbReady&&!_useLocalAuth){
     firebase.auth().signInAnonymously().catch(function(e){
       console.warn('Anonymous login failed:',e);
     });
+  }else{
+    /* Local anonymous mode */
+    _localUser={uid:'local_anon_'+Date.now(),email:null,isAnonymous:true,isLocal:true};
+    localStorage.setItem(LOCAL_SESSION_KEY,'__anon__');
   }
   document.getElementById('loginOverlay').classList.add('off');
 }
 
 function doLogout(){
-  if(fbReady){
+  if(fbReady&&firebase.auth().currentUser&&!firebase.auth().currentUser.isLocal){
     firebase.auth().signOut().then(function(){
+      go('home');
+      document.getElementById('loginOverlay').classList.remove('off');
+    });
+  }else{
+    /* Local auth logout */
+    _localSignOut().then(function(){
       go('home');
       document.getElementById('loginOverlay').classList.remove('off');
     });
@@ -1175,8 +1340,9 @@ function loginWithEmail(){
 }
 
 function syncDreamsToCloud(dreams){
-  if(!fbReady||!firebase.auth().currentUser||!dreams.length)return Promise.resolve();
-  var uid=firebase.auth().currentUser.uid;
+  var user=_getCurrentUser();
+  if(!fbReady||!user||user.isLocal||!dreams.length)return Promise.resolve();
+  var uid=user.uid;
   var db=firebase.firestore();
   var batch=db.batch();
   var count=Math.min(dreams.length,500);
@@ -1189,8 +1355,9 @@ function syncDreamsToCloud(dreams){
 }
 
 function loadDreamsFromCloud(){
-  if(!fbReady||!firebase.auth().currentUser)return Promise.resolve([]);
-  var uid=firebase.auth().currentUser.uid;
+  var user=_getCurrentUser();
+  if(!fbReady||!user||user.isLocal)return Promise.resolve([]);
+  var uid=user.uid;
   return firebase.firestore().collection('users').doc(uid).collection('dreams')
     .orderBy('ts','desc').get().then(function(snap){
       var dreams=[];
@@ -1211,16 +1378,23 @@ function mergeDreams(local,cloud){
 function renderAccountSection(){
   var el=document.getElementById('accountInfo');
   if(!el)return;
-  if(fbReady&&firebase.auth().currentUser){
-    var u=firebase.auth().currentUser;
-    var isAnon=u.isAnonymous;
-    el.innerHTML='<div class="set-row"><div><div class="set-label">'+(isAnon?'匿名体验':'已登录')+'</div>'
-      +(isAnon?'<div class="set-sub">注册账号可云端保存梦境</div>':'<div class="set-sub">'+u.email+'</div>')
+  var user=_getCurrentUser();
+  if(user){
+    var isAnon=user.isAnonymous;
+    var isLocal=user.isLocal||false;
+    var statusLabel=isAnon?'匿名体验':isLocal?'已登录（本地模式）':'已登录';
+    var subText=isAnon?'注册账号可云端保存梦境':user.email||'本地账号';
+    el.innerHTML='<div class="set-row"><div><div class="set-label">'+statusLabel+'</div>'
+      +'<div class="set-sub">'+subText+'</div>'
       +'</div>'
       +(isAnon?'<button class="set-accent-btn" onclick="loginWithEmail()">注册</button>':'')
       +'</div>'
       +'<div class="set-row"><div><div class="set-label">退出登录</div><div class="set-sub">本地数据仍会保留</div></div>'
       +'<button class="set-neutral-btn" onclick="doLogout()">退出</button></div>';
+    if(isLocal&&!isAnon){
+      /* Show data export hint for local mode */
+      el.innerHTML+='<div class="set-row"><div><div class="set-label">数据模式</div><div class="set-sub">梦境数据保存在本设备。如需跨设备使用，请定期导出备份。</div></div></div>';
+    }
   }else{
     el.innerHTML='<div class="set-row"><div><div class="set-label">未登录</div><div class="set-sub">登录后可云端保存梦境</div></div>'
       +'<button class="set-accent-btn" onclick="loginWithEmail()">登录</button></div>';
@@ -2720,9 +2894,9 @@ var squareDreams=[];
 var currentSquareDream=null;
 
 function shareToSquare(){
-  if(!fbReady||!firebase.auth().currentUser){
-    alert('请先登录后再分享梦境');
-    document.getElementById('loginOverlay').classList.remove('off');
+  var user=_getCurrentUser();
+  if(!user||user.isLocal||!fbReady){
+    alert('梦境广场需要云端服务支持，请使用邮箱注册登录（需要能访问 Google 服务的网络环境）');
     return;
   }
   
@@ -2765,7 +2939,7 @@ function shareToSquare(){
     sharedAt:firebase.firestore.FieldValue.serverTimestamp(),
     likes:0,
     comments:[],
-    authorId:firebase.auth().currentUser.uid, /* Hidden from display */
+    authorId:user.uid, /* Hidden from display */
     isAnonymous:true
   };
   
@@ -2907,11 +3081,33 @@ function commentDream(dreamId){
   });
 }
 
-// Onboarding — only show after login is dismissed
-if(!localStorage.getItem(ONBOARD_KEY)){
-  if(fbReady){
-    /* Wait for auth state to resolve; onAuthStateChanged will hide login overlay,
-       then we check onboarding */
+// Onboarding — called from _onAuthModeReady after auth mode is determined
+function _checkOnboarding(){
+  var hasOnboard=localStorage.getItem(ONBOARD_KEY);
+  var user=_getCurrentUser();
+  
+  if(hasOnboard){
+    /* Already onboarded — ensure login overlay is dismissed if user is logged in */
+    if(user){
+      document.getElementById('loginOverlay').classList.add('off');
+    }
+    return;
+  }
+  
+  /* Need to show onboarding */
+  if(user){
+    /* User is logged in, show onboarding after a brief delay */
+    setTimeout(showOnboard,600);
+  }else if(_useLocalAuth){
+    /* Local mode, no user — show login overlay, wait for login then onboard */
+    var _obCheck=setInterval(function(){
+      if(document.getElementById('loginOverlay').classList.contains('off')){
+        clearInterval(_obCheck);
+        setTimeout(showOnboard,600);
+      }
+    },200);
+  }else if(fbReady){
+    /* Firebase mode — wait for auth state */
     var _obCheck=setInterval(function(){
       if(document.getElementById('loginOverlay').classList.contains('off')){
         clearInterval(_obCheck);
@@ -2919,14 +3115,9 @@ if(!localStorage.getItem(ONBOARD_KEY)){
       }
     },200);
   }else{
-    /* No Firebase — skip login, show onboarding directly */
+    /* Fallback — show onboarding directly */
     document.getElementById('loginOverlay').classList.add('off');
     setTimeout(showOnboard,800);
-  }
-}else{
-  /* Already onboarded */
-  if(!fbReady){
-    document.getElementById('loginOverlay').classList.add('off');
   }
 }
 
