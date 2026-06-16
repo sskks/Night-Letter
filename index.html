@@ -824,22 +824,8 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   </div>
 </div>
 
-<!-- Firebase SDK -->
-<script>
-var _fbSdkLoaded=false;
-function _fbSdkFailed(src){
-  console.warn('Firebase SDK failed to load: '+src+', will use local auth');
-  _fbSdkLoaded=false;
-  _useLocalAuth=true;
-}
-function _fbSdkReady(){
-  _fbSdkLoaded=true;
-  console.log('Firebase SDK loaded successfully');
-}
-</script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.14.1/firebase-app-compat.js" onload="_fbSdkReady()" onerror="_fbSdkFailed(this.src)"></script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.14.1/firebase-auth-compat.js" onerror="_fbSdkFailed(this.src)"></script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.14.1/firebase-firestore-compat.js" onerror="_fbSdkFailed(this.src)"></script>
+<!-- LeanCloud SDK (国内 BaaS 替代 Firebase) -->
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage@5.0.0/dist/av-min.js" onerror="console.warn('LeanCloud SDK 加载失败，将使用本地模式');window._lcSdkFailed=true;"></script>
 
 <script>
 /* ============================================
@@ -900,9 +886,17 @@ function saveDream(text,emotion,type){
   ds.unshift(dream);
   localStorage.setItem(STORE_KEY,JSON.stringify(ds));
   var user=_getCurrentUser();
-  if(fbReady&&user&&!user.isLocal){
-    var uid=user.uid;
-    firebase.firestore().collection('users').doc(uid).collection('dreams').doc(String(dream.id)).set(dream).catch(function(){});
+  if(lcReady&&user){
+    var Dream=AV.Object.extend('Dream');
+    var obj=new Dream();
+    obj.set('text',dream.text);
+    obj.set('emotion',dream.emotion);
+    obj.set('type',dream.type);
+    obj.set('ts',dream.ts);
+    obj.set('aiTurns',dream.aiTurns||0);
+    obj.set('author',user);
+    obj.setACL(new AV.ACL({'*':{read:false,write:false},[user.id]:{read:true,write:true}}));
+    obj.save().catch(function(){});
   }
   return ds;
 }
@@ -915,13 +909,12 @@ function clearAllData(){
   closeConfirm();
   localStorage.removeItem(STORE_KEY);
   var user=_getCurrentUser();
-  if(fbReady&&user&&!user.isLocal){
-    var uid=user.uid;
-    firebase.firestore().collection('users').doc(uid).collection('dreams').get().then(function(snap){
-      if(snap.empty)return;
-      var batch=firebase.firestore().batch();
-      snap.forEach(function(d){batch.delete(d.ref)});
-      return batch.commit();
+  if(lcReady&&user){
+    var q=new AV.Query('Dream');
+    q.equalTo('author',user);
+    q.find().then(function(objs){
+      if(!objs.length)return;
+      return AV.Object.destroyAll(objs);
     }).catch(function(){});
   }
   refreshAll();go('home');
@@ -938,161 +931,72 @@ function closeConfirm(){
   document.getElementById('confirmModal').classList.remove('on');
 }
 
-/* === FIREBASE === */
-var firebaseConfig={
-  apiKey: "AIzaSyCcbK4Suvhaw5POrK9uCQGuD5dphlTrqHI",
-  authDomain: "night-letter-54526.firebaseapp.com",
-  projectId: "night-letter-54526",
-  storageBucket: "night-letter-54526.firebasestorage.app",
-  messagingSenderId: "226143611390",
-  appId: "1:226143611390:web:d27a0e737e010a1878f8af"
+/* === LEANCLOUD (国内后端替代 Firebase) === */
+/*
+ * 请在 LeanCloud 控制台 (https://console.leancloud.cn) 创建应用后，
+ * 填写以下三项配置即可启用云端同步和梦境广场功能：
+ *   appId   — 应用 ID
+ *   appKey  — 应用密钥
+ *   serverURL — 应用 API 域名（控制台 → 设置 → 应用凭证 中获取）
+ *
+ * 同时需要在控制台创建以下数据 Class 并设置权限：
+ *   Dream       — 字段：text, emotion, type, ts, aiTurns, author(Pointer<_User>)
+ *                 权限：仅创建者可读写
+ *   PublicDream — 字段：text, emotion, type, ts, likes(Number), comments(Array),
+ *                        sharedAt, author(Pointer<_User>)
+ *                 权限：所有用户可读，仅登录用户可创建
+ */
+var LC_CONFIG={
+  appId:'YOUR_APP_ID',
+  appKey:'YOUR_APP_KEY',
+  serverURL:'YOUR_SERVER_URL'
 };
-var fbReady=false;
-var _useLocalAuth=false;
-
-/* --- Local Auth System (fallback for China / no Firebase) --- */
-var LOCAL_ACCOUNTS_KEY='nightletter_accounts';
-var LOCAL_SESSION_KEY='nightletter_session';
-var _localUser=null;
-
-function _hashPassword(password,salt){
-  /* Simple but adequate hash for local-only auth */
-  var str=password+':'+salt;
-  var hash=0;
-  for(var i=0;i<str.length;i++){
-    var ch=str.charCodeAt(i);
-    hash=((hash<<5)-hash)+ch;
-    hash=hash&hash;
-  }
-  return Math.abs(hash).toString(36)+salt;
-}
-
-function _getLocalAccounts(){
-  try{return JSON.parse(localStorage.getItem(LOCAL_ACCOUNTS_KEY))||{}}catch(e){return{}}
-}
-
-function _saveLocalAccounts(accounts){
-  localStorage.setItem(LOCAL_ACCOUNTS_KEY,JSON.stringify(accounts));
-}
-
-function _localSignUp(email,password){
-  var accounts=_getLocalAccounts();
-  var key=email.toLowerCase().trim();
-  if(accounts[key])return Promise.reject({code:'auth/email-already-in-use',message:'该邮箱已被注册'});
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(key))return Promise.reject({code:'auth/invalid-email',message:'邮箱格式不正确'});
-  if(password.length<6)return Promise.reject({code:'auth/weak-password',message:'密码至少 6 位'});
-  var salt=Date.now().toString(36);
-  accounts[key]={email:key,hashedPwd:_hashPassword(password,salt),salt:salt,createdAt:Date.now()};
-  _saveLocalAccounts(accounts);
-  _localUser={uid:'local_'+key,email:key,isAnonymous:false,isLocal:true};
-  localStorage.setItem(LOCAL_SESSION_KEY,key);
-  return Promise.resolve(_localUser);
-}
-
-function _localSignIn(email,password){
-  var accounts=_getLocalAccounts();
-  var key=email.toLowerCase().trim();
-  if(!accounts[key])return Promise.reject({code:'auth/user-not-found',message:'未找到该账号'});
-  var account=accounts[key];
-  if(_hashPassword(password,account.salt)!==account.hashedPwd){
-    return Promise.reject({code:'auth/wrong-password',message:'密码错误'});
-  }
-  _localUser={uid:'local_'+key,email:key,isAnonymous:false,isLocal:true};
-  localStorage.setItem(LOCAL_SESSION_KEY,key);
-  return Promise.resolve(_localUser);
-}
-
-function _localSignOut(){
-  _localUser=null;
-  localStorage.removeItem(LOCAL_SESSION_KEY);
-  return Promise.resolve();
-}
-
-function _restoreLocalSession(){
-  var session=localStorage.getItem(LOCAL_SESSION_KEY);
-  if(session){
-    if(session==='__anon__'){
-      _localUser={uid:'local_anon',email:null,isAnonymous:true,isLocal:true};
-    }else{
-      var accounts=_getLocalAccounts();
-      if(accounts[session]){
-        _localUser={uid:'local_'+session,email:session,isAnonymous:false,isLocal:true};
-      }
-    }
-  }
-}
+var lcReady=false;
+var _isAnonymousLocal=false; /* "先看看" 匿名浏览模式，不走 LeanCloud */
 
 function _getCurrentUser(){
-  if(fbReady&&typeof firebase!=='undefined'&&firebase.auth().currentUser)return firebase.auth().currentUser;
-  if(_useLocalAuth&&_localUser)return _localUser;
+  if(lcReady){
+    try{var u=AV.User.current();if(u)return u}catch(e){}
+  }
   return null;
 }
 
-/* Try to initialize Firebase */
+/* Initialize LeanCloud */
 try{
-  if(typeof firebase!=='undefined'&&_fbSdkLoaded&&firebaseConfig.apiKey!=='YOUR_API_KEY'){
-    firebase.initializeApp(firebaseConfig);
-    fbReady=true;
-    console.log('✅ Firebase initialized successfully');
+  if(typeof AV!=='undefined'&&LC_CONFIG.appId!=='YOUR_APP_ID'){
+    AV.init({appId:LC_CONFIG.appId,appKey:LC_CONFIG.appKey,serverURL:LC_CONFIG.serverURL});
+    lcReady=true;
+    console.log('LeanCloud initialized');
+  }else if(typeof AV==='undefined'){
+    console.warn('LeanCloud SDK not available — running in offline mode');
   }else{
-    console.warn('⚠️ Firebase SDK not available, will use local auth');
-    _useLocalAuth=true;
+    console.log('LeanCloud not configured — running in offline mode. Please fill in LC_CONFIG.');
   }
 }catch(e){
-  console.warn('Firebase init failed:',e);
-  _useLocalAuth=true;
+  console.warn('LeanCloud init failed:',e);
 }
 
-/* If Firebase SDK loaded, test if Google Auth API is actually reachable (China may block it) */
-var _authModeReady=false; /* true when we know which auth mode to use */
-function _onAuthModeReady(){
-  _authModeReady=true;
-  console.log('Auth mode: '+(_useLocalAuth?'LOCAL':'FIREBASE'));
-  /* Update login UI with mode indicator */
+/* Show connection status on login page */
+(function(){
   var modeEl=document.getElementById('loginMode');
-  if(modeEl){
-    modeEl.classList.add('show');
-    if(_useLocalAuth){
-      modeEl.innerHTML='<span class="mode-local">本地模式 · 数据保存在设备上</span>';
-    }else{
-      modeEl.innerHTML='<span class="mode-cloud">云端模式 · 数据可跨设备同步</span>';
-    }
+  if(!modeEl)return;
+  modeEl.classList.add('show');
+  if(lcReady){
+    modeEl.innerHTML='<span class="mode-cloud">云端模式 · 数据可跨设备同步</span>';
+  }else{
+    modeEl.innerHTML='<span class="mode-local">离线模式 · 数据保存在设备上</span>';
   }
-  /* If local auth, restore session and dismiss login */
-  if(_useLocalAuth){
-    _restoreLocalSession();
-    if(_localUser){
-      document.getElementById('loginOverlay').classList.add('off');
-    }
-  }
-  /* Trigger onboarding check */
-  _checkOnboarding();
+})();
+
+/* Restore anonymous browse session */
+var _anonSession=localStorage.getItem('nightletter_session');
+if(_anonSession==='__anon__'){
+  _isAnonymousLocal=true;
+  document.getElementById('loginOverlay').classList.add('off');
 }
 
-if(fbReady){
-  /* Quick test: can we reach Google's auth endpoint? */
-  (function(){
-    var testDone=false;
-    var timer=setTimeout(function(){
-      if(testDone)return;testDone=true;
-      console.warn('Google Auth API unreachable (timeout) — switching to local auth');
-      _useLocalAuth=true;
-      _onAuthModeReady();
-    },3000);
-    fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=test',{method:'POST',body:'{}'}).then(function(){
-      if(testDone)return;testDone=true;clearTimeout(timer);
-      _onAuthModeReady();
-    }).catch(function(){
-      if(testDone)return;testDone=true;clearTimeout(timer);
-      console.warn('Google Auth API unreachable — switching to local auth');
-      _useLocalAuth=true;
-      _onAuthModeReady();
-    });
-  })();
-}else{
-  /* Firebase SDK not loaded at all — use local auth immediately */
-  _onAuthModeReady();
-}
+/* Trigger onboarding check */
+_checkOnboarding();
 
 /* === QWEN AI === */
 var QWEN_API_KEY='sk-80d2d09cff77454c8aab0f416a6f61ad';
@@ -1213,45 +1117,44 @@ function doLogin(){
   
   var _resetBtn=function(){loginBtn.disabled=false;loginBtn.style.opacity='1'};
   
-  if(_useLocalAuth||!fbReady){
-    /* Local auth mode */
-    _localSignIn(email,pass).then(function(){
-      errEl.textContent='';
-      _resetBtn();
-      document.getElementById('loginOverlay').classList.add('off');
-    }).catch(function(e){
-      _resetBtn();
-      errEl.textContent=e.message||'登录失败';
-    });
+  if(!lcReady){
+    _resetBtn();
+    errEl.textContent='云端服务未配置，请先在代码中填写 LC_CONFIG';
     return;
   }
   
-  /* Firebase auth */
-  var loginTimeout=setTimeout(function(){
-    errEl.textContent='连接超时，可能因为网络环境无法访问 Google 服务。建议点击「先看看」使用本地模式（数据保存在设备上）';
+  AV.User.logIn(email,pass).then(function(user){
+    errEl.textContent='';
     _resetBtn();
-  },12000);
-  
-  firebase.auth().signInWithEmailAndPassword(email,pass)
-    .then(function(){
-      clearTimeout(loginTimeout);
-      errEl.textContent='';
-      _resetBtn();
-    })
-    .catch(function(e){
-      clearTimeout(loginTimeout);
-      _resetBtn();
-      console.error('Login error:',e.code,e.message);
-      var msg=e.message||'登录失败';
-      if(e.code==='auth/user-not-found')msg='未找到该账号';
-      else if(e.code==='auth/wrong-password')msg='密码错误';
-      else if(e.code==='auth/invalid-email')msg='邮箱格式不正确';
-      else if(e.code==='auth/too-many-requests')msg='请求过于频繁，请稍后重试';
-      else if(e.code==='auth/network-request-failed')msg='网络连接失败，可能因为网络环境限制。建议使用「先看看」本地模式';
-      else if(e.code==='auth/invalid-credential')msg='账号或密码错误';
-      else if(e.code==='auth/internal-error')msg='服务内部错误，请稍后重试';
-      errEl.textContent=msg;
+    _isAnonymousLocal=false;
+    localStorage.removeItem('nightletter_session');
+    document.getElementById('loginOverlay').classList.add('off');
+    /* Sync local dreams to cloud and load cloud dreams */
+    loadDreamsFromCloud().then(function(cloudDreams){
+      if(cloudDreams.length>0){
+        var localDreams=getDreams();
+        if(localDreams.length>0){
+          var merged=mergeDreams(localDreams,cloudDreams);
+          localStorage.setItem(STORE_KEY,JSON.stringify(merged));
+        }else{
+          localStorage.setItem(STORE_KEY,JSON.stringify(cloudDreams));
+        }
+      }else{
+        var localDreams=getDreams();
+        if(localDreams.length>0){syncDreamsToCloud(localDreams)}
+      }
+      refreshHome();
     });
+    renderAccountSection();
+  }).catch(function(e){
+    _resetBtn();
+    var msg=e.message||'登录失败';
+    if(e.code===210||e.code===211)msg='账号或密码错误';
+    else if(e.code===219)msg='登录失败次数过多，请稍后重试';
+    else if(e.code===202||e.code===203)msg='邮箱格式不正确';
+    else if(e.code===-1)msg='网络连接失败，请检查网络';
+    errEl.textContent=msg;
+  });
 }
 
 function doRegister(){
@@ -1268,69 +1171,65 @@ function doRegister(){
   
   var _resetBtn=function(){regBtn.disabled=false;regBtn.style.opacity='1'};
   
-  if(_useLocalAuth||!fbReady){
-    /* Local auth mode */
-    _localSignUp(email,pass).then(function(){
-      errEl.textContent='';
-      _resetBtn();
-      document.getElementById('loginOverlay').classList.add('off');
-    }).catch(function(e){
-      _resetBtn();
-      errEl.textContent=e.message||'注册失败';
-    });
+  if(!lcReady){
+    _resetBtn();
+    errEl.textContent='云端服务未配置，请先在代码中填写 LC_CONFIG';
     return;
   }
   
-  /* Firebase auth */
-  var regTimeout=setTimeout(function(){
-    errEl.textContent='连接超时，可能因为网络环境无法访问 Google 服务。建议点击「先看看」使用本地模式';
+  var user=new AV.User();
+  user.setUsername(email);
+  user.setPassword(pass);
+  user.setEmail(email);
+  user.signUp().then(function(){
+    errEl.textContent='';
     _resetBtn();
-  },12000);
-  
-  firebase.auth().createUserWithEmailAndPassword(email,pass)
-    .then(function(){
-      clearTimeout(regTimeout);
-      errEl.textContent='';
-      _resetBtn();
-    })
-    .catch(function(e){
-      clearTimeout(regTimeout);
-      _resetBtn();
-      console.error('Register error:',e.code,e.message);
-      var msg=e.message||'注册失败';
-      if(e.code==='auth/email-already-in-use')msg='该邮箱已被注册';
-      else if(e.code==='auth/invalid-email')msg='邮箱格式不正确';
-      else if(e.code==='auth/weak-password')msg='密码强度不够';
-      else if(e.code==='auth/network-request-failed')msg='网络连接失败，可能因为网络环境限制。建议使用「先看看」本地模式';
-      errEl.textContent=msg;
-    });
+    _isAnonymousLocal=false;
+    localStorage.removeItem('nightletter_session');
+    document.getElementById('loginOverlay').classList.add('off');
+    /* Sync local dreams to cloud */
+    var localDreams=getDreams();
+    if(localDreams.length>0){syncDreamsToCloud(localDreams)}
+    renderAccountSection();
+  }).catch(function(e){
+    _resetBtn();
+    var msg=e.message||'注册失败';
+    if(e.code===203)msg='该邮箱已被注册';
+    else if(e.code===202)msg='邮箱格式不正确';
+    else if(e.code===201)msg='密码不能为空';
+    else if(e.code===-1)msg='网络连接失败，请检查网络';
+    errEl.textContent=msg;
+  });
 }
 
 function loginAnonymously(){
-  if(fbReady&&!_useLocalAuth){
-    firebase.auth().signInAnonymously().catch(function(e){
-      console.warn('Anonymous login failed:',e);
-    });
-  }else{
-    /* Local anonymous mode */
-    _localUser={uid:'local_anon_'+Date.now(),email:null,isAnonymous:true,isLocal:true};
-    localStorage.setItem(LOCAL_SESSION_KEY,'__anon__');
-  }
+  /* "先看看" — local-only anonymous browse mode */
+  _isAnonymousLocal=true;
+  localStorage.setItem('nightletter_session','__anon__');
   document.getElementById('loginOverlay').classList.add('off');
 }
 
 function doLogout(){
-  if(fbReady&&firebase.auth().currentUser&&!firebase.auth().currentUser.isLocal){
-    firebase.auth().signOut().then(function(){
+  if(lcReady){
+    AV.User.logOut().then(function(){
+      _isAnonymousLocal=false;
+      localStorage.removeItem('nightletter_session');
+      go('home');
+      document.getElementById('loginOverlay').classList.remove('off');
+      renderAccountSection();
+    }).catch(function(e){
+      console.warn('Logout failed:',e);
+      _isAnonymousLocal=false;
+      localStorage.removeItem('nightletter_session');
       go('home');
       document.getElementById('loginOverlay').classList.remove('off');
     });
   }else{
-    /* Local auth logout */
-    _localSignOut().then(function(){
-      go('home');
-      document.getElementById('loginOverlay').classList.remove('off');
-    });
+    _isAnonymousLocal=false;
+    localStorage.removeItem('nightletter_session');
+    go('home');
+    document.getElementById('loginOverlay').classList.remove('off');
+    renderAccountSection();
   }
 }
 
@@ -1341,29 +1240,46 @@ function loginWithEmail(){
 
 function syncDreamsToCloud(dreams){
   var user=_getCurrentUser();
-  if(!fbReady||!user||user.isLocal||!dreams.length)return Promise.resolve();
-  var uid=user.uid;
-  var db=firebase.firestore();
-  var batch=db.batch();
+  if(!lcReady||!user||!dreams.length)return Promise.resolve();
+  var Dream=AV.Object.extend('Dream');
+  var acl=new AV.ACL({'*':{read:false,write:false},[user.id]:{read:true,write:true}});
+  var promises=[];
   var count=Math.min(dreams.length,500);
   for(var i=0;i<count;i++){
     var d=dreams[i];
-    var ref=db.collection('users').doc(uid).collection('dreams').doc(String(d.id));
-    batch.set(ref,d,{merge:true});
+    var obj=new Dream();
+    obj.set('text',d.text);
+    obj.set('emotion',d.emotion);
+    obj.set('type',d.type||'梦境');
+    obj.set('ts',d.ts);
+    obj.set('aiTurns',d.aiTurns||0);
+    obj.set('localId',d.id);
+    obj.set('author',user);
+    obj.setACL(acl);
+    promises.push(obj.save());
   }
-  return batch.commit();
+  return Promise.all(promises).catch(function(e){console.warn('Sync failed:',e)});
 }
 
 function loadDreamsFromCloud(){
   var user=_getCurrentUser();
-  if(!fbReady||!user||user.isLocal)return Promise.resolve([]);
-  var uid=user.uid;
-  return firebase.firestore().collection('users').doc(uid).collection('dreams')
-    .orderBy('ts','desc').get().then(function(snap){
-      var dreams=[];
-      snap.forEach(function(d){dreams.push(d.data())});
-      return dreams;
+  if(!lcReady||!user)return Promise.resolve([]);
+  var q=new AV.Query('Dream');
+  q.equalTo('author',user);
+  q.descending('ts');
+  q.limit(500);
+  return q.find().then(function(objs){
+    return objs.map(function(o){
+      return {
+        id:o.get('localId')||o.id,
+        text:o.get('text'),
+        emotion:o.get('emotion')||'未知',
+        ts:o.get('ts')||o.createdAt.toISOString(),
+        aiTurns:o.get('aiTurns')||0,
+        type:o.get('type')||'梦境'
+      };
     });
+  });
 }
 
 function mergeDreams(local,cloud){
@@ -1380,51 +1296,46 @@ function renderAccountSection(){
   if(!el)return;
   var user=_getCurrentUser();
   if(user){
-    var isAnon=user.isAnonymous;
-    var isLocal=user.isLocal||false;
-    var statusLabel=isAnon?'匿名体验':isLocal?'已登录（本地模式）':'已登录';
-    var subText=isAnon?'注册账号可云端保存梦境':user.email||'本地账号';
+    var email=user.getEmail()||user.get('email')||'';
+    var statusLabel=lcReady?'已登录':'已登录';
+    var subText=email||'LeanCloud 用户';
     el.innerHTML='<div class="set-row"><div><div class="set-label">'+statusLabel+'</div>'
       +'<div class="set-sub">'+subText+'</div>'
-      +'</div>'
-      +(isAnon?'<button class="set-accent-btn" onclick="loginWithEmail()">注册</button>':'')
-      +'</div>'
+      +'</div></div>'
       +'<div class="set-row"><div><div class="set-label">退出登录</div><div class="set-sub">本地数据仍会保留</div></div>'
       +'<button class="set-neutral-btn" onclick="doLogout()">退出</button></div>';
-    if(isLocal&&!isAnon){
-      /* Show data export hint for local mode */
-      el.innerHTML+='<div class="set-row"><div><div class="set-label">数据模式</div><div class="set-sub">梦境数据保存在本设备。如需跨设备使用，请定期导出备份。</div></div></div>';
-    }
+  }else if(_isAnonymousLocal){
+    el.innerHTML='<div class="set-row"><div><div class="set-label">匿名体验</div>'
+      +'<div class="set-sub">注册账号可云端保存梦境</div>'
+      +'</div>'
+      +'<button class="set-accent-btn" onclick="loginWithEmail()">注册</button></div>';
   }else{
     el.innerHTML='<div class="set-row"><div><div class="set-label">未登录</div><div class="set-sub">登录后可云端保存梦境</div></div>'
       +'<button class="set-accent-btn" onclick="loginWithEmail()">登录</button></div>';
   }
 }
 
-if(fbReady){
-  firebase.auth().onAuthStateChanged(function(user){
-    if(user){
-      document.getElementById('loginOverlay').classList.add('off');
-      loadDreamsFromCloud().then(function(cloudDreams){
-        if(cloudDreams.length>0){
-          var localDreams=getDreams();
-          if(localDreams.length>0){
-            var merged=mergeDreams(localDreams,cloudDreams);
-            localStorage.setItem(STORE_KEY,JSON.stringify(merged));
-          }else{
-            localStorage.setItem(STORE_KEY,JSON.stringify(cloudDreams));
-          }
-        }else{
-          var localDreams=getDreams();
-          if(localDreams.length>0){syncDreamsToCloud(localDreams)}
-        }
-        refreshHome();
-      });
-      renderAccountSection();
+/* LeanCloud auth state — handled in doLogin/doRegister success callbacks */
+/* No persistent listener needed; LeanCloud session is restored automatically via AV.User.current() */
+if(lcReady&&AV.User.current()){
+  var _lcUser=AV.User.current();
+  document.getElementById('loginOverlay').classList.add('off');
+  loadDreamsFromCloud().then(function(cloudDreams){
+    if(cloudDreams.length>0){
+      var localDreams=getDreams();
+      if(localDreams.length>0){
+        var merged=mergeDreams(localDreams,cloudDreams);
+        localStorage.setItem(STORE_KEY,JSON.stringify(merged));
+      }else{
+        localStorage.setItem(STORE_KEY,JSON.stringify(cloudDreams));
+      }
     }else{
-      renderAccountSection();
+      var localDreams=getDreams();
+      if(localDreams.length>0){syncDreamsToCloud(localDreams)}
     }
+    refreshHome();
   });
+  renderAccountSection();
 }
 
 /* === EMOTION DETECTION === */
@@ -1847,6 +1758,18 @@ function finishChat(){
 }
 
 /* === VOICE RECORDING === */
+/*
+ * 语音识别方案：
+ *   1. Web Speech API — Chrome / Edge / Safari 内置支持
+ *      - Edge (Windows)：使用微软服务器，国内可直接使用
+ *      - Chrome：可能依赖 Google 服务器，国内可能受阻
+ *      - Safari (macOS/iOS)：使用 Apple 服务器，国内可用
+ *   2. 如 Web Speech API 不可用，提示用户使用 Edge 浏览器
+ *
+ * 如需更稳定的国内语音识别，可在讯飞开放平台申请免费额度：
+ *   https://www.xfyun.cn/services/lfasr
+ *   申请后在设置页面填入 appId / apiKey / apiSecret 即可启用
+ */
 var voiceRec=null;
 var voiceTimer=null;
 var voiceSec=0;
@@ -1868,7 +1791,10 @@ function startVoice(){
   if(!voiceSupported){
     status.textContent='语音不可用';
     fb.style.display='block';
-    fb.innerHTML='你的浏览器不支持语音识别<br>请使用 Chrome 浏览器<br>或手动输入文字';
+    fb.innerHTML='当前浏览器不支持语音识别<br><br>'
+      +'推荐使用 <b>Microsoft Edge</b> 浏览器<br>'
+      +'（Windows 自带，语音识别走国内服务器）<br><br>'
+      +'或手动输入文字';
     return;
   }
 
@@ -1891,6 +1817,13 @@ function startVoice(){
   voiceRec.onerror=function(e){
     status.textContent='出错了，请重试';
     console.warn('Voice error:',e.error);
+    if(e.error==='network'||e.error==='service-not-allowed'){
+      status.textContent='语音服务不可用';
+      fb.style.display='block';
+      fb.innerHTML='语音识别服务连接失败<br>'
+        +'如使用 Chrome 浏览器，请尝试换用 <b>Microsoft Edge</b><br>'
+        +'（Edge 的语音服务在国内可正常使用）';
+    }
   };
   voiceRec.onend=function(){
     if(voiceRec&&voiceRec._active){
@@ -2895,8 +2828,8 @@ var currentSquareDream=null;
 
 function shareToSquare(){
   var user=_getCurrentUser();
-  if(!user||user.isLocal||!fbReady){
-    alert('梦境广场需要云端服务支持，请使用邮箱注册登录（需要能访问 Google 服务的网络环境）');
+  if(!user||!lcReady){
+    alert('梦境广场需要登录才能使用，请先注册账号');
     return;
   }
   
@@ -2926,54 +2859,63 @@ function shareToSquare(){
   /* Confirm before sharing */
   if(!confirm('确定要分享这个梦境吗？\n\n「'+dream.text.slice(0,40)+'」\n\n分享后将以匿名形式显示在广场。'))return;
   
-  /* Save to Firestore public collection */
-  var db=firebase.firestore();
-  var publicRef=db.collection('public_dreams').doc();
+  /* Save to LeanCloud PublicDream class */
+  var PublicDream=AV.Object.extend('PublicDream');
+  var obj=new PublicDream();
+  obj.set('text',dream.text);
+  obj.set('emotion',dream.emotion);
+  obj.set('type',dream.type||'梦境');
+  obj.set('ts',dream.ts);
+  obj.set('likes',0);
+  obj.set('comments',[]);
+  obj.set('author',user);
+  var acl=new AV.ACL();
+  acl.setPublicReadAccess(true);
+  acl.setWriteAccess(user.id,true);
+  obj.setACL(acl);
   
-  var publicDream={
-    id:publicRef.id,
-    text:dream.text,
-    emotion:dream.emotion,
-    type:dream.type||'梦境',
-    ts:dream.ts,
-    sharedAt:firebase.firestore.FieldValue.serverTimestamp(),
-    likes:0,
-    comments:[],
-    authorId:user.uid, /* Hidden from display */
-    isAnonymous:true
-  };
-  
-  publicRef.set(publicDream).then(function(){
-    alert('✅ 梦境已分享到广场！');
+  obj.save().then(function(){
+    alert('梦境已分享到广场！');
     loadSquareDreams();
   }).catch(function(e){
     console.error('Share failed:',e);
-    alert('分享失败：'+e.message);
+    alert('分享失败：'+(e.message||'未知错误'));
   });
 }
 
 function loadSquareDreams(){
-  if(!fbReady){
-    /* Demo mode without Firebase */
+  if(!lcReady){
+    /* Offline demo data */
     squareDreams=[
-      {id:'demo1',text:'梦见在一片紫色的花海里奔跑，风很温柔，阳光正好。醒来时嘴角还带着笑。',emotion:'喜悦',ts:new Date(Date.now()-3600000).toISOString(),likes:12,comments:[{user:'匿名旅人',text:'好美的梦 ✨',ts:new Date().toISOString()}]},
+      {id:'demo1',text:'梦见在一片紫色的花海里奔跑，风很温柔，阳光正好。醒来时嘴角还带着笑。',emotion:'喜悦',ts:new Date(Date.now()-3600000).toISOString(),likes:12,comments:[{user:'匿名旅人',text:'好美的梦',ts:new Date().toISOString()}]},
       {id:'demo2',text:'一直在找一扇门，怎么走都找不到。周围都是雾，心里有点慌。',emotion:'困惑',ts:new Date(Date.now()-7200000).toISOString(),likes:8,comments:[]},
-      {id:'demo3',text:'梦到小时候的家，奶奶在厨房做饭。闻到了熟悉的香味。',emotion:'想念',ts:new Date(Date.now()-10800000).toISOString(),likes:15,comments:[{user:'夜行者',text:'这种梦最温暖了 🌙',ts:new Date().toISOString()},{user:'梦中人',text:'想起我的外婆了',ts:new Date().toISOString()}]}
+      {id:'demo3',text:'梦到小时候的家，奶奶在厨房做饭。闻到了熟悉的香味。',emotion:'想念',ts:new Date(Date.now()-10800000).toISOString(),likes:15,comments:[{user:'夜行者',text:'这种梦最温暖了',ts:new Date().toISOString()},{user:'梦中人',text:'想起我的外婆了',ts:new Date().toISOString()}]}
     ];
     renderSquareDreams();
     return;
   }
   
-  var db=firebase.firestore();
-  db.collection('public_dreams').orderBy('sharedAt','desc').limit(50).get().then(function(snap){
-    squareDreams=[];
-    snap.forEach(function(doc){
-      var data=doc.data();
-      squareDreams.push(data);
+  var q=new AV.Query('PublicDream');
+  q.descending('createdAt');
+  q.limit(50);
+  q.find().then(function(objs){
+    squareDreams=objs.map(function(o){
+      return {
+        id:o.id,
+        text:o.get('text')||'',
+        emotion:o.get('emotion')||'未知',
+        type:o.get('type')||'梦境',
+        ts:o.get('ts')||o.createdAt.toISOString(),
+        likes:o.get('likes')||0,
+        comments:o.get('comments')||[]
+      };
     });
     renderSquareDreams();
   }).catch(function(e){
     console.error('Load square dreams failed:',e);
+    /* Fallback to demo data on error */
+    squareDreams=[];
+    renderSquareDreams();
   });
 }
 
@@ -3000,7 +2942,7 @@ function renderSquareDreams(){
         d.comments.slice(0,3).map(function(c){
           return '<div class="sq-comment-item"><span class="sq-comment-user">['+c.user+']</span> '+c.text+'</div>';
         }).join('')+
-        (d.comments.length>3?'<div class="sq-comment-more">还有 '+d.comments.length+' 条评论</div>':'')+
+        (d.comments.length>3?'<div class="sq-comment-more">还有 '+(d.comments.length-3)+' 条评论</div>':'')+
       '</div>';
     }
     
@@ -3023,26 +2965,29 @@ function likeDream(dreamId,btn){
   /* Visual feedback */
   if(btn){btn.classList.add('sq-like-pop','liked');setTimeout(function(){btn.classList.remove('sq-like-pop')},350)}
   
-  if(!fbReady){
-    alert('演示模式下无法点赞');
+  if(!lcReady){
+    alert('离线模式下无法点赞');
     return;
   }
   
-  var db=firebase.firestore();
-  var ref=db.collection('public_dreams').doc(dreamId);
+  /* Optimistic update: increment locally first */
+  var localDream=squareDreams.find(function(d){return d.id===dreamId});
+  if(localDream)localDream.likes=(localDream.likes||0)+1;
   
-  ref.update({
-    likes:firebase.firestore.FieldValue.increment(1)
-  }).then(function(){
+  var PublicDream=AV.Object.createWithoutData('PublicDream',dreamId);
+  PublicDream.increment('likes');
+  PublicDream.save().then(function(){
     loadSquareDreams();
   }).catch(function(e){
     console.error('Like failed:',e);
+    /* Revert optimistic update */
+    if(localDream)localDream.likes=Math.max(0,(localDream.likes||1)-1);
   });
 }
 
 function commentDream(dreamId){
-  if(!fbReady){
-    alert('演示模式下无法留言');
+  if(!lcReady){
+    alert('离线模式下无法留言');
     return;
   }
   
@@ -3053,71 +2998,53 @@ function commentDream(dreamId){
     return;
   }
   
-  var db=firebase.firestore();
-  var ref=db.collection('public_dreams').doc(dreamId);
-  
-  ref.get().then(function(doc){
-    if(!doc.exists)return;
-    var data=doc.data();
-    var comments=data.comments||[];
-    
+  var q=new AV.Query('PublicDream');
+  q.get(dreamId).then(function(obj){
+    var comments=obj.get('comments')||[];
     if(comments.length>=3){
       alert('该梦境的留言已达上限（3 条）');
       return;
     }
-    
     comments.push({
       user:'匿名旅人',
       text:comment.trim(),
       ts:new Date().toISOString()
     });
-    
-    return ref.update({comments:comments});
-  }).then(function(){
-    if(arguments.length>0)loadSquareDreams();
+    obj.set('comments',comments);
+    return obj.save();
+  }).then(function(result){
+    if(result)loadSquareDreams();
   }).catch(function(e){
     console.error('Comment failed:',e);
-    alert('留言失败：'+e.message);
+    alert('留言失败：'+(e.message||'未知错误'));
   });
 }
 
-// Onboarding — called from _onAuthModeReady after auth mode is determined
+// Onboarding — called after auth init
 function _checkOnboarding(){
   var hasOnboard=localStorage.getItem(ONBOARD_KEY);
   var user=_getCurrentUser();
   
   if(hasOnboard){
-    /* Already onboarded — ensure login overlay is dismissed if user is logged in */
-    if(user){
+    /* Already onboarded — ensure login overlay is dismissed if user is logged in or anonymous */
+    if(user||_isAnonymousLocal){
       document.getElementById('loginOverlay').classList.add('off');
     }
     return;
   }
   
   /* Need to show onboarding */
-  if(user){
-    /* User is logged in, show onboarding after a brief delay */
+  if(user||_isAnonymousLocal){
+    /* User is logged in or anonymous, show onboarding after a brief delay */
     setTimeout(showOnboard,600);
-  }else if(_useLocalAuth){
-    /* Local mode, no user — show login overlay, wait for login then onboard */
-    var _obCheck=setInterval(function(){
-      if(document.getElementById('loginOverlay').classList.contains('off')){
-        clearInterval(_obCheck);
-        setTimeout(showOnboard,600);
-      }
-    },200);
-  }else if(fbReady){
-    /* Firebase mode — wait for auth state */
-    var _obCheck=setInterval(function(){
-      if(document.getElementById('loginOverlay').classList.contains('off')){
-        clearInterval(_obCheck);
-        setTimeout(showOnboard,600);
-      }
-    },200);
   }else{
-    /* Fallback — show onboarding directly */
-    document.getElementById('loginOverlay').classList.add('off');
-    setTimeout(showOnboard,800);
+    /* No user — wait for login then onboard */
+    var _obCheck=setInterval(function(){
+      if(document.getElementById('loginOverlay').classList.contains('off')){
+        clearInterval(_obCheck);
+        setTimeout(showOnboard,600);
+      }
+    },200);
   }
 }
 
