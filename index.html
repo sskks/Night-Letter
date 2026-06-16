@@ -692,9 +692,26 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 </div>
 
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+var _fbSdkLoaded=false;
+function _fbSdkFailed(src){
+  console.error('Firebase SDK failed to load: '+src);
+  _fbSdkLoaded=false;
+  var errEl=document.getElementById('loginError');
+  if(errEl)errEl.textContent='网络服务加载失败，请先点击「先看看」体验';
+  document.getElementById('loginBtn').disabled=true;
+  document.getElementById('loginBtn').style.opacity='.4';
+  document.getElementById('regBtn').disabled=true;
+  document.getElementById('regBtn').style.opacity='.4';
+}
+function _fbSdkReady(){
+  _fbSdkLoaded=true;
+  console.log('Firebase SDK loaded successfully');
+}
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" onload="_fbSdkReady()" onerror="_fbSdkFailed(this.src)"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" onerror="_fbSdkFailed(this.src)"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" onerror="_fbSdkFailed(this.src)"></script>
 
 <script>
 /* ============================================
@@ -792,20 +809,20 @@ var firebaseConfig={
 };
 var fbReady=false;
 try{
-  if(typeof firebase!=='undefined'&&firebaseConfig.apiKey!=='YOUR_API_KEY'){
-    /* Add timeout for Firebase init */
-    var fbInitTimeout=setTimeout(function(){
-      console.warn('Firebase init timeout, proceeding without cloud sync');
-      document.getElementById('loginOverlay').classList.add('off');
-    },5000);
-    
+  if(typeof firebase!=='undefined'&&_fbSdkLoaded&&firebaseConfig.apiKey!=='YOUR_API_KEY'){
     firebase.initializeApp(firebaseConfig);
     fbReady=true;
-    clearTimeout(fbInitTimeout);
+    console.log('✅ Firebase initialized successfully');
+  }else{
+    console.warn('⚠️ Firebase SDK not available, running in offline mode');
+    /* Show error to user but don't auto-close login overlay */
+    var errEl=document.getElementById('loginError');
+    if(errEl)errEl.textContent='网络服务加载失败，请先点击「先看看」体验';
   }
 }catch(e){
   console.warn('Firebase init failed:',e);
-  document.getElementById('loginOverlay').classList.add('off');
+  var errEl=document.getElementById('loginError');
+  if(errEl)errEl.textContent='服务初始化失败，请先点击「先看看」体验';
 }
 
 /* === QWEN AI === */
@@ -924,31 +941,68 @@ function toggleLoginMode(){
 }
 
 function doLogin(){
-  if(!fbReady)return;
-  var email=document.getElementById('loginEmail').value.trim();
-  var pass=document.getElementById('loginPass').value;
   var errEl=document.getElementById('loginError');
   errEl.textContent='';
+  if(!fbReady){
+    errEl.textContent='网络服务未就绪，请检查网络后重试，或点击「先看看」体验';
+    return;
+  }
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
   if(!email||!pass){errEl.textContent='请填写邮箱和密码';return}
+  
+  errEl.textContent='正在登录...';
   firebase.auth().signInWithEmailAndPassword(email,pass)
-    .catch(function(e){errEl.textContent=e.message.replace(/ \(auth\/.*\)/,'')});
+    .then(function(){
+      errEl.textContent='';
+    })
+    .catch(function(e){
+      console.error('Login error:',e.code,e.message);
+      var msg=e.message||'登录失败';
+      /* Translate common Firebase errors to Chinese */
+      if(e.code==='auth/user-not-found')msg='未找到该账号';
+      else if(e.code==='auth/wrong-password')msg='密码错误';
+      else if(e.code==='auth/invalid-email')msg='邮箱格式不正确';
+      else if(e.code==='auth/too-many-requests')msg='请求过于频繁，请稍后重试';
+      else if(e.code==='auth/network-request-failed')msg='网络连接失败，请检查网络';
+      else if(e.code==='auth/invalid-credential')msg='账号或密码错误';
+      errEl.textContent=msg;
+    });
 }
 
 function doRegister(){
-  if(!fbReady)return;
-  var email=document.getElementById('loginEmail').value.trim();
-  var pass=document.getElementById('loginPass').value;
   var errEl=document.getElementById('loginError');
   errEl.textContent='';
+  if(!fbReady){
+    errEl.textContent='网络服务未就绪，请检查网络后重试，或点击「先看看」体验';
+    return;
+  }
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
   if(!email||!pass){errEl.textContent='请填写邮箱和密码';return}
   if(pass.length<6){errEl.textContent='密码至少 6 位';return}
+  
+  errEl.textContent='正在注册...';
   firebase.auth().createUserWithEmailAndPassword(email,pass)
-    .catch(function(e){errEl.textContent=e.message.replace(/ \(auth\/.*\)/,'')});
+    .then(function(){
+      errEl.textContent='';
+    })
+    .catch(function(e){
+      console.error('Register error:',e.code,e.message);
+      var msg=e.message||'注册失败';
+      if(e.code==='auth/email-already-in-use')msg='该邮箱已被注册';
+      else if(e.code==='auth/invalid-email')msg='邮箱格式不正确';
+      else if(e.code==='auth/weak-password')msg='密码强度不够';
+      else if(e.code==='auth/network-request-failed')msg='网络连接失败，请检查网络';
+      errEl.textContent=msg;
+    });
 }
 
 function loginAnonymously(){
   if(fbReady){
-    firebase.auth().signInAnonymously().catch(function(){});
+    firebase.auth().signInAnonymously().catch(function(e){
+      console.warn('Anonymous login failed:',e);
+    });
   }
   document.getElementById('loginOverlay').classList.add('off');
 }
