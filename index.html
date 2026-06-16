@@ -134,14 +134,45 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .btn-send:active{background:linear-gradient(135deg,rgba(202,169,122,.1),rgba(202,169,122,.03));transform:scale(.97);box-shadow:0 0 30px rgba(202,169,122,.08)}
 
 /* RECEIVING */
-.recv-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px;z-index:1;position:relative}
-.recv-rings{width:140px;height:140px;position:relative;margin-bottom:44px}
-.recv-r{position:absolute;inset:0;border-radius:50%;border:1px solid var(--accent);opacity:0;animation:ringx 3.5s ease-out infinite}
-.recv-r:nth-child(2){animation-delay:.9s;border-color:rgba(202,169,122,.6)}.recv-r:nth-child(3){animation-delay:1.8s;border-color:rgba(202,169,122,.4)}
-.recv-r:nth-child(4){animation-delay:2.7s;border-color:rgba(202,169,122,.2)}
-@keyframes ringx{0%{transform:scale(.15);opacity:.6}100%{transform:scale(1.4);opacity:0}}
-.recv-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 30px var(--aglow),0 0 80px rgba(202,169,122,.12),0 0 120px rgba(202,169,122,.04)}
-.recv-txt{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--t2);text-align:center;line-height:2.2;letter-spacing:1.5px;animation:hfade 1.2s ease-out forwards}
+.recv-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;z-index:1;position:relative}
+.recv-rings{width:120px;height:120px;position:relative;margin-bottom:48px}
+.recv-r{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(202,169,122,.4);opacity:0;animation:ringx 4s ease-out infinite}
+.recv-r:nth-child(2){animation-delay:1s;border-color:rgba(202,169,122,.3)}
+.recv-r:nth-child(3){animation-delay:2s;border-color:rgba(202,169,122,.2)}
+.recv-r:nth-child(4){animation-delay:3s;border-color:rgba(202,169,122,.1)}
+@keyframes ringx{0%{transform:scale(.2);opacity:.5}100%{transform:scale(1.6);opacity:0}}
+.recv-dot{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:12px;height:12px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 20px rgba(202,169,122,.5),0 0 60px rgba(202,169,122,.2),0 0 100px rgba(202,169,122,.08);
+  animation:dotPulse 2s ease-in-out infinite
+}
+@keyframes dotPulse{0%,100%{transform:translate(-50%,-50%) scale(1);box-shadow:0 0 20px rgba(202,169,122,.5),0 0 60px rgba(202,169,122,.2)}50%{transform:translate(-50%,-50%) scale(1.3);box-shadow:0 0 30px rgba(202,169,122,.6),0 0 80px rgba(202,169,122,.3)}}
+.recv-card{
+  position:relative;max-width:320px;width:100%;padding:32px 28px;border-radius:20px;
+  background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.015));
+  border:.5px solid rgba(202,169,122,.1);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 0 40px rgba(202,169,122,.04),0 8px 32px rgba(0,0,0,.2);
+  opacity:0;animation:recvCardIn .8s ease-out .3s forwards;
+  overflow:hidden
+}
+.recv-card::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle at 50% 50%,rgba(202,169,122,.06),transparent 60%);
+  animation:recvGlow 4s ease-in-out infinite;pointer-events:none
+}
+@keyframes recvGlow{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+@keyframes recvCardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.recv-txt{
+  font-family:var(--serif);font-size:15px;font-weight:300;color:var(--t2);
+  text-align:center;line-height:2.4;letter-spacing:1px;position:relative;z-index:1
+}
+.recv-txt span{display:inline-block;opacity:0;animation:recvWordIn .5s ease-out forwards}
+.recv-divider{width:40px;height:1px;background:linear-gradient(90deg,transparent,rgba(202,169,122,.3),transparent);margin:16px auto 0;position:relative;z-index:1;opacity:0;animation:hfade .6s ease-out 2s forwards}
+.recv-hint{font-size:11px;color:var(--t3);text-align:center;letter-spacing:.5px;margin-top:12px;position:relative;z-index:1;opacity:0;animation:hfade .6s ease-out 2.2s forwards}
+@keyframes recvWordIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* AI CHAT */
 .chat-body{flex:1;display:flex;flex-direction:column;z-index:1;overflow:hidden;position:relative}
@@ -310,6 +341,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .scr.on .ns-info{animation:secIn .5s ease-out .18s both}
 .scr.on .ns-legend{animation:secIn .5s ease-out .25s both}
 .scr.on .recv-wrap{animation:secIn .6s ease-out .1s both}
+.scr.on .recv-card{animation:recvCardIn .8s ease-out .4s both}
 .scr.on .bnav{animation:secIn .4s ease-out .2s both}
 
 /* Touch ripple */
@@ -374,10 +406,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .voice-ring{transition:transform .3s var(--ease)}
 .voice-stop:hover{border-color:rgba(202,169,122,.5);background:rgba(202,169,122,.1)}
 
-/* Receiving animation enhancement */
-.recv-txt{background:linear-gradient(90deg,var(--t2),var(--accent),var(--t2));
-  background-size:200% 100%;animation:hfade 1.2s ease-out forwards,shimmer 3s ease-in-out 1.5s infinite}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* Receiving animation enhancement — handled in .recv-card CSS */
 
 /* DREAM CARD EXPORT OVERLAY */
 .card-overlay{position:fixed;inset:0;z-index:800;background:rgba(5,5,16,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility 0s .4s;backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
@@ -510,7 +539,15 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <!-- RECEIVING -->
 <div class="scr" id="s-recv">
   <div class="sbar"><span></span></div>
-  <div class="recv-wrap"><div class="sub-canvas"><canvas id="recvC"></canvas></div><div class="recv-rings"><div class="recv-r"></div><div class="recv-r"></div><div class="recv-r"></div><div class="recv-r"></div><div class="recv-dot"></div></div><div class="recv-txt">你的信正在路上<br>有人正在认真读它</div></div>
+  <div class="recv-wrap">
+    <div class="sub-canvas"><canvas id="recvC"></canvas></div>
+    <div class="recv-rings"><div class="recv-r"></div><div class="recv-r"></div><div class="recv-r"></div><div class="recv-r"></div><div class="recv-dot"></div></div>
+    <div class="recv-card">
+      <div class="recv-txt" id="recvTxt"></div>
+      <div class="recv-divider"></div>
+      <div class="recv-hint">你的梦境正在被温柔对待</div>
+    </div>
+  </div>
 </div>
 
 <!-- AI CHAT -->
@@ -1168,7 +1205,7 @@ function go(n){
   if(n==='ns')initStars();
   if(n==='chat'){initChat();initAmbient('chatC')}
   if(n==='write'){initAmbient('writeC');renderEmotionChips()}
-  if(n==='recv')initAmbient('recvC');
+  if(n==='recv'){initAmbient('recvC');animateRecvText()}
   if(n==='pat'){initAmbient('patC');renderPattern()}
   if(n==='hist'){initAmbient('histC');renderHistory()}
   if(n==='square'){initAmbient('squareC');loadSquareDreams()}
@@ -1315,6 +1352,27 @@ var followUpResponses=[
   '谢谢你说这些给我听。<span class="hl">你比自己以为的更了解你自己</span>。梦只是帮你看到了那些你其实已经知道的东西。',
   '我感觉到你在<span class="hl">靠近某个重要的东西</span>。也许是关于你自己的，也许是关于一段关系的。再给它一点时间，它会越来越清晰的。'
 ];
+
+/* === RECEIVING TEXT ANIMATION === */
+function animateRecvText(){
+  var el=document.getElementById('recvTxt');
+  if(!el)return;
+  
+  var phrases=['你的信正在路上','有人正在认真读它'];
+  var html='';
+  var globalIdx=0;
+  
+  phrases.forEach(function(phrase,pi){
+    if(pi>0)html+='<br>';
+    for(var i=0;i<phrase.length;i++){
+      var delay=(0.8+globalIdx*0.12).toFixed(2);
+      html+='<span style="animation-delay:'+delay+'s">'+phrase[i]+'</span>';
+      globalIdx++;
+    }
+  });
+  
+  el.innerHTML=html;
+}
 
 function initChat(){
   if(chatInited)return;
