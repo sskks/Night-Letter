@@ -824,8 +824,8 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   </div>
 </div>
 
-<!-- LeanCloud SDK (国内 BaaS 替代 Firebase) -->
-<script src="https://cdn.jsdelivr.net/npm/leancloud-storage@5.0.0/dist/av-min.js" onerror="console.warn('LeanCloud SDK 加载失败，将使用本地模式');window._lcSdkFailed=true;"></script>
+<!-- CloudBase SDK (腾讯云开发 · 国内 BaaS) -->
+<script src="https://static.cloudbase.net/cloudbase-js-sdk/3.4.7/cloudbase.full.js" onerror="console.warn('CloudBase SDK 加载失败，将使用离线模式');window._cbSdkFailed=true;"></script>
 
 <script>
 /* ============================================
@@ -886,17 +886,10 @@ function saveDream(text,emotion,type){
   ds.unshift(dream);
   localStorage.setItem(STORE_KEY,JSON.stringify(ds));
   var user=_getCurrentUser();
-  if(lcReady&&user){
-    var Dream=AV.Object.extend('Dream');
-    var obj=new Dream();
-    obj.set('text',dream.text);
-    obj.set('emotion',dream.emotion);
-    obj.set('type',dream.type);
-    obj.set('ts',dream.ts);
-    obj.set('aiTurns',dream.aiTurns||0);
-    obj.set('author',user);
-    obj.setACL(new AV.ACL({'*':{read:false,write:false},[user.id]:{read:true,write:true}}));
-    obj.save().catch(function(){});
+  if(cbReady&&user){
+    cbDb.collection('dreams').add({
+      data:{text:dream.text,emotion:dream.emotion,type:dream.type,ts:dream.ts,aiTurns:dream.aiTurns||0}
+    }).catch(function(){});
   }
   return ds;
 }
@@ -909,12 +902,11 @@ function clearAllData(){
   closeConfirm();
   localStorage.removeItem(STORE_KEY);
   var user=_getCurrentUser();
-  if(lcReady&&user){
-    var q=new AV.Query('Dream');
-    q.equalTo('author',user);
-    q.find().then(function(objs){
-      if(!objs.length)return;
-      return AV.Object.destroyAll(objs);
+  if(cbReady&&user){
+    cbDb.collection('dreams').where({}).get().then(function(res){
+      if(!res.data||!res.data.length)return;
+      var ids=res.data.map(function(d){return d._id});
+      return cbDb.collection('dreams').where({_id:cbDb.command.in(ids)}).remove();
     }).catch(function(){});
   }
   refreshAll();go('home');
@@ -931,49 +923,53 @@ function closeConfirm(){
   document.getElementById('confirmModal').classList.remove('on');
 }
 
-/* === LEANCLOUD (国内后端替代 Firebase) === */
+/* === CLOUDBASE 腾讯云开发 (国内后端) === */
 /*
- * 请在 LeanCloud 控制台 (https://console.leancloud.cn) 创建应用后，
- * 填写以下三项配置即可启用云端同步和梦境广场功能：
- *   appId   — 应用 ID
- *   appKey  — 应用密钥
- *   serverURL — 应用 API 域名（控制台 → 设置 → 应用凭证 中获取）
+ * 请在腾讯云开发控制台 (https://cloud.tencent.com/product/tcb) 开通环境后，
+ * 填写以下配置即可启用云端同步和梦境广场功能：
+ *   env — 环境 ID（控制台首页可见）
  *
- * 同时需要在控制台创建以下数据 Class 并设置权限：
- *   Dream       — 字段：text, emotion, type, ts, aiTurns, author(Pointer<_User>)
- *                 权限：仅创建者可读写
- *   PublicDream — 字段：text, emotion, type, ts, likes(Number), comments(Array),
- *                        sharedAt, author(Pointer<_User>)
- *                 权限：所有用户可读，仅登录用户可创建
+ * 同时需要在控制台「数据库」中创建以下集合，并设置安全规则：
+ *   dreams       — 字段：text, emotion, type, ts, aiTurns, _openid(自动注入)
+ *                  安全规则：仅创建者可读写
+ *   publicDreams — 字段：text, emotion, type, ts, likes, comments, _openid
+ *                  安全规则：所有用户可读，仅登录用户可创建
+ *
+ * 在控制台「身份认证」中开启「邮箱登录」和「匿名登录」。
  */
-var LC_CONFIG={
-  appId:'YOUR_APP_ID',
-  appKey:'YOUR_APP_KEY',
-  serverURL:'YOUR_SERVER_URL'
+var CB_CONFIG={
+  env:'YOUR_ENV_ID'
 };
-var lcReady=false;
-var _isAnonymousLocal=false; /* "先看看" 匿名浏览模式，不走 LeanCloud */
+var cbReady=false;
+var cbApp=null;
+var cbAuth=null;
+var cbDb=null;
 
 function _getCurrentUser(){
-  if(lcReady){
-    try{var u=AV.User.current();if(u)return u}catch(e){}
+  if(cbReady&&cbAuth){
+    try{
+      var state=cbAuth.getLoginState();
+      if(state&&state.uid)return state;
+    }catch(e){}
   }
   return null;
 }
 
-/* Initialize LeanCloud */
+/* Initialize CloudBase */
 try{
-  if(typeof AV!=='undefined'&&LC_CONFIG.appId!=='YOUR_APP_ID'){
-    AV.init({appId:LC_CONFIG.appId,appKey:LC_CONFIG.appKey,serverURL:LC_CONFIG.serverURL});
-    lcReady=true;
-    console.log('LeanCloud initialized');
-  }else if(typeof AV==='undefined'){
-    console.warn('LeanCloud SDK not available — running in offline mode');
+  if(typeof cloudbase!=='undefined'&&CB_CONFIG.env!=='YOUR_ENV_ID'){
+    cbApp=cloudbase.init({env:CB_CONFIG.env});
+    cbAuth=cbApp.auth({persistence:'local'});
+    cbDb=cbApp.database();
+    cbReady=true;
+    console.log('CloudBase initialized');
+  }else if(typeof cloudbase==='undefined'){
+    console.warn('CloudBase SDK not available — running in offline mode');
   }else{
-    console.log('LeanCloud not configured — running in offline mode. Please fill in LC_CONFIG.');
+    console.log('CloudBase not configured — running in offline mode. Please fill in CB_CONFIG.env.');
   }
 }catch(e){
-  console.warn('LeanCloud init failed:',e);
+  console.warn('CloudBase init failed:',e);
 }
 
 /* Show connection status on login page */
@@ -981,19 +977,27 @@ try{
   var modeEl=document.getElementById('loginMode');
   if(!modeEl)return;
   modeEl.classList.add('show');
-  if(lcReady){
+  if(cbReady){
     modeEl.innerHTML='<span class="mode-cloud">云端模式 · 数据可跨设备同步</span>';
   }else{
     modeEl.innerHTML='<span class="mode-local">离线模式 · 数据保存在设备上</span>';
   }
 })();
 
-/* Restore anonymous browse session */
-var _anonSession=localStorage.getItem('nightletter_session');
-if(_anonSession==='__anon__'){
-  _isAnonymousLocal=true;
-  document.getElementById('loginOverlay').classList.add('off');
-}
+/* Check for existing CloudBase session or anonymous browse session */
+(function(){
+  if(cbReady){
+    var state=cbAuth.getLoginState();
+    if(state&&state.uid){
+      document.getElementById('loginOverlay').classList.add('off');
+    }
+  }else{
+    var _anonSession=localStorage.getItem('nightletter_session');
+    if(_anonSession==='__anon__'){
+      document.getElementById('loginOverlay').classList.add('off');
+    }
+  }
+})();
 
 /* Trigger onboarding check */
 _checkOnboarding();
@@ -1117,16 +1121,15 @@ function doLogin(){
   
   var _resetBtn=function(){loginBtn.disabled=false;loginBtn.style.opacity='1'};
   
-  if(!lcReady){
+  if(!cbReady){
     _resetBtn();
-    errEl.textContent='云端服务未配置，请先在代码中填写 LC_CONFIG';
+    errEl.textContent='云端服务未配置，请先在代码中填写 CB_CONFIG.env';
     return;
   }
   
-  AV.User.logIn(email,pass).then(function(user){
+  cbAuth.signInWithEmailAndPassword(email,pass).then(function(){
     errEl.textContent='';
     _resetBtn();
-    _isAnonymousLocal=false;
     localStorage.removeItem('nightletter_session');
     document.getElementById('loginOverlay').classList.add('off');
     /* Sync local dreams to cloud and load cloud dreams */
@@ -1149,10 +1152,9 @@ function doLogin(){
   }).catch(function(e){
     _resetBtn();
     var msg=e.message||'登录失败';
-    if(e.code===210||e.code===211)msg='账号或密码错误';
-    else if(e.code===219)msg='登录失败次数过多，请稍后重试';
-    else if(e.code===202||e.code===203)msg='邮箱格式不正确';
-    else if(e.code===-1)msg='网络连接失败，请检查网络';
+    if(msg.indexOf('invalid')>=0||msg.indexOf('not exist')>=0)msg='账号或密码错误';
+    else if(msg.indexOf('disabled')>=0)msg='该账号已被禁用';
+    else if(msg.indexOf('network')>=0)msg='网络连接失败，请检查网络';
     errEl.textContent=msg;
   });
 }
@@ -1171,20 +1173,15 @@ function doRegister(){
   
   var _resetBtn=function(){regBtn.disabled=false;regBtn.style.opacity='1'};
   
-  if(!lcReady){
+  if(!cbReady){
     _resetBtn();
-    errEl.textContent='云端服务未配置，请先在代码中填写 LC_CONFIG';
+    errEl.textContent='云端服务未配置，请先在代码中填写 CB_CONFIG.env';
     return;
   }
   
-  var user=new AV.User();
-  user.setUsername(email);
-  user.setPassword(pass);
-  user.setEmail(email);
-  user.signUp().then(function(){
+  cbAuth.signUpWithEmailAndPassword(email,pass).then(function(){
     errEl.textContent='';
     _resetBtn();
-    _isAnonymousLocal=false;
     localStorage.removeItem('nightletter_session');
     document.getElementById('loginOverlay').classList.add('off');
     /* Sync local dreams to cloud */
@@ -1194,38 +1191,48 @@ function doRegister(){
   }).catch(function(e){
     _resetBtn();
     var msg=e.message||'注册失败';
-    if(e.code===203)msg='该邮箱已被注册';
-    else if(e.code===202)msg='邮箱格式不正确';
-    else if(e.code===201)msg='密码不能为空';
-    else if(e.code===-1)msg='网络连接失败，请检查网络';
+    if(msg.indexOf('already')>=0||msg.indexOf('exist')>=0)msg='该邮箱已被注册';
+    else if(msg.indexOf('invalid')>=0)msg='邮箱格式不正确';
+    else if(msg.indexOf('weak')>=0)msg='密码强度不够';
+    else if(msg.indexOf('network')>=0)msg='网络连接失败，请检查网络';
     errEl.textContent=msg;
   });
 }
 
 function loginAnonymously(){
-  /* "先看看" — local-only anonymous browse mode */
-  _isAnonymousLocal=true;
-  localStorage.setItem('nightletter_session','__anon__');
-  document.getElementById('loginOverlay').classList.add('off');
+  if(cbReady){
+    /* CloudBase anonymous login — real cloud user, can browse Square */
+    cbAuth.signInAnonymously().then(function(){
+      localStorage.removeItem('nightletter_session');
+      document.getElementById('loginOverlay').classList.add('off');
+      renderAccountSection();
+    }).catch(function(e){
+      console.warn('Anonymous login failed:',e);
+      /* Fallback to local anonymous mode */
+      localStorage.setItem('nightletter_session','__anon__');
+      document.getElementById('loginOverlay').classList.add('off');
+    });
+  }else{
+    /* Offline anonymous browse mode */
+    localStorage.setItem('nightletter_session','__anon__');
+    document.getElementById('loginOverlay').classList.add('off');
+  }
 }
 
 function doLogout(){
-  if(lcReady){
-    AV.User.logOut().then(function(){
-      _isAnonymousLocal=false;
+  if(cbReady){
+    cbAuth.signOut().then(function(){
       localStorage.removeItem('nightletter_session');
       go('home');
       document.getElementById('loginOverlay').classList.remove('off');
       renderAccountSection();
     }).catch(function(e){
       console.warn('Logout failed:',e);
-      _isAnonymousLocal=false;
       localStorage.removeItem('nightletter_session');
       go('home');
       document.getElementById('loginOverlay').classList.remove('off');
     });
   }else{
-    _isAnonymousLocal=false;
     localStorage.removeItem('nightletter_session');
     go('home');
     document.getElementById('loginOverlay').classList.remove('off');
@@ -1240,43 +1247,32 @@ function loginWithEmail(){
 
 function syncDreamsToCloud(dreams){
   var user=_getCurrentUser();
-  if(!lcReady||!user||!dreams.length)return Promise.resolve();
-  var Dream=AV.Object.extend('Dream');
-  var acl=new AV.ACL({'*':{read:false,write:false},[user.id]:{read:true,write:true}});
+  if(!cbReady||!user||!dreams.length)return Promise.resolve();
+  var col=cbDb.collection('dreams');
   var promises=[];
   var count=Math.min(dreams.length,500);
   for(var i=0;i<count;i++){
     var d=dreams[i];
-    var obj=new Dream();
-    obj.set('text',d.text);
-    obj.set('emotion',d.emotion);
-    obj.set('type',d.type||'梦境');
-    obj.set('ts',d.ts);
-    obj.set('aiTurns',d.aiTurns||0);
-    obj.set('localId',d.id);
-    obj.set('author',user);
-    obj.setACL(acl);
-    promises.push(obj.save());
+    promises.push(col.add({
+      data:{text:d.text,emotion:d.emotion,type:d.type||'梦境',ts:d.ts,aiTurns:d.aiTurns||0,localId:d.id}
+    }));
   }
   return Promise.all(promises).catch(function(e){console.warn('Sync failed:',e)});
 }
 
 function loadDreamsFromCloud(){
   var user=_getCurrentUser();
-  if(!lcReady||!user)return Promise.resolve([]);
-  var q=new AV.Query('Dream');
-  q.equalTo('author',user);
-  q.descending('ts');
-  q.limit(500);
-  return q.find().then(function(objs){
-    return objs.map(function(o){
+  if(!cbReady||!user)return Promise.resolve([]);
+  return cbDb.collection('dreams').orderBy('ts','desc').limit(500).get().then(function(res){
+    if(!res.data)return [];
+    return res.data.map(function(doc){
       return {
-        id:o.get('localId')||o.id,
-        text:o.get('text'),
-        emotion:o.get('emotion')||'未知',
-        ts:o.get('ts')||o.createdAt.toISOString(),
-        aiTurns:o.get('aiTurns')||0,
-        type:o.get('type')||'梦境'
+        id:doc.localId||doc._id,
+        text:doc.text||'',
+        emotion:doc.emotion||'未知',
+        ts:doc.ts||'',
+        aiTurns:doc.aiTurns||0,
+        type:doc.type||'梦境'
       };
     });
   });
@@ -1295,16 +1291,16 @@ function renderAccountSection(){
   var el=document.getElementById('accountInfo');
   if(!el)return;
   var user=_getCurrentUser();
-  if(user){
-    var email=user.getEmail()||user.get('email')||'';
-    var statusLabel=lcReady?'已登录':'已登录';
-    var subText=email||'LeanCloud 用户';
-    el.innerHTML='<div class="set-row"><div><div class="set-label">'+statusLabel+'</div>'
+  var isAnon=localStorage.getItem('nightletter_session')==='__anon__';
+  if(user&&!isAnon){
+    var email=user.email||'';
+    var subText=email||'CloudBase 用户';
+    el.innerHTML='<div class="set-row"><div><div class="set-label">已登录</div>'
       +'<div class="set-sub">'+subText+'</div>'
       +'</div></div>'
       +'<div class="set-row"><div><div class="set-label">退出登录</div><div class="set-sub">本地数据仍会保留</div></div>'
       +'<button class="set-neutral-btn" onclick="doLogout()">退出</button></div>';
-  }else if(_isAnonymousLocal){
+  }else if(user&&user.isAnonymous||isAnon){
     el.innerHTML='<div class="set-row"><div><div class="set-label">匿名体验</div>'
       +'<div class="set-sub">注册账号可云端保存梦境</div>'
       +'</div>'
@@ -1315,10 +1311,8 @@ function renderAccountSection(){
   }
 }
 
-/* LeanCloud auth state — handled in doLogin/doRegister success callbacks */
-/* No persistent listener needed; LeanCloud session is restored automatically via AV.User.current() */
-if(lcReady&&AV.User.current()){
-  var _lcUser=AV.User.current();
+/* CloudBase auth state — session is auto-restored via persistence:'local' */
+if(cbReady&&_getCurrentUser()){
   document.getElementById('loginOverlay').classList.add('off');
   loadDreamsFromCloud().then(function(cloudDreams){
     if(cloudDreams.length>0){
@@ -2828,7 +2822,7 @@ var currentSquareDream=null;
 
 function shareToSquare(){
   var user=_getCurrentUser();
-  if(!user||!lcReady){
+  if(!user||!cbReady){
     alert('梦境广场需要登录才能使用，请先注册账号');
     return;
   }
@@ -2859,22 +2853,13 @@ function shareToSquare(){
   /* Confirm before sharing */
   if(!confirm('确定要分享这个梦境吗？\n\n「'+dream.text.slice(0,40)+'」\n\n分享后将以匿名形式显示在广场。'))return;
   
-  /* Save to LeanCloud PublicDream class */
-  var PublicDream=AV.Object.extend('PublicDream');
-  var obj=new PublicDream();
-  obj.set('text',dream.text);
-  obj.set('emotion',dream.emotion);
-  obj.set('type',dream.type||'梦境');
-  obj.set('ts',dream.ts);
-  obj.set('likes',0);
-  obj.set('comments',[]);
-  obj.set('author',user);
-  var acl=new AV.ACL();
-  acl.setPublicReadAccess(true);
-  acl.setWriteAccess(user.id,true);
-  obj.setACL(acl);
-  
-  obj.save().then(function(){
+  /* Save to CloudBase publicDreams collection */
+  cbDb.collection('publicDreams').add({
+    data:{
+      text:dream.text,emotion:dream.emotion,type:dream.type||'梦境',
+      ts:dream.ts,likes:0,comments:[]
+    }
+  }).then(function(){
     alert('梦境已分享到广场！');
     loadSquareDreams();
   }).catch(function(e){
@@ -2884,7 +2869,7 @@ function shareToSquare(){
 }
 
 function loadSquareDreams(){
-  if(!lcReady){
+  if(!cbReady){
     /* Offline demo data */
     squareDreams=[
       {id:'demo1',text:'梦见在一片紫色的花海里奔跑，风很温柔，阳光正好。醒来时嘴角还带着笑。',emotion:'喜悦',ts:new Date(Date.now()-3600000).toISOString(),likes:12,comments:[{user:'匿名旅人',text:'好美的梦',ts:new Date().toISOString()}]},
@@ -2895,25 +2880,21 @@ function loadSquareDreams(){
     return;
   }
   
-  var q=new AV.Query('PublicDream');
-  q.descending('createdAt');
-  q.limit(50);
-  q.find().then(function(objs){
-    squareDreams=objs.map(function(o){
+  cbDb.collection('publicDreams').orderBy('createTime','desc').limit(50).get().then(function(res){
+    squareDreams=(res.data||[]).map(function(doc){
       return {
-        id:o.id,
-        text:o.get('text')||'',
-        emotion:o.get('emotion')||'未知',
-        type:o.get('type')||'梦境',
-        ts:o.get('ts')||o.createdAt.toISOString(),
-        likes:o.get('likes')||0,
-        comments:o.get('comments')||[]
+        id:doc._id,
+        text:doc.text||'',
+        emotion:doc.emotion||'未知',
+        type:doc.type||'梦境',
+        ts:doc.ts||'',
+        likes:doc.likes||0,
+        comments:doc.comments||[]
       };
     });
     renderSquareDreams();
   }).catch(function(e){
     console.error('Load square dreams failed:',e);
-    /* Fallback to demo data on error */
     squareDreams=[];
     renderSquareDreams();
   });
@@ -2965,7 +2946,7 @@ function likeDream(dreamId,btn){
   /* Visual feedback */
   if(btn){btn.classList.add('sq-like-pop','liked');setTimeout(function(){btn.classList.remove('sq-like-pop')},350)}
   
-  if(!lcReady){
+  if(!cbReady){
     alert('离线模式下无法点赞');
     return;
   }
@@ -2974,19 +2955,18 @@ function likeDream(dreamId,btn){
   var localDream=squareDreams.find(function(d){return d.id===dreamId});
   if(localDream)localDream.likes=(localDream.likes||0)+1;
   
-  var PublicDream=AV.Object.createWithoutData('PublicDream',dreamId);
-  PublicDream.increment('likes');
-  PublicDream.save().then(function(){
+  cbDb.collection('publicDreams').doc(dreamId).update({
+    likes:cbDb.command.inc(1)
+  }).then(function(){
     loadSquareDreams();
   }).catch(function(e){
     console.error('Like failed:',e);
-    /* Revert optimistic update */
     if(localDream)localDream.likes=Math.max(0,(localDream.likes||1)-1);
   });
 }
 
 function commentDream(dreamId){
-  if(!lcReady){
+  if(!cbReady){
     alert('离线模式下无法留言');
     return;
   }
@@ -2998,20 +2978,16 @@ function commentDream(dreamId){
     return;
   }
   
-  var q=new AV.Query('PublicDream');
-  q.get(dreamId).then(function(obj){
-    var comments=obj.get('comments')||[];
+  cbDb.collection('publicDreams').doc(dreamId).get().then(function(res){
+    if(!res.data||!res.data.length)return;
+    var doc=res.data[0];
+    var comments=doc.comments||[];
     if(comments.length>=3){
       alert('该梦境的留言已达上限（3 条）');
       return;
     }
-    comments.push({
-      user:'匿名旅人',
-      text:comment.trim(),
-      ts:new Date().toISOString()
-    });
-    obj.set('comments',comments);
-    return obj.save();
+    comments.push({user:'匿名旅人',text:comment.trim(),ts:new Date().toISOString()});
+    return cbDb.collection('publicDreams').doc(dreamId).update({comments:comments});
   }).then(function(result){
     if(result)loadSquareDreams();
   }).catch(function(e){
@@ -3024,17 +3000,18 @@ function commentDream(dreamId){
 function _checkOnboarding(){
   var hasOnboard=localStorage.getItem(ONBOARD_KEY);
   var user=_getCurrentUser();
+  var isAnonLocal=localStorage.getItem('nightletter_session')==='__anon__';
   
   if(hasOnboard){
     /* Already onboarded — ensure login overlay is dismissed if user is logged in or anonymous */
-    if(user||_isAnonymousLocal){
+    if(user||isAnonLocal){
       document.getElementById('loginOverlay').classList.add('off');
     }
     return;
   }
   
   /* Need to show onboarding */
-  if(user||_isAnonymousLocal){
+  if(user||isAnonLocal){
     /* User is logged in or anonymous, show onboarding after a brief delay */
     setTimeout(showOnboard,600);
   }else{
