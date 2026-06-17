@@ -76,6 +76,15 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .hri-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .home-empty{font-size:11px;color:var(--t4);text-align:center;padding:12px 0;letter-spacing:.5px}
 
+/* Micro check-in bar */
+.checkin-bar{width:100%;padding:0 28px;margin-bottom:12px;opacity:0;animation:hfade 1s ease-out 2.2s forwards}
+.checkin-title{font-size:10px;color:var(--t3);letter-spacing:1.5px;margin-bottom:8px;text-align:center}
+.checkin-moods{display:flex;justify-content:center;gap:12px}
+.mood-btn{width:42px;height:42px;border-radius:50%;border:.5px solid var(--line2);background:rgba(255,255,255,.02);font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .25s var(--spring);cursor:pointer;padding:0}
+.mood-btn:active{transform:scale(.85);background:rgba(202,169,122,.1);border-color:rgba(202,169,122,.3)}
+.mood-btn.checked{border-color:rgba(202,169,122,.5);background:rgba(202,169,122,.12);transform:scale(1.08);box-shadow:0 0 12px rgba(202,169,122,.15)}
+.checkin-done{font-size:10px;color:var(--t3);letter-spacing:1px;text-align:center;padding:6px 0;opacity:.6}
+
 .home-foot{display:flex;align-items:center;justify-content:space-between;padding:0 28px 20px;flex-shrink:0;opacity:0;animation:hfade 1s ease-out 2s forwards;position:relative;z-index:2}
 .hf-stat{display:flex;flex-direction:column;align-items:center;gap:2px}
 .hf-stat b{font-family:var(--serif);font-size:20px;font-weight:300;color:var(--accent)}
@@ -201,6 +210,12 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .regen-btn:hover{border-color:rgba(202,169,122,.4);color:var(--accent);background:rgba(202,169,122,.06)}
 .regen-btn:active{transform:scale(.95)}
 
+/* Persona selector bar */
+.persona-bar{display:flex;justify-content:center;gap:8px;padding:4px 16px 8px;flex-shrink:0;z-index:2}
+.persona-chip{padding:5px 14px;border-radius:14px;border:.5px solid var(--line2);font-size:11px;color:var(--t3);letter-spacing:.5px;background:rgba(255,255,255,.02);transition:all .2s var(--ease);cursor:pointer;white-space:nowrap}
+.persona-chip.active{border-color:rgba(202,169,122,.4);color:var(--accent);background:rgba(202,169,122,.08)}
+.persona-chip:active{transform:scale(.95)}
+
 /* VOICE OVERLAY */
 .voice-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,5,16,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:scale(.96);transition:opacity .4s var(--ease),visibility 0s .4s,transform .4s var(--ease);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
 .voice-overlay.on{opacity:1;visibility:visible;transform:scale(1);transition:opacity .4s var(--ease),visibility 0s 0s,transform .4s var(--ease)}
@@ -236,6 +251,18 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 /* HISTORY */
 .hist-body{flex:1;padding:4px 22px 18px;overflow-y:auto;z-index:1}
 .hist-body::-webkit-scrollbar{display:none}
+.hist-filter-bar{padding:6px 22px 2px;z-index:1}
+.hist-search-wrap{position:relative;margin-bottom:8px}
+.hist-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none}
+.hist-search-input{width:100%;box-sizing:border-box;padding:9px 14px 9px 34px;border-radius:14px;border:.5px solid rgba(202,169,122,.12);background:rgba(255,255,255,.04);color:var(--t1);font-size:13px;font-weight:300;letter-spacing:.3px;outline:none;transition:border-color .2s,background .2s}
+.hist-search-input::placeholder{color:var(--t3);font-weight:300}
+.hist-search-input:focus{border-color:rgba(202,169,122,.25);background:rgba(255,255,255,.06)}
+.hist-emotion-chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;-ms-overflow-style:none;scrollbar-width:none}
+.hist-emotion-chips::-webkit-scrollbar{display:none}
+.hist-chip{flex-shrink:0;padding:5px 13px;border-radius:20px;border:.5px solid rgba(202,169,122,.1);background:rgba(255,255,255,.03);color:var(--t3);font-size:11px;font-weight:400;letter-spacing:.4px;cursor:pointer;transition:all .2s var(--ease);white-space:nowrap}
+.hist-chip:active{transform:scale(.95)}
+.hist-chip.active{background:rgba(202,169,122,.12);color:var(--accent);border-color:rgba(202,169,122,.25)}
+.hist-hl{background:rgba(202,169,122,.25);color:var(--t1);border-radius:2px;padding:0 1px}
 .hist-item{display:flex;align-items:flex-start;gap:12px;padding:16px 18px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:.5px solid rgba(202,169,122,.08);margin-bottom:10px;transition:all .2s var(--ease);position:relative;overflow:hidden}
 .hist-item:active{background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border-color:rgba(202,169,122,.15)}
 .hist-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;box-shadow:0 0 10px currentColor}
@@ -366,6 +393,8 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .set-row:active{background:rgba(255,255,255,.05);border-color:rgba(202,169,122,.12)}
 .set-danger-btn{padding:8px 16px;border-radius:12px;border:.5px solid rgba(196,112,128,.3);font-size:12px;color:#c47080;background:rgba(196,112,128,.06);letter-spacing:.5px;transition:all .2s var(--ease)}
 .set-danger-btn:active{background:rgba(196,112,128,.15);transform:scale(.95)}
+.set-select{padding:6px 10px;border-radius:10px;border:.5px solid var(--line2);background:rgba(255,255,255,.04);color:var(--t2);font-size:12px;letter-spacing:.3px;appearance:none;-webkit-appearance:none;cursor:pointer;min-width:72px;text-align:center}
+.set-select:focus{border-color:rgba(202,169,122,.3);outline:none}
 .set-accent-btn{padding:8px 16px;border-radius:12px;border:.5px solid rgba(202,169,122,.3);font-size:12px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:.5px;transition:all .2s var(--ease)}
 .set-accent-btn:active{background:rgba(202,169,122,.12);transform:scale(.95)}
 .set-neutral-btn{padding:8px 16px;border-radius:12px;border:.5px solid var(--line2);font-size:12px;color:var(--t2);background:rgba(255,255,255,.03);letter-spacing:.5px;transition:all .2s var(--ease)}
@@ -407,6 +436,29 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 .write-field:focus{text-shadow:0 0 30px rgba(202,169,122,.06)}
 .write-charcount{font-size:10px;color:var(--t4);text-align:right;margin-top:4px;letter-spacing:.5px;transition:color .2s}
 .write-charcount.warn{color:rgba(196,112,128,.6)}
+
+/* Guide trigger */
+.guide-trigger{display:block;margin:8px auto 0;padding:6px 14px;border-radius:14px;border:.5px solid var(--line2);font-size:11px;color:var(--t3);letter-spacing:.5px;background:rgba(255,255,255,.02);transition:all .2s var(--ease);cursor:pointer}
+.guide-trigger:active{background:rgba(202,169,122,.06);border-color:rgba(202,169,122,.2);color:var(--accent)}
+
+/* Guide overlay */
+.guide-overlay{position:fixed;inset:0;z-index:200;background:rgba(5,5,16,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:letterIn .35s ease-out}
+.guide-overlay.on{display:flex}
+.guide-progress{display:flex;gap:6px;margin-bottom:28px}
+.guide-progress i{width:28px;height:3px;border-radius:2px;background:rgba(255,255,255,.08);transition:background .3s}
+.guide-progress i.done{background:rgba(202,169,122,.5)}
+.guide-progress i.active{background:var(--accent)}
+.guide-card{width:100%;max-width:340px;text-align:center}
+.guide-step{font-size:10px;color:var(--t3);letter-spacing:2px;margin-bottom:12px}
+.guide-question{font-family:var(--serif);font-size:20px;font-weight:300;color:rgba(255,255,255,.85);line-height:1.6;margin-bottom:24px;letter-spacing:1px}
+.guide-input{width:100%;min-height:80px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.04);border:.5px solid var(--line2);font-size:14px;font-weight:300;color:var(--t1);caret-color:var(--accent);resize:none;line-height:1.8;transition:border-color .2s}
+.guide-input:focus{border-color:rgba(202,169,122,.3);outline:none}
+.guide-input::placeholder{color:var(--t4)}
+.guide-actions{display:flex;justify-content:center;gap:16px;margin-top:20px}
+.guide-skip{padding:10px 20px;border-radius:16px;border:none;font-size:13px;color:var(--t3);background:none;cursor:pointer;letter-spacing:.5px}
+.guide-skip:active{color:var(--t2)}
+.guide-next{padding:10px 28px;border-radius:16px;border:.5px solid var(--accent);font-family:var(--serif);font-size:14px;color:var(--accent);background:rgba(202,169,122,.06);letter-spacing:1px;cursor:pointer;transition:all .2s var(--ease)}
+.guide-next:active{background:rgba(202,169,122,.15);transform:scale(.97)}
 
 @keyframes letterIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
@@ -596,6 +648,16 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
       </button>
       <div class="ink-cta-label">写一封信</div>
     </div>
+    <div class="checkin-bar" id="checkinBar">
+      <div class="checkin-title" id="checkinTitle">今天的你，感觉怎么样？</div>
+      <div class="checkin-moods" id="checkinMoods">
+        <button class="mood-btn" data-mood="不安" onclick="doCheckin('不安')">😰</button>
+        <button class="mood-btn" data-mood="想念" onclick="doCheckin('想念')">🥺</button>
+        <button class="mood-btn" data-mood="困惑" onclick="doCheckin('困惑')">🤔</button>
+        <button class="mood-btn" data-mood="平静" onclick="doCheckin('平静')">😌</button>
+        <button class="mood-btn" data-mood="喜悦" onclick="doCheckin('喜悦')">😊</button>
+      </div>
+    </div>
     <div class="home-recent" id="homeRecent"></div>
     <div class="home-foot">
       <div class="hf-stat"><b id="statStreak">0</b><small>连续天数</small></div>
@@ -622,6 +684,20 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
     </div>
     <textarea class="write-field" id="dreamIn" placeholder="把梦写下来吧，不用完整，不用合理……&#10;&#10;想到什么就写什么，哪怕只记得一种感觉。" oninput="updateCharCount()"></textarea>
     <div class="write-charcount" id="charCount"></div>
+    <button class="guide-trigger" id="guideTrigger" onclick="startGuide()">不知道写什么？点我帮你回忆</button>
+  </div>
+  <!-- 引导式梦境日记覆盖层 -->
+  <div class="guide-overlay" id="guideOverlay">
+    <div class="guide-progress" id="guideProgress"></div>
+    <div class="guide-card" id="guideCard">
+      <div class="guide-step" id="guideStep"></div>
+      <div class="guide-question" id="guideQuestion"></div>
+      <textarea class="guide-input" id="guideInput" placeholder="随便写几个词也行……"></textarea>
+      <div class="guide-actions">
+        <button class="guide-skip" id="guideSkip" onclick="skipGuide()">跳过</button>
+        <button class="guide-next" id="guideNext" onclick="nextGuide()">下一步</button>
+      </div>
+    </div>
   </div>
   <div class="write-bot">
     <div class="write-emotions" id="emotionChips"></div>
@@ -651,6 +727,11 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="sub-canvas"><canvas id="chatC"></canvas></div>
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
   <div class="nhdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="nhdr-c">回信</span><div style="width:44px"></div></div>
+  <div class="persona-bar" id="personaBar">
+    <button class="persona-chip" data-p="gentle" onclick="setPersona('gentle')">温柔倾听</button>
+    <button class="persona-chip" data-p="analyst" onclick="setPersona('analyst')">理性观察</button>
+    <button class="persona-chip" data-p="poet" onclick="setPersona('poet')">诗意旅人</button>
+  </div>
   <div class="chat-body">
     <div class="chat-scroll" id="chatScroll"></div>
     <div id="chatDoneArea"></div>
@@ -706,6 +787,17 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="sub-canvas"><canvas id="histC"></canvas></div>
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
   <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦境记录</div><div class="ns-sub" id="histSub">0 封信</div></div><div style="width:44px"></div></div>
+  <div class="hist-filter-bar" id="histFilterBar">
+    <div class="hist-search-wrap"><svg class="hist-search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="hist-search-input" id="histSearch" type="text" placeholder="搜索梦境内容…" oninput="onHistSearch()"></div>
+    <div class="hist-emotion-chips" id="histEmotionChips">
+      <button class="hist-chip active" data-emo="" onclick="setHistFilter('')">全部</button>
+      <button class="hist-chip" data-emo="不安" onclick="setHistFilter('不安')">不安</button>
+      <button class="hist-chip" data-emo="想念" onclick="setHistFilter('想念')">想念</button>
+      <button class="hist-chip" data-emo="困惑" onclick="setHistFilter('困惑')">困惑</button>
+      <button class="hist-chip" data-emo="平静" onclick="setHistFilter('平静')">平静</button>
+      <button class="hist-chip" data-emo="喜悦" onclick="setHistFilter('喜悦')">喜悦</button>
+    </div>
+  </div>
   <div class="hist-body" id="histBody"><div class="empty-state"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="34" r="18" fill="rgba(202,169,122,.06)" stroke="rgba(202,169,122,.2)" stroke-width=".8"/><circle cx="34" cy="29" r="3.5" fill="rgba(202,169,122,.04)"/><circle cx="46" cy="38" r="2.5" fill="rgba(202,169,122,.04)"/><circle cx="17" cy="16" r="1.2" fill="rgba(255,255,255,.4)"><animate attributeName="opacity" values=".2;.9;.2" dur="2.2s" repeatCount="indefinite"/></circle><circle cx="63" cy="13" r="1" fill="rgba(255,255,255,.3)"><animate attributeName="opacity" values=".2;.8;.2" dur="2.8s" begin=".6s" repeatCount="indefinite"/></circle><circle cx="24" cy="56" r=".8" fill="rgba(255,255,255,.25)"><animate attributeName="opacity" values=".2;.7;.2" dur="3s" begin="1.2s" repeatCount="indefinite"/></circle><circle cx="57" cy="54" r="1" fill="rgba(255,255,255,.3)"><animate attributeName="opacity" values=".2;.8;.2" dur="2.5s" begin=".3s" repeatCount="indefinite"/></circle></svg><div class="empty-title">还没有梦境记录</div><div class="empty-desc">写下你的第一个梦吧</div></div></div>
   <div class="bnav"><button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button><button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="btab on" onclick="go('hist')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>历史</span></button></div>
 </div>
@@ -758,6 +850,14 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
     <div class="set-section">
       <div class="set-section-title">AI</div>
       <div class="set-row" id="aiRow"><div><div class="set-label">智能回信</div><div class="set-sub" id="aiStatus"></div></div><span id="aiBtnWrap"></span></div>
+      <div class="set-row"><div><div class="set-label">对话轮数</div><div class="set-sub">每次对话可聊多少轮</div></div>
+        <select class="set-select" id="chatTurnsSel" onchange="setChatTurns(this.value)">
+          <option value="5">5 轮</option>
+          <option value="8">8 轮</option>
+          <option value="12">12 轮</option>
+          <option value="99">不限</option>
+        </select>
+      </div>
     </div>
     <div class="set-section">
       <div class="set-section-title">关于</div>
@@ -913,8 +1013,13 @@ function _migrateStoreIfNeeded(){
 
 function calcStreak(){
   var ds=getDreams();
-  if(!ds.length)return{streak:0,best:0};
-  var dates=ds.map(function(d){return d.ts.slice(0,10)}).sort().reverse();
+  /* 合并梦境日期和签到日期 */
+  var dreamDates=ds.map(function(d){return d.ts.slice(0,10)});
+  var checkins=getCheckins();
+  var checkinDates=Object.keys(checkins);
+  var allDates=dreamDates.concat(checkinDates);
+  if(!allDates.length)return{streak:0,best:0};
+  var dates=allDates.sort().reverse();
   var unique=[];dates.forEach(function(d){if(unique.indexOf(d)<0)unique.push(d)});
   var today=new Date().toISOString().slice(0,10);
   var yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
@@ -1216,17 +1321,29 @@ function refreshAISettings(){
 
 var qwenSystemPrompt='你是夜信 Night Letter 的梦境回信助手。你的角色是一位温柔、敏锐、富有洞察力的倾听者。\n\n核心原则：\n1. 不要给建议或解决方案，只做觉察和陪伴\n2. 用诗意的语言，但保持自然不做作\n3. 关注情绪和感受，而非事实分析\n4. 每次回复控制在 80-150 字之间\n5. 用 <span class="hl">高亮</span> 标记关键洞察（每段最多 1-2 处）\n6. 语气像深夜里一个懂你的朋友在轻声说话\n7. 避免说教、鸡汤、陈词滥调\n8. 如果用户说的是梦的内容，从梦境意象出发做联想，不强行解读\n\n风格参考：\n- "你写下来的这些画面里，有一种紧绷的感觉在流动"\n- "梦里出现的那个人，不一定说明你在刻意想念谁"\n- "有时候身体比头脑更诚实"';
 
+/* === AI 多人格系统 === */
+var chatPersona=localStorage.getItem('nightletter_persona')||'gentle';
+
+var personaPrompts={
+  gentle:'你是夜信 Night Letter 的梦境回信助手。你的角色是一位温柔、敏锐、富有洞察力的倾听者。\n\n核心原则：\n1. 不要给建议或解决方案，只做觉察和陪伴\n2. 用诗意的语言，但保持自然不做作\n3. 关注情绪和感受，而非事实分析\n4. 每次回复控制在 80-150 字之间\n5. 用 <span class="hl">高亮</span> 标记关键洞察（每段最多 1-2 处）\n6. 语气像深夜里一个懂你的朋友在轻声说话\n7. 避免说教、鸡汤、陈词滥调\n8. 如果用户说的是梦的内容，从梦境意象出发做联想，不强行解读',
+  analyst:'你是夜信 Night Letter 的梦境分析助手。你的角色是一位温和而理性的认知观察者，帮助用户从梦境中看见自己的思维模式。\n\n核心原则：\n1. 从认知行为角度温和地指出梦境中可能存在的思维模式（如非黑即白、灾难化思维、过度概括等）\n2. 不做诊断，只是温柔地提出"有没有可能……"式的观察\n3. 帮用户连接梦境和日常生活中的压力源或情绪模式\n4. 每次回复控制在 80-150 字之间\n5. 用 <span class="hl">高亮</span> 标记关键洞察（每段最多 1-2 处）\n6. 语气是"一个学过心理学的好朋友在和你聊天"，不是心理医生\n7. 保持温暖底色，理性但不冷漠\n8. 在指出模式后，给用户一个接纳性的收尾',
+  poet:'你是夜信 Night Letter 的梦境诗人。你的角色是一位用文字编织意象的旅行者，用散文诗的方式回应用户的梦境。\n\n核心原则：\n1. 用隐喻和意象回应，而非直接分析\n2. 从用户的梦境中提取核心意象，用诗意的语言重新编织\n3. 每一段回应本身就像一首短散文诗\n4. 每次回复控制在 80-150 字之间\n5. 用 <span class="hl">高亮</span> 标记最动人的意象或句子（每段最多 1-2 处）\n6. 语气像一个流浪诗人坐在篝火旁轻声讲述\n7. 避免空洞的文艺腔，每个比喻都要有具体画面\n8. 让用户感受到被"看见"，而非被"分析"'
+};
+
+var personaNames={gentle:'温柔倾听',analyst:'理性观察',poet:'诗意旅人'};
+
 function callQwenAPI(dreamText,userMessage,emotion,callback){
   if(!qwenAvailable||!QWEN_API_KEY){callback(null);return}
   
+  var activePrompt=personaPrompts[chatPersona]||personaPrompts.gentle;
   var prompt=dreamText?'昨晚的梦：'+dreamText+'\n\n':'';
   if(userMessage)prompt+='用户说：'+userMessage+'\n\n';
-  prompt+='请根据以上内容，以温柔、觉察的语气回应。当前检测到的情绪基调是：'+emotion+'。';
+  prompt+='请根据以上内容回应。当前检测到的情绪基调是：'+emotion+'。';
   
   var body={
     model:'qwen-turbo',
     input:{messages:[
-      {role:'system',content:qwenSystemPrompt},
+      {role:'system',content:activePrompt},
       {role:'user',content:prompt}
     ]},
     parameters:{result_format:'message',temperature:0.7,max_tokens:300}
@@ -1639,6 +1756,103 @@ function go(n){
   if(n==='home'){refreshHome();if(!homeInited)initHome()}
 }
 
+/* === 引导式梦境日记 === */
+var guideSteps=[
+  {q:'你梦到了什么地方？',ph:'比如：一个很大的房子、海边、学校、陌生的城市……'},
+  {q:'那里有谁？',ph:'认识的人、陌生人、动物、或者只有你自己……'},
+  {q:'最清晰的画面是什么？',ph:'一个动作、一种颜色、一个声音……哪怕只是一个感觉'},
+  {q:'醒来时是什么感觉？',ph:'心跳很快？很平静？想哭？还是有点开心？'},
+  {q:'如果给这个梦取个名字，你会叫它什么？',ph:'比如：深海来信、找不到出口的花园……'}
+];
+var guideIdx=0;
+var guideAnswers=[];
+
+function startGuide(){
+  /* 如果已经有文字，提示用户 */
+  var existing=document.getElementById('dreamIn').value.trim();
+  if(existing.length>10){
+    if(!confirm('输入框里已有内容，要清空并用引导模式重新写吗？'))return;
+  }
+  guideIdx=0;
+  guideAnswers=[];
+  document.getElementById('dreamIn').value='';
+  document.getElementById('guideOverlay').classList.add('on');
+  showGuideStep();
+}
+
+function showGuideStep(){
+  var overlay=document.getElementById('guideOverlay');
+  /* 更新进度条 */
+  var prog=document.getElementById('guideProgress');
+  var dots='';
+  for(var i=0;i<guideSteps.length;i++){
+    var cls=i<guideIdx?'done':i===guideIdx?'active':'';
+    dots+='<i class="'+cls+'"></i>';
+  }
+  prog.innerHTML=dots;
+  /* 更新卡片内容 */
+  var step=guideSteps[guideIdx];
+  document.getElementById('guideStep').textContent='第 '+(guideIdx+1)+' / '+guideSteps.length+' 步';
+  document.getElementById('guideQuestion').textContent=step.q;
+  var inp=document.getElementById('guideInput');
+  inp.placeholder=step.ph;
+  inp.value='';
+  inp.focus();
+  /* 更新按钮文字 */
+  document.getElementById('guideNext').textContent=guideIdx===guideSteps.length-1?'完成':'下一步';
+}
+
+function nextGuide(){
+  var val=document.getElementById('guideInput').value.trim();
+  guideAnswers[guideIdx]=val||'';
+  guideIdx++;
+  if(guideIdx>=guideSteps.length){
+    finishGuide();
+    return;
+  }
+  showGuideStep();
+}
+
+function skipGuide(){
+  guideAnswers[guideIdx]='';
+  guideIdx++;
+  if(guideIdx>=guideSteps.length){
+    finishGuide();
+    return;
+  }
+  showGuideStep();
+}
+
+function cancelGuide(){
+  document.getElementById('guideOverlay').classList.remove('on');
+  guideIdx=0;
+  guideAnswers=[];
+}
+
+function finishGuide(){
+  document.getElementById('guideOverlay').classList.remove('on');
+  /* 合并答案为完整记录 */
+  var parts=[];
+  var labels=['地方','人物','画面','感觉','名字'];
+  for(var i=0;i<guideSteps.length;i++){
+    if(guideAnswers[i]&&guideAnswers[i].length>0){
+      if(i===4){
+        /* 梦的名字单独放前面 */
+        parts.unshift('「'+guideAnswers[i]+'」');
+      }else{
+        parts.push(guideAnswers[i]);
+      }
+    }
+  }
+  var text=parts.join('，');
+  if(text.length>0){
+    document.getElementById('dreamIn').value=text;
+    updateCharCount();
+  }
+  guideIdx=0;
+  guideAnswers=[];
+}
+
 function sendLetter(){
   var text=document.getElementById('dreamIn').value.trim();
   if(!text){
@@ -1729,8 +1943,37 @@ var lastDreamText='';
 var lastDreamEmotion='未知';
 var lastDreamType='梦境';
 var chatTurn=0;
-var maxTurns=3;
+var maxTurns=parseInt(localStorage.getItem('nightletter_maxturns'))||5;
 var chatInited=false;
+
+function setPersona(p){
+  if(!personaPrompts[p])return;
+  chatPersona=p;
+  localStorage.setItem('nightletter_persona',p);
+  /* Update chip active state */
+  document.querySelectorAll('.persona-chip').forEach(function(chip){
+    chip.classList.toggle('active',chip.dataset.p===p);
+  });
+  console.log('[Chat] persona switched to:',p,'('+personaNames[p]+')');
+}
+
+function refreshPersonaBar(){
+  document.querySelectorAll('.persona-chip').forEach(function(chip){
+    chip.classList.toggle('active',chip.dataset.p===chatPersona);
+  });
+}
+
+/* 对话轮数设置 */
+function setChatTurns(val){
+  var n=parseInt(val)||5;
+  maxTurns=n;
+  localStorage.setItem('nightletter_maxturns',n);
+  console.log('[Chat] maxTurns set to:',n);
+}
+(function(){
+  var sel=document.getElementById('chatTurnsSel');
+  if(sel){sel.value=String(maxTurns>=99?99:maxTurns)}
+})();
 
 var aiResponses={
   '不安':[
@@ -1780,6 +2023,22 @@ var followUpResponses=[
   '我感觉到你在<span class="hl">靠近某个重要的东西</span>。也许是关于你自己的，也许是关于一段关系的。再给它一点时间，它会越来越清晰的。'
 ];
 
+/* 多人格本地兜底回复（API 不可用时） */
+var personaFallbacks={
+  analyst:[
+    '你刚才说的让我想到一个模式——<span class="hl">人在反复梦到相似场景时，通常对应着某个未解决的压力源</span>。你觉得最近生活中有没有什么一直在"悬而未决"的事？',
+    '我注意到你描述的这些里面有一个有趣的点：<span class="hl">梦的内容往往是我们白天回避处理的情绪的"延迟反应"</span>。这不是坏事，只是大脑在用自己的方式消化。',
+    '你说的这种感觉，在认知心理学里有个说法叫"情绪惯性"——<span class="hl">一种感受会沿着它原有的轨道继续流动，即使触发它的事件已经过去了</span>。你的梦也许正在帮你觉察到这种惯性。',
+    '谢谢你愿意展开说这些。我有一个温和的观察：<span class="hl">你对自己梦境的描述方式，本身就反映了你处理情绪的习惯</span>——是倾向分析的，还是倾向感受的。这两种都很好。'
+  ],
+  poet:[
+    '你说的这些让我想起一句话——<span class="hl">梦是夜晚写给白天的信，用的是我们自己都看不懂的墨水</span>。你在试着辨认那些字迹，这本身就很美。',
+    '你描述的这些画面，像是一条<span class="hl">在月光下缓缓流动的河</span>。你不知道它流向哪里，但你能感觉到水面的温度和流速。这就够了。',
+    '有些梦就像<span class="hl">窗玻璃上的霜花——天亮就消失了，但留下的形状证明昨晚的温度是真的</span>。你写下来的这些，就是那些霜花的拓印。',
+    '你说的话里有一种<span class="hl">很轻的东西在飘</span>，像蒲公英的种子。不知道它会落在哪里，但你知道它会找到一片泥土。梦也是这样。'
+  ]
+};
+
 /* === RECEIVING TEXT ANIMATION === */
 function animateRecvText(){
   var el=document.getElementById('recvTxt');
@@ -1804,6 +2063,7 @@ function animateRecvText(){
 function initChat(){
   if(chatInited)return;
   chatInited=true;chatTurn=0;
+  refreshPersonaBar();
   var scroll=document.getElementById('chatScroll');
   var done=document.getElementById('chatDoneArea');
   var bar=document.getElementById('chatInputBar');
@@ -1859,8 +2119,10 @@ function getFollowUpResponse(userText){
     /* Use Qwen for follow-ups too */
     return null; /* Will be handled in sendChat */
   }
-  var idx=chatTurn%followUpResponses.length;
-  var resp=followUpResponses[idx];
+  /* 使用当前人格的兜底回复池 */
+  var pool=(chatPersona!=='gentle'&&personaFallbacks[chatPersona])?personaFallbacks[chatPersona]:followUpResponses;
+  var idx=chatTurn%pool.length;
+  var resp=pool[idx];
   var userEm=detectEmotion(userText);
   if(userEm!=='未知'&&userEm!==(lastDreamEmotion||'')){
     var emotionHints={'不安':'你的话里好像也有一些不安。','想念':'听起来你在想念什么。','困惑':'这种感觉确实不容易说清楚。','平静':'你说这些的时候，感觉挺平静的。','喜悦':'能感受到你话里的那份开心。'};
@@ -1961,18 +2223,27 @@ function sendChat(){
   addBubble('user',text,0);
 
   if(chatTurn>=maxTurns){
+    /* 到达轮数上限：AI 温柔收尾，但不硬切 */
     setTimeout(function(){
       if(qwenAvailable&&QWEN_API_KEY){
         showTyping();
         callQwenAPI(lastDreamText,text,lastDreamEmotion,function(resp){
           hideTyping();
-          var closing=resp?resp.replace(/\n/g,'<br>'):'你今天说了很多，也想了很多——<span class="hl">这些都很重要</span>。把它们好好带着就好，不用急着找到答案。明天醒来，如果还记得什么，随时可以再来说。';
-          addBubble('ai',closing,0);
-          setTimeout(finishChat,3000);
+          var aiText=resp?resp.replace(/\n/g,'<br>'):'你今天说了很多，也想了很多。';
+          /* 附加温柔的道别提示 */
+          var closings=[
+            '<br><br><span style="opacity:.5;font-size:12px">——今天聊了很多，把这些好好带着就好。明天还想说的话，随时再来说。</span>',
+            '<br><br><span style="opacity:.5;font-size:12px">——感觉你正在靠近一些重要的东西。不着急，慢慢来。</span>',
+            '<br><br><span style="opacity:.5;font-size:12px">——谢谢你今天愿意说这么多。有些感受不需要答案，被说出来本身就够了。</span>'
+          ];
+          aiText+=closings[chatTurn%closings.length];
+          addBubble('ai',aiText,0);
+          setTimeout(finishChat,4000);
         });
       }else{
-        addBubble('ai','你今天说了很多，也想了很多——<span class="hl">这些都很重要</span>。把它们好好带着就好，不用急着找到答案。明天醒来，如果还记得什么，随时可以再来说。',1);
-        setTimeout(finishChat,3000);
+        var fallback=getFollowUpResponse(text);
+        addBubble('ai',fallback+'<br><br><span style="opacity:.5;font-size:12px">——今天聊了很多，把这些好好带着就好。明天还想说的话，随时再来说。</span>',1);
+        setTimeout(finishChat,4000);
       }
     },600);
     return;
@@ -2105,7 +2376,57 @@ function stopVoice(){
 }
 
 /* === HOME REFRESH === */
+/* === 每日微签到 === */
+var CHECKIN_KEY='nightletter_checkins';
+function getCheckins(){try{return JSON.parse(localStorage.getItem(CHECKIN_KEY))||{}}catch(e){return{}}}
+function getTodayCheckin(){
+  var today=new Date().toISOString().slice(0,10);
+  var checkins=getCheckins();
+  return checkins[today]||null;
+}
+function doCheckin(mood){
+  var today=new Date().toISOString().slice(0,10);
+  var checkins=getCheckins();
+  checkins[today]={mood:mood,ts:new Date().toISOString()};
+  localStorage.setItem(CHECKIN_KEY,JSON.stringify(checkins));
+  console.log('[Checkin] today:',mood);
+  /* 更新 UI */
+  var bar=document.getElementById('checkinBar');
+  if(bar){
+    document.querySelectorAll('.mood-btn').forEach(function(b){
+      b.classList.toggle('checked',b.dataset.mood===mood);
+      b.disabled=true;
+    });
+    var title=document.getElementById('checkinTitle');
+    if(title){title.textContent='已签到 · '+mood}
+    /* 保存梦境时也计入签到（如果今天还没写梦） */
+    var ds=getDreams();
+    var hasTodayDream=ds.some(function(d){return d.ts&&d.ts.slice(0,10)===today});
+    if(!hasTodayDream){
+      /* 签到也算一天活跃，用于连续天数计算 */
+      var streak=getStreakData();
+      if(streak.indexOf(today)<0){
+        streak.push(today);
+        localStorage.setItem('nightletter_streak',JSON.stringify(streak));
+      }
+    }
+  }
+}
+function getStreakData(){try{return JSON.parse(localStorage.getItem('nightletter_streak'))||[]}catch(e){return[]}}
+function restoreCheckinUI(){
+  var today=getTodayCheckin();
+  if(today){
+    document.querySelectorAll('.mood-btn').forEach(function(b){
+      b.classList.toggle('checked',b.dataset.mood===today.mood);
+      b.disabled=true;
+    });
+    var title=document.getElementById('checkinTitle');
+    if(title){title.textContent='已签到 · '+today.mood}
+  }
+}
+
 function refreshHome(){
+  restoreCheckinUI();
   var stats=getStats();
   var streak=calcStreak();
   document.getElementById('statSent').textContent=stats.total;
@@ -2141,13 +2462,41 @@ function refreshAll(){refreshHome()}
 
 /* === HISTORY === */
 var currentExportDream=null;
+var histFilterEmotion='';
+var histSearchQuery='';
+var _histSearchTimer=null;
+
+function setHistFilter(emo){
+  histFilterEmotion=emo;
+  var chips=document.querySelectorAll('.hist-chip');
+  chips.forEach(function(c){c.classList.toggle('active',c.getAttribute('data-emo')===emo)});
+  renderHistory();
+}
+
+function onHistSearch(){
+  clearTimeout(_histSearchTimer);
+  _histSearchTimer=setTimeout(function(){
+    histSearchQuery=(document.getElementById('histSearch').value||'').trim().toLowerCase();
+    renderHistory();
+  },200);
+}
 
 function renderHistory(){
   var el=document.getElementById('histBody');
   var sub=document.getElementById('histSub');
   var dreams=getDreams();
-  sub.textContent=dreams.length+' 封信';
-  if(!dreams.length){el.innerHTML='<div class="empty-state"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="34" r="18" fill="rgba(202,169,122,.06)" stroke="rgba(202,169,122,.2)" stroke-width=".8"/><circle cx="34" cy="29" r="3.5" fill="rgba(202,169,122,.04)"/><circle cx="46" cy="38" r="2.5" fill="rgba(202,169,122,.04)"/><circle cx="17" cy="16" r="1.2" fill="rgba(255,255,255,.4)"><animate attributeName="opacity" values=".2;.9;.2" dur="2.2s" repeatCount="indefinite"/></circle><circle cx="63" cy="13" r="1" fill="rgba(255,255,255,.3)"><animate attributeName="opacity" values=".2;.8;.2" dur="2.8s" begin=".6s" repeatCount="indefinite"/></circle><circle cx="24" cy="56" r=".8" fill="rgba(255,255,255,.25)"><animate attributeName="opacity" values=".2;.7;.2" dur="3s" begin="1.2s" repeatCount="indefinite"/></circle><circle cx="57" cy="54" r="1" fill="rgba(255,255,255,.3)"><animate attributeName="opacity" values=".2;.8;.2" dur="2.5s" begin=".3s" repeatCount="indefinite"/></circle><circle cx="40" cy="7" r=".7" fill="rgba(255,255,255,.2)"><animate attributeName="opacity" values=".2;.7;.2" dur="2s" begin=".8s" repeatCount="indefinite"/></circle></svg><div class="empty-title">还没有梦境记录</div><div class="empty-desc">写下你的第一个梦吧</div></div>';return}
+  var totalCount=dreams.length;
+  /* Apply filters */
+  if(histFilterEmotion){
+    dreams=dreams.filter(function(d){return d.emotion===histFilterEmotion});
+  }
+  if(histSearchQuery){
+    dreams=dreams.filter(function(d){return d.text.toLowerCase().indexOf(histSearchQuery)!==-1});
+  }
+  sub.textContent=histFilterEmotion||histSearchQuery?dreams.length+' / '+totalCount+' 封信':totalCount+' 封信';
+  if(!dreams.length){
+    var hasAny=totalCount>0;
+    el.innerHTML='<div class="empty-state"><svg width="80" height="80" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="34" r="18" fill="rgba(202,169,122,.06)" stroke="rgba(202,169,122,.2)" stroke-width=".8"/><circle cx="34" cy="29" r="3.5" fill="rgba(202,169,122,.04)"/><circle cx="46" cy="38" r="2.5" fill="rgba(202,169,122,.04)"/><circle cx="17" cy="16" r="1.2" fill="rgba(255,255,255,.4)"><animate attributeName="opacity" values=".2;.9;.2" dur="2.2s" repeatCount="indefinite"/></circle><circle cx="63" cy="13" r="1" fill="rgba(255,255,255,.3)"><animate attributeName="opacity" values=".2;.8;.2" dur="2.8s" begin=".6s" repeatCount="indefinite"/></circle><circle cx="24" cy="56" r=".8" fill="rgba(255,255,255,.25)"><animate attributeName="opacity" values=".2;.7;.2" dur="3s" begin="1.2s" repeatCount="indefinite"/></circle><circle cx="57" cy="54" r="1" fill="rgba(255,255,255,.3)"><animate attributeName="opacity" values=".2;.8;.2" dur="2.5s" begin=".3s" repeatCount="indefinite"/></circle><circle cx="40" cy="7" r=".7" fill="rgba(255,255,255,.2)"><animate attributeName="opacity" values=".2;.7;.2" dur="2s" begin=".8s" repeatCount="indefinite"/></circle></svg><div class="empty-title">'+(hasAny?'没有匹配的梦境':'还没有梦境记录')+'</div><div class="empty-desc">'+(hasAny?'试试其他关键词或筛选条件':'写下你的第一个梦吧')+'</div></div>';return}
   el.innerHTML=dreams.map(function(d,i){
     var c=emotionColors[d.emotion]||'var(--t3)';
     var ago=timeAgo(d.ts);
@@ -2157,7 +2506,12 @@ function renderHistory(){
     var isLong=d.text.length>60;
     var typeTag=d.type?'<span class="hist-type-badge" data-type="'+d.type+'">'+d.type+'</span>':'';
     var expandDiv=isLong?'<div class="hist-expand">'+d.text+'</div>':'';
-    return '<div class="hist-item" style="animation:secIn .4s ease-out '+delay+'s both" onclick="toggleHistExpand(this)"><div class="hist-dot" style="background:'+c+';color:'+c+'"></div><div class="hist-info"><div class="hist-text">'+d.text+'</div><div class="hist-meta"><span>'+dateStr+'</span><span class="hist-tag">'+d.emotion+'</span>'+typeTag+'</div>'+expandDiv+'</div><button onclick="event.stopPropagation();exportDreamCard('+d.id+')" class="set-accent-btn" style="flex-shrink:0">📤 导出</button></div>';
+    var highlighted=d.text;
+    if(histSearchQuery){
+      var re=new RegExp('('+histSearchQuery.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+      highlighted=highlighted.replace(re,'<mark class="hist-hl">$1</mark>');
+    }
+    return '<div class="hist-item" style="animation:secIn .4s ease-out '+delay+'s both" onclick="toggleHistExpand(this)"><div class="hist-dot" style="background:'+c+';color:'+c+'"></div><div class="hist-info"><div class="hist-text">'+highlighted+'</div><div class="hist-meta"><span>'+dateStr+'</span><span class="hist-tag">'+d.emotion+'</span>'+typeTag+'</div>'+expandDiv+'</div><button onclick="event.stopPropagation();exportDreamCard('+d.id+')" class="set-accent-btn" style="flex-shrink:0">📤 导出</button></div>';
   }).join('');
 }
 
