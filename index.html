@@ -6,7 +6,9 @@
 <meta name="canvas:aspect-ratio" content="9:16">
 <title>夜信 Night Letter</title>
 <style>
-@import url('https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200;300;400;500;600&family=Noto+Sans+SC:wght@100;200;300;400;500&display=swap');
+@import url('https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200;
+/* ��������Ż�������ʾϵͳ���壬web������غ��滻 */
+:root{font-display:swap;}300;400;500;600&family=Noto+Sans+SC:wght@100;200;300;400;500&display=swap');
 
 :root{
   --bg:#0d0d1f;--bg2:#151530;
@@ -14,8 +16,8 @@
   --accent:#d4b896;--adim:rgba(212,184,150,.15);--aglow:rgba(212,184,150,.3);
   --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
   --ec:#7dd4e0;--ef:#d48090;--ej:#d4c080;--el:#a882d4;--ek:#80a0d4;
-  --serif:'Noto Serif SC','Songti SC','STSong','SimSun',Georgia,serif;
-  --sans:'Noto Sans SC','PingFang SC','Microsoft YaHei','Helvetica Neue',-apple-system,sans-serif;
+  --serif:'Noto Serif SC','Songti SC','STSong','SimSun','PingFang SC','Microsoft YaHei',Georgia,serif;
+  --sans:'Noto Sans SC','PingFang SC','Microsoft YaHei','Helvetica Neue',-apple-system,system-ui,sans-serif;
   --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -26,15 +28,11 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 #app{position:relative;width:100%;height:100%;max-width:430px;margin:0 auto;overflow:hidden;background:var(--bg)}
 
 .scr{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateX(50px);transition:opacity .5s var(--ease),transform .5s var(--ease),visibility 0s .5s;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;z-index:1}
-.scr.on{opacity:1;visibility:visible;transform:translateX(0);transition:opacity .5s var(--ease),transform .5s var(--ease),visibility 0s 0s;z-index:3}
+.scr.on{opacity:1;visibility:visible;transform:translateX(0);will-change:transform;transition:opacity .5s var(--ease),transform .5s var(--ease),visibility 0s 0s;z-index:3}
 .scr.leave{transform:translateX(-50px);opacity:0}
 .scr::-webkit-scrollbar{display:none}
 
-.pbar{display:none}
-
 #app{padding-top:0}
-
-.sbar{display:none}
 
 /* HOME */
 .home-canvas{position:absolute;inset:0;z-index:0}
@@ -47,9 +45,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 @keyframes hfade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
 .ink-cta{position:relative;width:88px;height:88px;margin-bottom:8px;opacity:0;animation:hfade 1s ease-out 1.3s forwards}
-.ink-cta-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(202,169,122,.12);animation:ink-ring 6s ease-in-out infinite}
-.ink-cta-ring:nth-child(2){display:none}
-.ink-cta-ring:nth-child(3){display:none}
+.ink-cta-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(202,169,122,.12);transform:translateZ(0);will-change:transform,opacity;animation:ink-ring 6s ease-in-out infinite}
 @keyframes ink-ring{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.6);opacity:0}}
 .ink-cta-core{
   position:absolute;inset:12px;border-radius:50%;
@@ -634,9 +630,15 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 </style>
 </head>
 <body>
+<svg style="display:none">
+  <symbol id="icon-wifi" viewBox="0 0 16 12" fill="currentColor">
+    <path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/>
+    <path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/>
+    <circle cx="8" cy="10" r="1.5"/>
+  </symbol>
+</svg>
 
-<div class="pbar">
-  <div class="pbar-l"><div class="pbar-d"></div><span>夜信 · MVP</span></div>
+<span>夜信 · MVP</span></div>
   <div class="pbar-btns">
     <button class="pb on" data-s="home" onclick="go('home')">首页</button>
     <button class="pb" data-s="write" onclick="go('write')">写信</button>
@@ -655,7 +657,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <div class="scr on" id="s-home">
   <div class="home-canvas"><canvas id="homeCanvas"></canvas></div>
   <div class="home-overlay">
-    <div class="sbar"><span id="clk">06:32</span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
+    </div></div>
     <div class="home-body">
       <div class="home-period" id="period">清晨</div>
       <div class="home-title">你醒来了</div>
@@ -729,10 +731,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 
 <!-- RECEIVING -->
 <div class="scr" id="s-recv">
-  <div class="sbar"><span></span></div>
-  <div class="recv-wrap">
-    <div class="sub-canvas"><canvas id="recvC"></canvas></div>
-    <div class="recv-rings"><div class="recv-r"></div><div class="recv-r"></div><div class="recv-r"></div><div class="recv-r"></div><div class="recv-dot"></div></div>
+  
     <div class="recv-card">
       <div class="recv-txt" id="recvTxt"></div>
       <div class="recv-divider"></div>
@@ -744,7 +743,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <!-- AI CHAT -->
 <div class="scr" id="s-chat">
   <div class="sub-canvas"><canvas id="chatC"></canvas></div>
-  <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
+  </div></div>
   <div class="nhdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><span class="nhdr-c">回信</span><div style="width:44px"></div></div>
   <div class="persona-bar" id="personaBar">
     <button class="persona-chip" data-p="gentle" onclick="setPersona('gentle')">温柔倾听</button>
@@ -804,7 +803,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <!-- HISTORY -->
 <div class="scr" id="s-hist">
   <div class="sub-canvas"><canvas id="histC"></canvas></div>
-  <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
+  </div></div>
   <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦境记录</div><div class="ns-sub" id="histSub">0 封信</div></div><div style="width:44px"></div></div>
   <div class="hist-filter-bar" id="histFilterBar">
     <div class="hist-search-wrap"><svg class="hist-search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="hist-search-input" id="histSearch" type="text" placeholder="搜索梦境内容�? oninput="onHistSearch()"></div>
@@ -824,7 +823,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <!-- DREAM SQUARE (Anonymous Social) -->
 <div class="scr" id="s-square">
   <div class="sub-canvas"><canvas id="squareC"></canvas></div>
-  <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
+  </div></div>
   <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦境广场</div><div class="ns-sub" id="squareSub">匿名分享 · 温暖相遇</div></div><button class="nhdr-act" onclick="shareToSquare()" title="分享我的梦境"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></div>
   <div class="hist-body" id="squareBody" style="padding-top:12px">
     <div class="empty-state" id="squareEmpty">
@@ -849,7 +848,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <!-- SETTINGS -->
 <div class="scr" id="s-set">
   <div class="sub-canvas"><canvas id="setC"></canvas></div>
-  <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
+  </div></div>
   <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">设置</div></div><div style="width:44px"></div></div>
   <div class="set-body">
     <div class="set-section" id="accountSection">
@@ -1049,7 +1048,7 @@ function _migrateStoreIfNeeded(){
   if(!existingNew){
     /* 新账号无数据，直接迁移旧数据 */
     localStorage.setItem(newKey,oldData);
-    console.log('[Store] migrated',JSON.parse(oldData).length,'dreams to account key');
+    .length,'dreams to account key');
   }else{
     /* 新账号已有数据，合并（去重） */
     try{
@@ -1061,9 +1060,9 @@ function _migrateStoreIfNeeded(){
       if(added>0){
         newArr.sort(function(a,b){return new Date(b.ts)-new Date(a.ts)});
         localStorage.setItem(newKey,JSON.stringify(newArr));
-        console.log('[Store] merged',added,'old dreams into account key');
+        ;
       }
-    }catch(e){}
+    }catch(e){console.error("[Store] merge error:", e)}
   }
   /* 清除旧共�?key，避免其他账号看�?*/
   localStorage.removeItem(STORE_KEY_BASE);
@@ -1783,6 +1782,7 @@ function detectEmotion(text){
 var cur='home';
 var pageOrder=['home','write','recv','chat','ns','pat','hist','square','set'];
 function go(n){
+  if(n==='home'){cancelAnim('sub')}else{cancelAnim('home')}
   if(n===cur)return;
   var fi=pageOrder.indexOf(cur),ni=pageOrder.indexOf(n);
   var dir=(ni>=0&&fi>=0&&ni<fi)?'back':'fwd';
@@ -1879,11 +1879,7 @@ function skipGuide(){
   showGuideStep();
 }
 
-function cancelGuide(){
-  document.getElementById('guideOverlay').classList.remove('on');
-  guideIdx=0;
-  guideAnswers=[];
-}
+
 
 function finishGuide(){
   document.getElementById('guideOverlay').classList.remove('on');
@@ -2427,7 +2423,7 @@ function startVoice(){
   };
   voiceRec.onend=function(){
     if(voiceRec&&voiceRec._active){
-      try{voiceRec.start()}catch(e){}
+      try{voiceRec.start()}catch(e){console.error("[Store] merge error:", e)}
     }
   };
 
@@ -2472,7 +2468,7 @@ function doCheckin(mood){
   var checkins=getCheckins();
   checkins[today]={mood:mood,ts:new Date().toISOString()};
   localStorage.setItem(CHECKIN_KEY,JSON.stringify(checkins));
-  console.log('[Checkin] today:',mood);
+  ;
   /* 更新 UI */
   var bar=document.getElementById('checkinBar');
   if(bar){
@@ -3400,7 +3396,13 @@ initHome();
 
 /* === SUB-PAGE AMBIENT CANVAS === */
 var starsInited=false;var selectedDream=null;
+// ����׷��������ϵͳ
+var _animations={home:null,sub:null,active:[]};
+function cancelAnim(id){if(_animations[id]){cancelAnimationFrame(_animations[id]);_animations[id]=null;}}
+function trackAnim(id,aid){_animations[id]=aid;_animations.active.push(aid);}
+function cleanupAllAnims(){_animations.active.forEach(function(a){try{cancelAnimationFrame(a)}catch(e){}});_animations.active=[];for(var k in _animations)_animations[k]=null;}
 function initStars(){
+  cleanupAllAnims();
   if(starsInited)return;starsInited=true;
   var c=document.getElementById('starC'),ctx=c.getContext('2d');
   var dpr=Math.min(window.devicePixelRatio||1,2),W=c.offsetWidth,H=c.offsetHeight;
