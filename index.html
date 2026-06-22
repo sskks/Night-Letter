@@ -1262,20 +1262,26 @@ try{
         _setUserCache(session);
         document.getElementById('loginOverlay').classList.add('off');
         console.log('[Auth] session restored:',session.uid||session.uuid);
+        /* Session restored, now check onboarding */
+        _checkOnboarding();
+      }else{
+        /* No session, check onboarding for anonymous/local mode */
+        _checkOnboarding();
       }
     }).catch(function(e){
       console.warn('[Auth] session restore failed:',e.message);
+      /* On error, still check onboarding */
+      _checkOnboarding();
     });
   }else{
     var _anonSession=localStorage.getItem('nightletter_session');
     if(_anonSession==='__anon__'){
       document.getElementById('loginOverlay').classList.add('off');
     }
+    /* Offline mode, check onboarding immediately */
+    _checkOnboarding();
   }
 })();
-
-/* Trigger onboarding check */
-_checkOnboarding();
 
 /* === QWEN AI === */
 var QWEN_API_KEY='sk-80d2d09cff77454c8aab0f416a6f61ad';
