@@ -139,9 +139,16 @@
 3. 未登录 → 刷新 → 确认显示登录弹窗
 4. 退出登录 → 刷新 → 确认显示登录弹窗
 
-### Sprint 2：数据同步安全（2-3天）
+### Sprint 2：数据同步安全（2-3天） ✅ 已完成
 
 > 目标：解决重复同步和数据覆盖问题
+
+**实际完成内容：**
+- A3 ✅ syncDreamsToCloud 去重 — 先查询云端已有 localId，只上传不存在的，跳过已存在
+- A4 ✅ mergeDreams 冲突策略 — 按 ts 时间戳比较，保留更新的那条（本地更新不被云端旧数据覆盖）
+- A5 ✅ doRegister 注册后登录重试 — v1 SDK signIn 失败后等待 1s 重试一次，错误提示区分"注册成功但登录失败"
+- 额外：syncDreamsToCloud 和 loadDreamsFromCloud 添加 DATABASE_COLLECTION_NOT_EXIST 优雅降级
+- 额外：同步和合并操作添加 console.log 日志
 
 **迭代 Prompt 模板：**
 

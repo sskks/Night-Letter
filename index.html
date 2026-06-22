@@ -1593,11 +1593,16 @@ function doRegister(){
     console.log('[Auth] signUp success',res?JSON.stringify({uid:res.uid,uuid:res.uuid}):'');
     /* 注册后尝试登录（v1 的 signUp 不会自动登录，v2 的 signUp 可能已登录） */
     if(res&&(res.uid||res.uuid)){
-      _setUserCache(res);
+      _setUserCache({uid:res.uid||res.uuid,email:email,isAnonymous:false});
       return Promise.resolve(res);
     }
-    /* v1: 需要显式 signIn */
-    return _cbSignIn(email,pass);
+    /* v1: 需要显式 signIn，失败时重试一次 */
+    return _cbSignIn(email,pass).catch(function(e1){
+      console.warn('[Auth] post-register signIn failed, retrying in 1s:',e1.message||e1);
+      return new Promise(function(resolve){setTimeout(resolve,1000)}).then(function(){
+        return _cbSignIn(email,pass);
+      });
+    });
   }).then(function(res){
     /* 登录成功 */
     console.log('[Auth] register+login complete');
@@ -1622,10 +1627,12 @@ function doRegister(){
     _resetBtn();
     console.error('[Auth] register error:',e);
     var msg=e.message||String(e)||'注册失败';
-    if(msg.indexOf('already')>=0||msg.indexOf('exist')>=0||msg.indexOf('ALREADY')>=0)msg='该邮箱已被注册';
+    /* 判断是注册失败还是注册成功但登录失败 */
+    if(msg.indexOf('network')>=0||msg.indexOf('timeout')>=0){
+      msg='注册成功，但登录连接超时。请返回登录页面用刚才的邮箱密码登录。';
+    }else if(msg.indexOf('already')>=0||msg.indexOf('exist')>=0||msg.indexOf('ALREADY')>=0)msg='该邮箱已被注册';
     else if(msg.indexOf('invalid')>=0||msg.indexOf('INVALID')>=0)msg='邮箱格式不正确';
     else if(msg.indexOf('weak')>=0)msg='密码强度不够';
-    else if(msg.indexOf('network')>=0)msg='网络连接失败，请检查网络';
     else if(msg.indexOf('不支持')>=0)msg='SDK 版本不兼容，请联系开发者';
     else if(msg==='400'||msg.indexOf('Bad Request')>=0)msg='认证服务配置异常，请在腾讯云控制台检查：①身份认证→邮箱登录是否已开启 ②环境ID是否正确';
     errEl.textContent=msg;
@@ -1736,15 +1743,35 @@ function syncDreamsToCloud(dreams){
   var user=_getCurrentUser();
   if(!cbReady||!user||!dreams.length)return Promise.resolve();
   var col=cbDb.collection('dreams');
-  var promises=[];
-  var count=Math.min(dreams.length,500);
-  for(var i=0;i<count;i++){
-    var d=dreams[i];
-    promises.push(col.add({
-      data:{text:d.text,emotion:d.emotion,type:d.type||'梦境',ts:d.ts,aiTurns:d.aiTurns||0,localId:d.id}
-    }));
-  }
-  return Promise.all(promises).catch(function(e){console.warn('Sync failed:',e)});
+  /* 先查询云端已有的 localId，避免重复上传 */
+  return col.limit(500).get().then(function(res){
+    var existingIds={};
+    if(res.data){
+      res.data.forEach(function(doc){
+        if(doc.localId)existingIds[doc.localId]=1;
+      });
+    }
+    console.log('[Cloud] 云端已有',Object.keys(existingIds).length,'条梦境，本地',dreams.length,'条');
+    /* 只上传云端不存在的 */
+    var promises=[];
+    var count=Math.min(dreams.length,500);
+    var skipped=0;
+    for(var i=0;i<count;i++){
+      var d=dreams[i];
+      if(existingIds[d.id]){skipped++;continue}
+      promises.push(col.add({
+        data:{text:d.text,emotion:d.emotion,type:d.type||'梦境',ts:d.ts,aiTurns:d.aiTurns||0,localId:d.id}
+      }));
+    }
+    console.log('[Cloud] 跳过',skipped,'条已存在，上传',promises.length,'条新梦境');
+    return Promise.all(promises);
+  }).catch(function(e){
+    if(e&&e.code==='DATABASE_COLLECTION_NOT_EXIST'){
+      console.warn('[Cloud] dreams 集合不存在，跳过同步');
+    }else{
+      console.warn('[Cloud] 同步失败:',e&&e.message||e);
+    }
+  });
 }
 
 function loadDreamsFromCloud(){
@@ -1774,10 +1801,27 @@ function loadDreamsFromCloud(){
 
 function mergeDreams(local,cloud){
   var map={};
+  /* 先放入本地数据 */
   local.forEach(function(d){map[d.id]=d});
-  cloud.forEach(function(d){map[d.id]=d});
+  /* 云端数据：仅当云端更新时才覆盖本地 */
+  cloud.forEach(function(d){
+    var existing=map[d.id];
+    if(!existing){
+      /* 云端有本地没有，直接加入 */
+      map[d.id]=d;
+    }else{
+      /* 两边都有，按时间戳保留更新的 */
+      var localTs=new Date(existing.ts||0).getTime();
+      var cloudTs=new Date(d.ts||0).getTime();
+      if(cloudTs>localTs){
+        map[d.id]=d;
+      }
+      /* 否则保留本地版本（本地更新或相同） */
+    }
+  });
   var merged=Object.keys(map).map(function(k){return map[k]});
   merged.sort(function(a,b){return new Date(b.ts)-new Date(a.ts)});
+  console.log('[Cloud] 合并完成:',local.length,'本地 +',cloud.length,'云端 =',merged.length,'条');
   return merged;
 }
 
