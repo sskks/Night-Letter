@@ -1181,14 +1181,19 @@ function _cbAnon(){
 function _cbGetSession(){
   /* v2: getSession; v1: getLoginState — 都返回 Promise */
   if(typeof cbAuth.getSession==='function'){
-    return cbAuth.getSession();
+    return cbAuth.getSession().then(function(session){
+      console.log('[Auth] getSession raw result:',session?JSON.stringify({uid:session.uid,email:session.email,isAnonymous:session.isAnonymous}):'null');
+      return session;
+    });
   }
   if(typeof cbAuth.getLoginState==='function'){
     var result=cbAuth.getLoginState();
+    console.log('[Auth] getLoginState raw result:',result?JSON.stringify({uid:result.uid,email:result.email,isAnonymous:result.isAnonymous}):'null');
     /* 兼容同步返回和 Promise 两种情况 */
     if(result&&typeof result.then==='function')return result;
     return Promise.resolve(result||null);
   }
+  console.warn('[Auth] no session method available');
   return Promise.resolve(null);
 }
 
@@ -1255,30 +1260,115 @@ try{
 
 /* Check for existing CloudBase session or anonymous browse session */
 (function(){
+  /* Helper: parse localStorage session marker */
+  function _parseLocalSession(){
+    try{
+      var raw=localStorage.getItem('nightletter_session');
+      if(!raw)return null;
+      var parsed=JSON.parse(raw);
+      return (parsed&&parsed.type)?parsed:null;
+    }catch(e){
+      /* Legacy format: __anon__ */
+      if(raw==='__anon__')return{type:'anon'};
+      return null;
+    }
+  }
+  
+  /* Helper: complete session restore (load data + render + onboarding) */
+  function _completeRestore(userData){
+    _setUserCache(userData);
+    _migrateStoreIfNeeded();
+    document.getElementById('loginOverlay').classList.add('off');
+    console.log('[Auth] session restored:',userData.uid,userData.email?'('+userData.email+')':'(anon)');
+    renderAccountSection();
+    /* Load cloud dreams if logged in */
+    if(userData.email){
+      loadDreamsFromCloud().then(function(cloudDreams){
+        var sk=_getStoreKey();
+        if(cloudDreams.length>0){
+          var localDreams=getDreams();
+          if(localDreams.length>0){
+            var merged=mergeDreams(localDreams,cloudDreams);
+            localStorage.setItem(sk,JSON.stringify(merged));
+          }else{
+            localStorage.setItem(sk,JSON.stringify(cloudDreams));
+          }
+        }else{
+          var localDreams=getDreams();
+          if(localDreams.length>0){syncDreamsToCloud(localDreams)}
+        }
+        refreshHome();
+      });
+    }
+    _checkOnboarding();
+  }
+  
   if(cbReady){
-    /* 异步检查已持久化的登录态（SDK persistence:'local'） */
+    /* Try CloudBase SDK session restore first */
     _cbGetSession().then(function(session){
-      if(session&&(session.uid||session.uuid)){
-        _setUserCache(session);
-        document.getElementById('loginOverlay').classList.add('off');
-        console.log('[Auth] session restored:',session.uid||session.uuid);
-        /* Session restored, now check onboarding */
-        _checkOnboarding();
+      console.log('[Auth] SDK session check:',session);
+      
+      /* Check SDK session object (v1/v2 formats) */
+      var hasValidSession = session && (
+        session.uid || session.uuid || 
+        (session.userInfo && session.userInfo.uid) ||
+        session.email
+      );
+      
+      if(hasValidSession){
+        /* SDK returned valid session — use it */
+        var normalized = {
+          uid: session.uid || session.uuid || (session.userInfo && session.userInfo.uid) || 'unknown',
+          email: session.email || (session.userInfo && session.userInfo.email) || '',
+          isAnonymous: !!(session.isAnonymous || (!session.email && !session.uid))
+        };
+        /* Re-save to localStorage for future fallback */
+        try{localStorage.setItem('nightletter_session',JSON.stringify({type:normalized.isAnonymous?'anon':'email',email:normalized.email,uid:normalized.uid}))}catch(e){}
+        _completeRestore(normalized);
       }else{
-        /* No session, check onboarding for anonymous/local mode */
-        _checkOnboarding();
+        /* SDK returned null — check localStorage fallback */
+        var localSession=_parseLocalSession();
+        if(localSession){
+          console.log('[Auth] SDK null, using localStorage fallback:',localSession);
+          var userData = {
+            uid: localSession.uid || 'local-user',
+            email: localSession.email || '',
+            isAnonymous: localSession.type==='anon' || localSession.type==='local-anon'
+          };
+          _completeRestore(userData);
+        }else{
+          /* No session anywhere */
+          console.log('[Auth] no session found');
+          _checkOnboarding();
+        }
       }
     }).catch(function(e){
-      console.warn('[Auth] session restore failed:',e.message);
-      /* On error, still check onboarding */
-      _checkOnboarding();
+      console.warn('[Auth] SDK session restore failed:',e.message);
+      /* SDK error — check localStorage fallback */
+      var localSession=_parseLocalSession();
+      if(localSession){
+        var userData = {
+          uid: localSession.uid || 'local-user',
+          email: localSession.email || '',
+          isAnonymous: localSession.type==='anon' || localSession.type==='local-anon'
+        };
+        _completeRestore(userData);
+      }else{
+        _checkOnboarding();
+      }
     });
   }else{
-    var _anonSession=localStorage.getItem('nightletter_session');
-    if(_anonSession==='__anon__'){
+    /* Offline mode — check localStorage only */
+    var localSession=_parseLocalSession();
+    if(localSession){
+      var userData = {
+        uid: localSession.uid || 'local-anon',
+        email: localSession.email || '',
+        isAnonymous: true
+      };
+      _setUserCache(userData);
       document.getElementById('loginOverlay').classList.add('off');
     }
-    /* Offline mode, check onboarding immediately */
     _checkOnboarding();
   }
 })();
@@ -1427,13 +1517,19 @@ function doLogin(){
   _cbSignIn(email,pass).then(function(res){
     console.log('[Auth] login success',res?JSON.stringify({uid:res.uid,uuid:res.uuid}):'');
     /* 登录成功，优先从返回结果获取用户信息 */
-    if(res&&(res.uid||res.uuid)){_setUserCache(res)}
-    else{_setUserCache({uid:'cb-user',email:email})}
+    var userData;
+    if(res&&(res.uid||res.uuid)){
+      userData={uid:res.uid||res.uuid,email:email,isAnonymous:false};
+    }else{
+      userData={uid:'cb-user',email:email,isAnonymous:false};
+    }
+    _setUserCache(userData);
+    /* 持久化登录标记，用于页面刷新时恢复 */
+    try{localStorage.setItem('nightletter_session',JSON.stringify({type:'email',email:email,uid:userData.uid}))}catch(e){}
     /* 迁移旧共享数据到当前账号 */
     _migrateStoreIfNeeded();
     errEl.textContent='';
     _resetBtn();
-    localStorage.removeItem('nightletter_session');
     document.getElementById('loginOverlay').classList.add('off');
     /* Sync local dreams to cloud and load cloud dreams */
     loadDreamsFromCloud().then(function(cloudDreams){
@@ -1499,12 +1595,18 @@ function doRegister(){
   }).then(function(res){
     /* 登录成功 */
     console.log('[Auth] register+login complete');
-    if(res&&(res.uid||res.uuid)){_setUserCache(res)}
-    else{_setUserCache({uid:'cb-user',email:email})}
+    var userData;
+    if(res&&(res.uid||res.uuid)){
+      userData={uid:res.uid||res.uuid,email:email,isAnonymous:false};
+    }else{
+      userData={uid:'cb-user',email:email,isAnonymous:false};
+    }
+    _setUserCache(userData);
+    /* 持久化登录标记 */
+    try{localStorage.setItem('nightletter_session',JSON.stringify({type:'email',email:email,uid:userData.uid}))}catch(e){}
     _migrateStoreIfNeeded();
     errEl.textContent='';
     _resetBtn();
-    localStorage.removeItem('nightletter_session');
     document.getElementById('loginOverlay').classList.add('off');
     /* Sync local dreams to cloud */
     var localDreams=getDreams();
@@ -1530,21 +1632,31 @@ function loginAnonymously(){
     _cbAnon().then(function(res){
       /* 匿名登录成功，设置用户缓存 */
       console.log('[Auth] anonymous login success');
-      if(res&&(res.uid||res.uuid)){_setUserCache(res)}
-      else{_setUserCache({uid:'anon-user',isAnonymous:true})}
-      localStorage.removeItem('nightletter_session');
+      var userData;
+      if(res&&(res.uid||res.uuid)){
+        userData={uid:res.uid||res.uuid,email:'',isAnonymous:true};
+      }else{
+        userData={uid:'anon-user',email:'',isAnonymous:true};
+      }
+      _setUserCache(userData);
+      /* 持久化匿名标记 */
+      try{localStorage.setItem('nightletter_session',JSON.stringify({type:'anon',uid:userData.uid}))}catch(e){}
       document.getElementById('loginOverlay').classList.add('off');
       renderAccountSection();
     }).catch(function(e){
       console.warn('Anonymous login failed:',e);
       /* Fallback to local anonymous mode */
-      localStorage.setItem('nightletter_session','__anon__');
+      _setUserCache({uid:'local-anon',email:'',isAnonymous:true});
+      try{localStorage.setItem('nightletter_session',JSON.stringify({type:'local-anon'}))}catch(e2){}
       document.getElementById('loginOverlay').classList.add('off');
+      renderAccountSection();
     });
   }else{
     /* Offline anonymous browse mode */
-    localStorage.setItem('nightletter_session','__anon__');
+    _setUserCache({uid:'local-anon',email:'',isAnonymous:true});
+    try{localStorage.setItem('nightletter_session',JSON.stringify({type:'local-anon'}))}catch(e){}
     document.getElementById('loginOverlay').classList.add('off');
+    renderAccountSection();
   }
 }
 
@@ -1660,18 +1772,17 @@ function renderAccountSection(){
   var el=document.getElementById('accountInfo');
   if(!el)return;
   var user=_getCurrentUser();
-  var isAnon=localStorage.getItem('nightletter_session')==='__anon__';
-  if(user&&!isAnon){
-    var email=user.email||'';
-    var subText=email||'CloudBase 用户';
+  var isAnon=user&&user.isAnonymous;
+  if(user&&!isAnon&&user.email){
+    var email=user.email;
     el.innerHTML='<div class="set-row"><div><div class="set-label">已登录</div>'
-      +'<div class="set-sub">'+subText+'</div>'
+      +'<div class="set-sub">'+email+'</div>'
       +'</div></div>'
       +'<div class="set-row"><div><div class="set-label">切换账号</div><div class="set-sub">退出当前账号，登录其他账号</div></div>'
       +'<button class="set-neutral-btn" onclick="switchAccount()">切换</button></div>'
       +'<div class="set-row"><div><div class="set-label">退出登录</div><div class="set-sub">本地数据仍会保留</div></div>'
       +'<button class="set-neutral-btn" onclick="doLogout()">退出</button></div>';
-  }else if(user&&user.isAnonymous||isAnon){
+  }else if(isAnon){
     el.innerHTML='<div class="set-row"><div><div class="set-label">匿名体验</div>'
       +'<div class="set-sub">注册账号可云端保存梦境</div>'
       +'</div>'
@@ -1683,35 +1794,7 @@ function renderAccountSection(){
 }
 
 /* CloudBase auth state — session is auto-restored via persistence:'local' */
-if(cbReady){
-  _cbGetSession().then(function(session){
-    if(session&&(session.uid||session.uuid)){
-      console.log('[Auth] page-load session restored:',session.uid||session.uuid);
-      _setUserCache(session);
-      _migrateStoreIfNeeded();
-      document.getElementById('loginOverlay').classList.add('off');
-      loadDreamsFromCloud().then(function(cloudDreams){
-        var sk=_getStoreKey();
-        if(cloudDreams.length>0){
-          var localDreams=getDreams();
-          if(localDreams.length>0){
-            var merged=mergeDreams(localDreams,cloudDreams);
-            localStorage.setItem(sk,JSON.stringify(merged));
-          }else{
-            localStorage.setItem(sk,JSON.stringify(cloudDreams));
-          }
-        }else{
-          var localDreams=getDreams();
-          if(localDreams.length>0){syncDreamsToCloud(localDreams)}
-        }
-        refreshHome();
-      });
-      renderAccountSection();
-    }
-  }).catch(function(e){
-    console.warn('[Auth] page-load session check failed:',e.message||e);
-  });
-}
+/* Session restore is handled by the IIFE above (after CloudBase init) */
 
 /* === EMOTION DETECTION === */
 var emotionMap={
@@ -3684,18 +3767,17 @@ function doSubmitComment(dreamId,comment){
 function _checkOnboarding(){
   var hasOnboard=localStorage.getItem(ONBOARD_KEY);
   var user=_getCurrentUser();
-  var isAnonLocal=localStorage.getItem('nightletter_session')==='__anon__';
   
   if(hasOnboard){
     /* Already onboarded — ensure login overlay is dismissed if user is logged in or anonymous */
-    if(user||isAnonLocal){
+    if(user){
       document.getElementById('loginOverlay').classList.add('off');
     }
     return;
   }
   
   /* Need to show onboarding */
-  if(user||isAnonLocal){
+  if(user){
     /* User is logged in or anonymous, show onboarding after a brief delay */
     setTimeout(showOnboard,600);
   }else{

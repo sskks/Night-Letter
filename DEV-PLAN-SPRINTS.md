@@ -16,19 +16,19 @@
 
 ### 缺陷清单
 
-| # | 缺陷 | 级别 | 位置 | 问题描述 |
-|---|------|------|------|---------|
-| A1 | 页面刷新丢失登录态 | S1 | `_getCurrentUser()` L1135 | `_cbUserCache` 是纯内存变量，页面刷新后归零。虽然 `onAuthStateChange` 监听器会恢复，但存在时序差——初始化时 `_checkOnboarding()` (L3678) 可能在监听器触发前就执行，导致已登录用户看到登录弹窗 |
-| A2 | 无会话恢复机制 | S1 | 初始化代码 L1200-1238 | CloudBase 初始化后没有主动调用 `_cbGetSession()` 恢复会话。`_cbUserCache` 完全依赖异步监听器，首屏渲染时用户状态为空 |
-| A3 | 云端同步无去重 | S2 | `syncDreamsToCloud()` L1611 | 每次登录都执行 `col.add()` 逐条添加，没有检查云端是否已存在相同 `localId`，重复登录会产生大量重复文档 |
-| A4 | 合并策略可能丢数据 | S2 | `mergeDreams()` L1644 | `map[d.id]=d` 后者覆盖前者。如果本地数据更新但云端未同步，登录后云端旧数据会覆盖本地新数据 |
-| A5 | 注册后未自动登录(v1) | S2 | `doRegister()` L1484 | v1 SDK 的 `signUpWithEmailAndPassword` 不会自动登录，代码虽然有 `_cbSignIn` 补登录逻辑，但如果 signIn 也失败（如网络波动），用户会卡在"注册成功但未登录"的状态 |
-| A6 | 注册无密码确认 | S3 | `doRegister()` L1463 | 没有"确认密码"输入框，用户可能因输入错误密码而注册后无法登录 |
-| A7 | 注册无邮箱验证 | S3 | `doRegister()` L1463 | 没有发送验证邮件的流程，任意格式正确的邮箱均可注册。CloudBase 控制台可配置是否强制验证 |
-| A8 | 匿名登录双轨制 | S3 | `loginAnonymously()` L1521 | 成功时设 `_cbUserCache`，失败回退时设 `localStorage nightletter_session='__anon__'`。两套匿名状态判断逻辑（`_getCurrentUser()` vs `localStorage==='__anon__'`）容易不同步 |
-| A9 | 登录/注册按钮状态混乱 | S3 | `toggleLoginMode()` L1393 | `loginBtn.onclick` 被动态赋值，但 HTML 中 `regBtn` (L946) 的 `display:none` 始终隐藏且无代码切换其显示状态，regBtn 实际上是死代码 |
-| A10 | 退出登录不提示数据状态 | S4 | `doLogout()` L1545 | 退出后直接显示登录弹窗，没有告知用户本地数据仍保留、云端数据不受影响 |
-| A11 | 无密码强度指示器 | S4 | `doRegister()` L1463 | 只有"至少6位"的校验，没有密码强度提示（弱/中/强） |
+| # | 缺陷 | 级别 | 位置 | 问题描述 | 状态 |
+|---|------|------|------|---------|------|
+| A1 | 页面刷新丢失登录态 | S1 | `_getCurrentUser()` L1135 | `_cbUserCache` 是纯内存变量，页面刷新后归零。虽然 `onAuthStateChange` 监听器会恢复，但存在时序差——初始化时 `_checkOnboarding()` (L3678) 可能在监听器触发前就执行，导致已登录用户看到登录弹窗 | ✅ Sprint 1 已修复 |
+| A2 | 无会话恢复机制 | S1 | 初始化代码 L1200-1238 | CloudBase 初始化后没有主动调用 `_cbGetSession()` 恢复会话。`_cbUserCache` 完全依赖异步监听器，首屏渲染时用户状态为空 | ✅ Sprint 1 已修复 |
+| A3 | 云端同步无去重 | S2 | `syncDreamsToCloud()` L1611 | 每次登录都执行 `col.add()` 逐条添加，没有检查云端是否已存在相同 `localId`，重复登录会产生大量重复文档 | ⏳ Sprint 2 |
+| A4 | 合并策略可能丢数据 | S2 | `mergeDreams()` L1644 | `map[d.id]=d` 后者覆盖前者。如果本地数据更新但云端未同步，登录后云端旧数据会覆盖本地新数据 | ⏳ Sprint 2 |
+| A5 | 注册后未自动登录(v1) | S2 | `doRegister()` L1484 | v1 SDK 的 `signUpWithEmailAndPassword` 不会自动登录，代码虽然有 `_cbSignIn` 补登录逻辑，但如果 signIn 也失败（如网络波动），用户会卡在"注册成功但未登录"的状态 | ⏳ Sprint 2 |
+| A6 | 注册无密码确认 | S3 | `doRegister()` L1463 | 没有"确认密码"输入框，用户可能因输入错误密码而注册后无法登录 | ⏳ Sprint 4 |
+| A7 | 注册无邮箱验证 | S3 | `doRegister()` L1463 | 没有发送验证邮件的流程，任意格式正确的邮箱均可注册。CloudBase 控制台可配置是否强制验证 | ⏳ 待定 |
+| A8 | 匿名登录双轨制 | S3 | `loginAnonymously()` L1521 | 成功时设 `_cbUserCache`，失败回退时设 `localStorage nightletter_session='__anon__'`。两套匿名状态判断逻辑（`_getCurrentUser()` vs `localStorage==='__anon__'`）容易不同步 | ✅ Sprint 1 已修复 |
+| A9 | 登录/注册按钮状态混乱 | S3 | `toggleLoginMode()` L1393 | `loginBtn.onclick` 被动态赋值，但 HTML 中 `regBtn` (L946) 的 `display:none` 始终隐藏且无代码切换其显示状态，regBtn 实际上是死代码 | ⏳ Sprint 4 |
+| A10 | 退出登录不提示数据状态 | S4 | `doLogout()` L1545 | 退出后直接显示登录弹窗，没有告知用户本地数据仍保留、云端数据不受影响 | ⏳ Sprint 4 |
+| A11 | 无密码强度指示器 | S4 | `doRegister()` L1463 | 只有"至少6位"的校验，没有密码强度提示（弱/中/强） | ⏳ 待定 |
 
 ---
 
