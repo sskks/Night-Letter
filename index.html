@@ -675,7 +675,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
     <div class="bnav">
       <button class="btab on" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button>
       <button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-      <button class="btab" onclick="go('square')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>广场</span></button>
+      <button class="btab" onclick="go('square')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>共鸣</span></button>
     </div>
   </div>
 </div>
@@ -815,7 +815,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <div class="scr" id="s-square">
   <div class="sub-canvas"><canvas id="squareC"></canvas></div>
   <div class="sbar"><span></span><div class="sbar-r"><div class="sig"><i></i><i></i><i></i><i></i></div><svg class="wifi-icon" viewBox="0 0 16 12" fill="currentColor"><path d="M1 4.5C3.2 1.8 5.9 0 8 0s4.8 1.8 7 4.5"/><path d="M3 7C4.6 5.3 6.2 4 8 4s3.4 1.3 5 3"/><circle cx="8" cy="10" r="1.5"/></svg><div class="bat"><div class="bat-f"></div></div></div></div>
-  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">梦境广场</div><div class="ns-sub" id="squareSub">匿名分享 · 温暖相遇</div></div><button class="nhdr-act" onclick="shareToSquare()" title="分享我的梦境"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></div>
+  <div class="ns-hdr"><button class="nhdr-back" onclick="go('home')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button><div class="ns-tg"><div class="ns-t">共鸣角</div><div class="ns-sub" id="squareSub">公开片段 · 温柔回应</div></div><button class="nhdr-act" onclick="shareToSquare()" title="分享我的梦境"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button></div>
   <div class="hist-body" id="squareBody" style="padding-top:12px">
     <div class="empty-state" id="squareEmpty">
       <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
@@ -832,7 +832,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="bnav">
     <button class="btab" onclick="go('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>首页</span></button>
     <button class="bfab" onclick="go('write')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
-    <button class="btab on" onclick="go('square')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>广场</span></button>
+    <button class="btab on" onclick="go('square')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>共鸣</span></button>
   </div>
 </div>
 
@@ -943,16 +943,16 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 <!-- LOGIN -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-logo"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
-  <div class="login-title">夜信</div>
-  <div class="login-sub">记录梦，感受自己</div>
+  <div class="login-title" id="loginTitle">登录夜信</div>
+  <div class="login-sub" id="loginSub">登录后可保存并恢复你的梦境记录。</div>
   <input class="login-field" id="loginEmail" type="email" placeholder="邮箱" autocomplete="email">
   <input class="login-field" id="loginPass" type="password" placeholder="密码（至少 6 位）" autocomplete="current-password">
   <div class="login-error" id="loginError"></div>
-  <button class="login-btn login-btn-primary" id="loginBtn" onclick="doLogin()">登 录</button>
+  <button class="login-btn login-btn-primary" id="loginBtn" onclick="doLogin()">登录夜信</button>
   <button class="login-btn login-btn-secondary" id="regBtn" onclick="doRegister()" style="display:none">注 册</button>
-  <div class="login-toggle" id="loginToggle" onclick="toggleLoginMode()">还没有账号？注册</div>
+  <div class="login-toggle" id="loginToggle" onclick="toggleLoginMode()">还没有账号？创建一个</div>
   <div class="login-mode" id="loginMode"></div>
-  <button class="login-btn" id="skipBtn" onclick="loginAnonymously()" style="border:none;color:var(--t3);background:none;margin-top:16px;font-size:13px;letter-spacing:1px">先看看，不登录也能用 &rarr;</button>
+  <button class="login-btn" id="skipBtn" onclick="loginAnonymously()" style="border:none;color:var(--t3);background:none;margin-top:16px;font-size:13px;letter-spacing:1px">先试用，记录只保存在本机 &rarr;</button>
 </div>
 
 <!-- CONFIRM MODAL -->
@@ -977,46 +977,141 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
 
 /* === DATA LAYER === */
 var STORE_KEY_BASE='nightletter_dreams';
+var STORE_KEY_LOCAL_TRIAL=STORE_KEY_BASE+'_local_trial';
+var STORE_KEY_GUEST=STORE_KEY_BASE+'_guest';
+var SESSION_KEY='nightletter_session';
 var ONBOARD_KEY='nightletter_onboard';
 var STREAK_KEY='nightletter_streak';
 
-/* 按账号隔离的存储 key：不同用户使用不同 key，匿名/未登录共用 base key */
-function _getStoreKey(){
-  var user=_getCurrentUser();
-  if(user&&user.email){
-    /* 用邮箱生成安全短标识（去除特殊字符） */
-    return STORE_KEY_BASE+'_'+user.email.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30);
-  }
-  return STORE_KEY_BASE;
+function _sanitizeStorageToken(value){
+  return String(value||'')
+    .toLowerCase()
+    .replace(/[^a-z0-9_:-]/g,'_')
+    .replace(/_+/g,'_')
+    .slice(0,80);
 }
 
-/* 首次登录时，将旧共享数据迁移到当前账号 */
-function _migrateStoreIfNeeded(){
-  var newKey=_getStoreKey();
-  if(newKey===STORE_KEY_BASE)return; /* 匿名/无邮箱，无需迁移 */
+function _readDreamsByKey(key){
+  try{return JSON.parse(localStorage.getItem(key))||[]}catch(e){return[]}
+}
+
+function _writeDreamsByKey(key,dreams){
+  localStorage.setItem(key,JSON.stringify(dreams||[]));
+}
+
+function _createLocalDreamId(){
+  return 'dream_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);
+}
+
+function _pickRawUid(source){
+  if(!source)return'';
+  return source.uid
+    ||source.uuid
+    ||(source.userInfo&&source.userInfo.uid)
+    ||(source.userInfo&&source.userInfo.openId)
+    ||'';
+}
+
+function _normalizeAuthUser(source,overrides){
+  source=source||{};
+  overrides=overrides||{};
+  var rawEmail=(overrides.email!==undefined?overrides.email:(source.email||(source.userInfo&&source.userInfo.email)||'')).trim();
+  var rawUid=overrides.uid!==undefined?overrides.uid:_pickRawUid(source);
+  var rawType=overrides.type!==undefined?overrides.type:(source.type||'');
+  var rawIsAnonymous=overrides.isAnonymous!==undefined?overrides.isAnonymous:!!source.isAnonymous;
+  var mode=overrides.mode||'';
+  if(!mode){
+    if(rawType==='local-anon'||rawType==='local-trial'){
+      mode='local-anon';
+    }else if(rawEmail&&!rawIsAnonymous){
+      mode='account';
+    }else if(rawType==='anon'||rawIsAnonymous||rawUid){
+      mode='anon';
+    }else{
+      mode='guest';
+    }
+  }
+  var stableUserId;
+  if(mode==='account'){
+    stableUserId='user_'+_sanitizeStorageToken(rawUid||rawEmail);
+  }else if(mode==='anon'){
+    stableUserId='anon_'+_sanitizeStorageToken(rawUid||'session');
+  }else if(mode==='local-anon'){
+    stableUserId='local_trial';
+  }else{
+    stableUserId='guest';
+  }
+  return{
+    uid:rawUid||stableUserId,
+    email:rawEmail||'',
+    isAnonymous:mode!=='account',
+    mode:mode,
+    stableUserId:stableUserId
+  };
+}
+
+function _isRegisteredUser(user){
+  return !!(user&&user.mode==='account'&&user.email);
+}
+
+function _isCloudAnonymousUser(user){
+  return !!(user&&user.mode==='anon');
+}
+
+function _isLocalTrialUser(user){
+  return !!(user&&user.mode==='local-anon');
+}
+
+function _persistSession(user){
+  if(!user){
+    localStorage.removeItem(SESSION_KEY);
+    return;
+  }
+  localStorage.setItem(SESSION_KEY,JSON.stringify({
+    type:user.mode==='account'?'email':(user.mode==='anon'?'anon':'local-anon'),
+    mode:user.mode,
+    uid:user.uid||'',
+    email:user.email||'',
+    stableUserId:user.stableUserId||''
+  }));
+}
+
+function _getStoreKeyForUser(user){
+  if(!user)return STORE_KEY_GUEST;
+  if(user.mode==='local-anon')return STORE_KEY_LOCAL_TRIAL;
+  return STORE_KEY_BASE+'_'+_sanitizeStorageToken(user.stableUserId||'guest');
+}
+
+/* 按账号隔离的存储 key：真实账号、云匿名体验、本地试用分开存储 */
+function _getStoreKey(){
+  return _getStoreKeyForUser(_getCurrentUser());
+}
+
+/* 仅把旧版本的共享 key 迁移到真实账号，避免本地试用数据自动污染正式账号 */
+function _migrateStoreIfNeeded(user){
+  user=user||_getCurrentUser();
+  if(!_isRegisteredUser(user))return;
+  var newKey=_getStoreKeyForUser(user);
   var oldData=localStorage.getItem(STORE_KEY_BASE);
   if(!oldData)return;
   var existingNew=localStorage.getItem(newKey);
   if(!existingNew){
-    /* 新账号无数据，直接迁移旧数据 */
+    /* 新账号无数据，直接迁移旧版共享数据 */
     localStorage.setItem(newKey,oldData);
-    console.log('[Store] migrated',JSON.parse(oldData).length,'dreams to account key');
+    console.log('[Store] migrated legacy shared dreams into',newKey);
   }else{
     /* 新账号已有数据，合并（去重） */
     try{
       var oldArr=JSON.parse(oldData)||[];
       var newArr=JSON.parse(existingNew)||[];
-      var ids={};newArr.forEach(function(d){ids[d.id]=1});
-      var added=0;
-      oldArr.forEach(function(d){if(!ids[d.id]){newArr.push(d);added++}});
-      if(added>0){
-        newArr.sort(function(a,b){return new Date(b.ts)-new Date(a.ts)});
-        localStorage.setItem(newKey,JSON.stringify(newArr));
-        console.log('[Store] merged',added,'old dreams into account key');
+      var merged=mergeDreams(newArr,oldArr);
+      if(merged.length!==newArr.length){
+        localStorage.setItem(newKey,JSON.stringify(merged));
+        console.log('[Store] merged legacy shared dreams into',newKey);
       }
     }catch(e){}
   }
-  /* 清除旧共享 key，避免其他账号看到 */
+  /* 清除旧共享 key，避免后续账号继续读到旧版混合数据 */
   localStorage.removeItem(STORE_KEY_BASE);
 }
 
@@ -1067,16 +1162,17 @@ function getBadges(){
   return badges;
 }
 
-function getDreams(){try{return JSON.parse(localStorage.getItem(_getStoreKey()))||[]}catch(e){return[]}}
+function getDreams(){return _readDreamsByKey(_getStoreKey())}
 function saveDream(text,emotion,type){
   var ds=getDreams();
-  var dream={id:Date.now(),text:text,emotion:emotion||'未知',ts:new Date().toISOString(),aiTurns:0,type:type||'梦境'};
+  var dreamId=_createLocalDreamId();
+  var dream={id:dreamId,text:text,emotion:emotion||'未知',ts:new Date().toISOString(),aiTurns:0,type:type||'梦境'};
   ds.unshift(dream);
-  localStorage.setItem(_getStoreKey(),JSON.stringify(ds));
+  _writeDreamsByKey(_getStoreKey(),ds);
   var user=_getCurrentUser();
-  if(cbReady&&user){
+  if(cbReady&&_isRegisteredUser(user)){
     cbDb.collection('dreams').add({
-      data:{text:dream.text,emotion:dream.emotion,type:dream.type,ts:dream.ts,aiTurns:dream.aiTurns||0}
+      data:{text:dream.text,emotion:dream.emotion,type:dream.type,ts:dream.ts,aiTurns:dream.aiTurns||0,localId:dream.id}
     }).catch(function(){});
   }
   return ds;
@@ -1090,7 +1186,7 @@ function clearAllData(){
   closeConfirm();
   localStorage.removeItem(_getStoreKey());
   var user=_getCurrentUser();
-  if(cbReady&&user){
+  if(cbReady&&_isRegisteredUser(user)){
     cbDb.collection('dreams').where({}).get().then(function(res){
       if(!res.data||!res.data.length)return;
       var ids=res.data.map(function(d){return d._id});
@@ -1117,7 +1213,7 @@ function closeConfirm(){
 /* === CLOUDBASE 腾讯云开发 (国内后端) === */
 /*
  * 请在腾讯云开发控制台 (https://cloud.tencent.com/product/tcb) 开通环境后，
- * 填写以下配置即可启用云端同步和梦境广场功能：
+ * 填写以下配置即可启用云端同步和共鸣角功能：
  *   env — 环境 ID（控制台首页可见）
  *
  * 同时需要在控制台「数据库」中创建以下集合，并设置安全规则：
@@ -1144,6 +1240,91 @@ function _getCurrentUser(){
 
 function _setUserCache(user){
   _cbUserCache=user||null;
+}
+
+function _setAuthMode(nextIsLoginMode){
+  isLoginMode=!!nextIsLoginMode;
+  var titleEl=document.getElementById('loginTitle');
+  var subEl=document.getElementById('loginSub');
+  var btnEl=document.getElementById('loginBtn');
+  var regEl=document.getElementById('regBtn');
+  var toggleEl=document.getElementById('loginToggle');
+  var passEl=document.getElementById('loginPass');
+  if(titleEl)titleEl.textContent=isLoginMode?'登录夜信':'创建夜信账号';
+  if(subEl)subEl.textContent=isLoginMode
+    ?'登录后可保存并恢复你的梦境记录。'
+    :'创建账号后，你的梦境和回应会跟随这个账号保存。';
+  if(btnEl){
+    btnEl.textContent=isLoginMode?'登录夜信':'创建账号';
+    btnEl.onclick=isLoginMode?doLogin:doRegister;
+  }
+  if(regEl)regEl.style.display='none';
+  if(toggleEl)toggleEl.textContent=isLoginMode?'还没有账号？创建一个':'已经有账号？直接登录';
+  if(passEl)passEl.autocomplete=isLoginMode?'current-password':'new-password';
+}
+
+function _setAuthBusy(message){
+  var btn=document.getElementById('loginBtn');
+  if(btn){
+    btn.disabled=true;
+    btn.style.opacity='.5';
+  }
+  document.getElementById('loginError').textContent=message||'';
+}
+
+function _resetAuthBusy(message){
+  var btn=document.getElementById('loginBtn');
+  if(btn){
+    btn.disabled=false;
+    btn.style.opacity='1';
+  }
+  document.getElementById('loginError').textContent=message||'';
+}
+
+function _openLoginOverlay(){
+  document.getElementById('loginOverlay').classList.remove('off');
+}
+
+function _closeLoginOverlay(){
+  document.getElementById('loginOverlay').classList.add('off');
+}
+
+function _restoreDreamsForCurrentUser(user){
+  if(!_isRegisteredUser(user))return Promise.resolve([]);
+  var storeKey=_getStoreKeyForUser(user);
+  var localDreams=_readDreamsByKey(storeKey);
+  return loadDreamsFromCloud().then(function(cloudDreams){
+    var merged=mergeDreams(localDreams,cloudDreams);
+    _writeDreamsByKey(storeKey,merged);
+    if(merged.length>0){
+      return syncDreamsToCloud(merged).then(function(){return merged});
+    }
+    return merged;
+  });
+}
+
+function _completeAuthSession(userSource,options){
+  options=options||{};
+  var user=_normalizeAuthUser(userSource,{
+    email:options.email,
+    uid:options.uid,
+    isAnonymous:options.isAnonymous,
+    type:options.type,
+    mode:options.mode
+  });
+  _setUserCache(user);
+  _migrateStoreIfNeeded(user);
+  if(options.persist!==false)_persistSession(user);
+  return _restoreDreamsForCurrentUser(user).catch(function(e){
+    console.warn('[Auth] restore dreams failed:',e&&e.message||e);
+    return [];
+  }).then(function(){
+    refreshAll();
+    renderAccountSection();
+    if(options.closeOverlay!==false)_closeLoginOverlay();
+    if(options.runOnboarding!==false)_checkOnboarding();
+    return user;
+  });
 }
 
 /* ---- 版本兼容的认证包装器 ---- */
@@ -1229,13 +1410,13 @@ try{
     try{
       if(typeof cbAuth.onAuthStateChange==='function'){
         cbAuth.onAuthStateChange(function(evt,session){
-          if(session&&session.uid){_cbUserCache=session}
+          if(session&&_pickRawUid(session)){_cbUserCache=_normalizeAuthUser(session)}
           else{_cbUserCache=null}
         });
         console.log('[Auth] onAuthStateChange listener registered');
       }else if(typeof cbAuth.onLoginStateChanged==='function'){
         cbAuth.onLoginStateChanged(function(state){
-          if(state&&state.uid){_cbUserCache=state}
+          if(state&&_pickRawUid(state)){_cbUserCache=_normalizeAuthUser(state)}
           else{_cbUserCache=null}
         });
         console.log('[Auth] onLoginStateChanged listener registered');
@@ -1268,47 +1449,22 @@ try{
 (function(){
   /* Helper: parse localStorage session marker */
   function _parseLocalSession(){
+    var raw='';
     try{
-      var raw=localStorage.getItem('nightletter_session');
+      raw=localStorage.getItem(SESSION_KEY);
       if(!raw)return null;
       var parsed=JSON.parse(raw);
-      return (parsed&&parsed.type)?parsed:null;
+      if(!(parsed&&parsed.type))return null;
+      /* 本地 fallback 只信任匿名/试用态，不用旧的邮箱标记冒充真实云登录 */
+      if(parsed.type==='email' || parsed.mode==='account')return null;
+      return parsed;
     }catch(e){
       /* Legacy format: __anon__ */
       if(raw==='__anon__')return{type:'anon'};
       return null;
     }
   }
-  
-  /* Helper: complete session restore (load data + render + onboarding) */
-  function _completeRestore(userData){
-    _setUserCache(userData);
-    _migrateStoreIfNeeded();
-    document.getElementById('loginOverlay').classList.add('off');
-    console.log('[Auth] session restored:',userData.uid,userData.email?'('+userData.email+')':'(anon)');
-    renderAccountSection();
-    /* Load cloud dreams if logged in */
-    if(userData.email){
-      loadDreamsFromCloud().then(function(cloudDreams){
-        var sk=_getStoreKey();
-        if(cloudDreams.length>0){
-          var localDreams=getDreams();
-          if(localDreams.length>0){
-            var merged=mergeDreams(localDreams,cloudDreams);
-            localStorage.setItem(sk,JSON.stringify(merged));
-          }else{
-            localStorage.setItem(sk,JSON.stringify(cloudDreams));
-          }
-        }else{
-          var localDreams=getDreams();
-          if(localDreams.length>0){syncDreamsToCloud(localDreams)}
-        }
-        refreshHome();
-      });
-    }
-    _checkOnboarding();
-  }
-  
+
   if(cbReady){
     /* Try CloudBase SDK session restore first */
     _cbGetSession().then(function(session){
@@ -1322,26 +1478,17 @@ try{
       );
       
       if(hasValidSession){
-        /* SDK returned valid session — use it */
-        var normalized = {
-          uid: session.uid || session.uuid || (session.userInfo && session.userInfo.uid) || 'unknown',
-          email: session.email || (session.userInfo && session.userInfo.email) || '',
-          isAnonymous: !!(session.isAnonymous || (!session.email && !session.uid))
-        };
-        /* Re-save to localStorage for future fallback */
-        try{localStorage.setItem('nightletter_session',JSON.stringify({type:normalized.isAnonymous?'anon':'email',email:normalized.email,uid:normalized.uid}))}catch(e){}
-        _completeRestore(normalized);
+        _completeAuthSession(session,{persist:true}).then(function(user){
+          console.log('[Auth] session restored:',user.uid,user.email?'('+user.email+')':'('+user.mode+')');
+        });
       }else{
         /* SDK returned null — check localStorage fallback */
         var localSession=_parseLocalSession();
         if(localSession){
           console.log('[Auth] SDK null, using localStorage fallback:',localSession);
-          var userData = {
-            uid: localSession.uid || 'local-user',
-            email: localSession.email || '',
-            isAnonymous: localSession.type==='anon' || localSession.type==='local-anon'
-          };
-          _completeRestore(userData);
+          _completeAuthSession(localSession,{persist:false}).then(function(user){
+            console.log('[Auth] restored from local marker:',user.uid,user.mode);
+          });
         }else{
           /* No session anywhere */
           console.log('[Auth] no session found');
@@ -1353,12 +1500,9 @@ try{
       /* SDK error — check localStorage fallback */
       var localSession=_parseLocalSession();
       if(localSession){
-        var userData = {
-          uid: localSession.uid || 'local-user',
-          email: localSession.email || '',
-          isAnonymous: localSession.type==='anon' || localSession.type==='local-anon'
-        };
-        _completeRestore(userData);
+        _completeAuthSession(localSession,{persist:false}).then(function(user){
+          console.log('[Auth] restored after SDK error:',user.uid,user.mode);
+        });
       }else{
         _checkOnboarding();
       }
@@ -1367,13 +1511,7 @@ try{
     /* Offline mode — check localStorage only */
     var localSession=_parseLocalSession();
     if(localSession){
-      var userData = {
-        uid: localSession.uid || 'local-anon',
-        email: localSession.email || '',
-        isAnonymous: true
-      };
-      _setUserCache(userData);
-      document.getElementById('loginOverlay').classList.add('off');
+      _completeAuthSession(localSession,{persist:false});
     }
     _checkOnboarding();
   }
@@ -1390,7 +1528,7 @@ if(window.location.protocol==='file:'&&qwenAvailable){
   console.warn('⚠️ Running from file:// protocol. Qwen API may be blocked by CORS policy.');
   console.warn('💡 Solution: Run this file through a local server, e.g.:');
   console.warn('   python -m http.server 8765');
-  console.warn('   Then open http://localhost:8765/night-letter.html');
+  console.warn('   Then open http://localhost:8765/index.html');
 }
 
 function enableQwen(){
@@ -1493,10 +1631,7 @@ function callQwenAPI(dreamText,userMessage,emotion,callback){
 
 var isLoginMode=true;
 function toggleLoginMode(){
-  isLoginMode=!isLoginMode;
-  document.getElementById('loginBtn').textContent=isLoginMode?'登 录':'注 册';
-  document.getElementById('loginBtn').onclick=isLoginMode?doLogin:doRegister;
-  document.getElementById('loginToggle').textContent=isLoginMode?'还没有账号？注册':'已有账号？登录';
+  _setAuthMode(!isLoginMode);
   document.getElementById('loginError').textContent='';
 }
 
@@ -1508,63 +1643,27 @@ function doLogin(){
   if(!email||!pass){errEl.textContent='请填写邮箱和密码';return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='请输入正确的邮箱格式';return}
   
-  errEl.textContent='正在登录...';
-  var loginBtn=document.getElementById('loginBtn');
-  loginBtn.disabled=true;loginBtn.style.opacity='.5';
-  
-  var _resetBtn=function(){loginBtn.disabled=false;loginBtn.style.opacity='1'};
+  _setAuthBusy('正在登录...');
   
   if(!cbReady){
-    _resetBtn();
-    errEl.textContent='云端服务未配置，请先在代码中填写 CB_CONFIG.env';
+    _resetAuthBusy('云端服务未配置，请先在代码中填写 CB_CONFIG.env');
     return;
   }
   
   _cbSignIn(email,pass).then(function(res){
     console.log('[Auth] login success',res?JSON.stringify({uid:res.uid,uuid:res.uuid}):'');
-    /* 登录成功，优先从返回结果获取用户信息 */
-    var userData;
-    if(res&&(res.uid||res.uuid)){
-      userData={uid:res.uid||res.uuid,email:email,isAnonymous:false};
-    }else{
-      userData={uid:'cb-user',email:email,isAnonymous:false};
-    }
-    _setUserCache(userData);
-    /* 持久化登录标记，用于页面刷新时恢复 */
-    try{localStorage.setItem('nightletter_session',JSON.stringify({type:'email',email:email,uid:userData.uid}))}catch(e){}
-    /* 迁移旧共享数据到当前账号 */
-    _migrateStoreIfNeeded();
-    errEl.textContent='';
-    _resetBtn();
-    document.getElementById('loginOverlay').classList.add('off');
-    /* Sync local dreams to cloud and load cloud dreams */
-    loadDreamsFromCloud().then(function(cloudDreams){
-      var sk=_getStoreKey();
-      if(cloudDreams.length>0){
-        var localDreams=getDreams();
-        if(localDreams.length>0){
-          var merged=mergeDreams(localDreams,cloudDreams);
-          localStorage.setItem(sk,JSON.stringify(merged));
-        }else{
-          localStorage.setItem(sk,JSON.stringify(cloudDreams));
-        }
-      }else{
-        var localDreams=getDreams();
-        if(localDreams.length>0){syncDreamsToCloud(localDreams)}
-      }
-      refreshHome();
+    return _completeAuthSession(res,{email:email,isAnonymous:false,type:'email'}).then(function(){
+      _resetAuthBusy('');
     });
-    renderAccountSection();
   }).catch(function(e){
-    _resetBtn();
     console.error('[Auth] login error:',e);
     var msg=e.message||String(e)||'登录失败';
-    if(msg.indexOf('invalid')>=0||msg.indexOf('not exist')>=0||msg.indexOf('INVALID')>=0)msg='账号或密码错误';
+    if(msg.indexOf('invalid')>=0||msg.indexOf('not exist')>=0||msg.indexOf('INVALID')>=0)msg='邮箱或密码不正确，请重新输入。';
     else if(msg.indexOf('disabled')>=0)msg='该账号已被禁用';
     else if(msg.indexOf('network')>=0)msg='网络连接失败，请检查网络';
     else if(msg.indexOf('不支持')>=0)msg='SDK 版本不兼容，请联系开发者';
-    else if(msg==='400'||msg.indexOf('Bad Request')>=0)msg='认证服务配置异常，请在腾讯云控制台检查：①身份认证→邮箱登录是否已开启 ②环境ID是否正确';
-    errEl.textContent=msg;
+    else if(msg==='400'||msg.indexOf('Bad Request')>=0)msg='登录服务暂时不可用，请检查 CloudBase 邮箱登录配置和环境 ID。';
+    _resetAuthBusy(msg);
   });
 }
 
@@ -1577,15 +1676,10 @@ function doRegister(){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='请输入正确的邮箱格式';return}
   if(pass.length<6){errEl.textContent='密码至少 6 位';return}
   
-  errEl.textContent='正在注册...';
-  var regBtn=document.getElementById('regBtn');
-  regBtn.disabled=true;regBtn.style.opacity='.5';
-  
-  var _resetBtn=function(){regBtn.disabled=false;regBtn.style.opacity='1'};
+  _setAuthBusy('正在创建账号...');
   
   if(!cbReady){
-    _resetBtn();
-    errEl.textContent='云端服务未配置，请先在代码中填写 CB_CONFIG.env';
+    _resetAuthBusy('云端服务未配置，请先在代码中填写 CB_CONFIG.env');
     return;
   }
   
@@ -1604,38 +1698,22 @@ function doRegister(){
       });
     });
   }).then(function(res){
-    /* 登录成功 */
     console.log('[Auth] register+login complete');
-    var userData;
-    if(res&&(res.uid||res.uuid)){
-      userData={uid:res.uid||res.uuid,email:email,isAnonymous:false};
-    }else{
-      userData={uid:'cb-user',email:email,isAnonymous:false};
-    }
-    _setUserCache(userData);
-    /* 持久化登录标记 */
-    try{localStorage.setItem('nightletter_session',JSON.stringify({type:'email',email:email,uid:userData.uid}))}catch(e){}
-    _migrateStoreIfNeeded();
-    errEl.textContent='';
-    _resetBtn();
-    document.getElementById('loginOverlay').classList.add('off');
-    /* Sync local dreams to cloud */
-    var localDreams=getDreams();
-    if(localDreams.length>0){syncDreamsToCloud(localDreams)}
-    renderAccountSection();
+    return _completeAuthSession(res,{email:email,isAnonymous:false,type:'email'}).then(function(){
+      _resetAuthBusy('');
+    });
   }).catch(function(e){
-    _resetBtn();
     console.error('[Auth] register error:',e);
     var msg=e.message||String(e)||'注册失败';
     /* 判断是注册失败还是注册成功但登录失败 */
     if(msg.indexOf('network')>=0||msg.indexOf('timeout')>=0){
-      msg='注册成功，但登录连接超时。请返回登录页面用刚才的邮箱密码登录。';
-    }else if(msg.indexOf('already')>=0||msg.indexOf('exist')>=0||msg.indexOf('ALREADY')>=0)msg='该邮箱已被注册';
+      msg='账号已创建，但自动登录失败。请回到登录页重新登录。';
+    }else if(msg.indexOf('already')>=0||msg.indexOf('exist')>=0||msg.indexOf('ALREADY')>=0)msg='这个邮箱已经注册过了，请直接登录。';
     else if(msg.indexOf('invalid')>=0||msg.indexOf('INVALID')>=0)msg='邮箱格式不正确';
     else if(msg.indexOf('weak')>=0)msg='密码强度不够';
     else if(msg.indexOf('不支持')>=0)msg='SDK 版本不兼容，请联系开发者';
-    else if(msg==='400'||msg.indexOf('Bad Request')>=0)msg='认证服务配置异常，请在腾讯云控制台检查：①身份认证→邮箱登录是否已开启 ②环境ID是否正确';
-    errEl.textContent=msg;
+    else if(msg==='400'||msg.indexOf('Bad Request')>=0)msg='注册服务暂时不可用，请检查 CloudBase 邮箱登录配置和环境 ID。';
+    _resetAuthBusy(msg);
   });
 }
 
@@ -1645,31 +1723,15 @@ function loginAnonymously(){
     _cbAnon().then(function(res){
       /* 匿名登录成功，设置用户缓存 */
       console.log('[Auth] anonymous login success');
-      var userData;
-      if(res&&(res.uid||res.uuid)){
-        userData={uid:res.uid||res.uuid,email:'',isAnonymous:true};
-      }else{
-        userData={uid:'anon-user',email:'',isAnonymous:true};
-      }
-      _setUserCache(userData);
-      /* 持久化匿名标记 */
-      try{localStorage.setItem('nightletter_session',JSON.stringify({type:'anon',uid:userData.uid}))}catch(e){}
-      document.getElementById('loginOverlay').classList.add('off');
-      renderAccountSection();
+      return _completeAuthSession(res,{isAnonymous:true,type:'anon'});
     }).catch(function(e){
       console.warn('Anonymous login failed:',e);
       /* Fallback to local anonymous mode */
-      _setUserCache({uid:'local-anon',email:'',isAnonymous:true});
-      try{localStorage.setItem('nightletter_session',JSON.stringify({type:'local-anon'}))}catch(e2){}
-      document.getElementById('loginOverlay').classList.add('off');
-      renderAccountSection();
+      return _completeAuthSession({uid:'local-anon',email:'',isAnonymous:true,type:'local-anon'},{mode:'local-anon',type:'local-anon'});
     });
   }else{
     /* Offline anonymous browse mode */
-    _setUserCache({uid:'local-anon',email:'',isAnonymous:true});
-    try{localStorage.setItem('nightletter_session',JSON.stringify({type:'local-anon'}))}catch(e){}
-    document.getElementById('loginOverlay').classList.add('off');
-    renderAccountSection();
+    _completeAuthSession({uid:'local-anon',email:'',isAnonymous:true,type:'local-anon'},{mode:'local-anon',type:'local-anon'});
   }
 }
 
@@ -1677,21 +1739,26 @@ function doLogout(){
   if(cbReady){
     _cbSignOut().then(function(){
       _setUserCache(null);
-      localStorage.removeItem('nightletter_session');
+      localStorage.removeItem(SESSION_KEY);
       go('home');
-      document.getElementById('loginOverlay').classList.remove('off');
+      refreshAll();
+      _openLoginOverlay();
       renderAccountSection();
     }).catch(function(e){
       console.warn('Logout failed:',e);
       _setUserCache(null);
-      localStorage.removeItem('nightletter_session');
+      localStorage.removeItem(SESSION_KEY);
       go('home');
-      document.getElementById('loginOverlay').classList.remove('off');
+      refreshAll();
+      _openLoginOverlay();
+      renderAccountSection();
     });
   }else{
-    localStorage.removeItem('nightletter_session');
+    localStorage.removeItem(SESSION_KEY);
+    _setUserCache(null);
     go('home');
-    document.getElementById('loginOverlay').classList.remove('off');
+    refreshAll();
+    _openLoginOverlay();
     renderAccountSection();
   }
 }
@@ -1703,25 +1770,28 @@ function switchAccount(){
   if(cbReady){
     _cbSignOut().then(function(){
       _setUserCache(null);
-      localStorage.removeItem('nightletter_session');
+      localStorage.removeItem(SESSION_KEY);
       go('home');
+      refreshAll();
       _showLoginForSwitch(prevEmail);
     }).catch(function(){
       _setUserCache(null);
-      localStorage.removeItem('nightletter_session');
+      localStorage.removeItem(SESSION_KEY);
       go('home');
+      refreshAll();
       _showLoginForSwitch(prevEmail);
     });
   }else{
-    localStorage.removeItem('nightletter_session');
+    _setUserCache(null);
+    localStorage.removeItem(SESSION_KEY);
     go('home');
+    refreshAll();
     _showLoginForSwitch(prevEmail);
   }
 }
 
 function _showLoginForSwitch(email){
-  var overlay=document.getElementById('loginOverlay');
-  overlay.classList.remove('off');
+  _openLoginOverlay();
   /* 预填之前的邮箱 */
   var emailField=document.getElementById('loginEmail');
   if(emailField&&email)emailField.value=email;
@@ -1730,18 +1800,20 @@ function _showLoginForSwitch(email){
   var errEl=document.getElementById('loginError');
   if(errEl)errEl.textContent='';
   /* 确保在登录模式 */
-  if(!isLoginMode){toggleLoginMode()}
+  if(!isLoginMode){_setAuthMode(true)}
   renderAccountSection();
 }
 
 function loginWithEmail(){
-  document.getElementById('loginOverlay').classList.remove('off');
+  _setAuthMode(true);
+  _openLoginOverlay();
+  document.getElementById('loginError').textContent='';
   go('home');
 }
 
 function syncDreamsToCloud(dreams){
   var user=_getCurrentUser();
-  if(!cbReady||!user||!dreams.length)return Promise.resolve();
+  if(!cbReady||!_isRegisteredUser(user)||!dreams.length)return Promise.resolve();
   var col=cbDb.collection('dreams');
   /* 先查询云端已有的 localId，避免重复上传 */
   return col.limit(500).get().then(function(res){
@@ -1776,7 +1848,7 @@ function syncDreamsToCloud(dreams){
 
 function loadDreamsFromCloud(){
   var user=_getCurrentUser();
-  if(!cbReady||!user)return Promise.resolve([]);
+  if(!cbReady||!_isRegisteredUser(user))return Promise.resolve([]);
   return cbDb.collection('dreams').orderBy('ts','desc').limit(500).get().then(function(res){
     if(!res.data)return [];
     return res.data.map(function(doc){
@@ -1800,26 +1872,44 @@ function loadDreamsFromCloud(){
 }
 
 function mergeDreams(local,cloud){
-  var map={};
-  /* 先放入本地数据 */
-  local.forEach(function(d){map[d.id]=d});
-  /* 云端数据：仅当云端更新时才覆盖本地 */
-  cloud.forEach(function(d){
-    var existing=map[d.id];
+  var byId={};
+  var bySignature={};
+  var merged=[];
+  function upsertDream(dream){
+    if(!dream)return;
+    var normalized={
+      id:dream.localId||dream.id||_createLocalDreamId(),
+      text:dream.text||'',
+      emotion:dream.emotion||'未知',
+      ts:dream.ts||new Date().toISOString(),
+      aiTurns:dream.aiTurns||0,
+      type:dream.type||'梦境'
+    };
+    var signature=(normalized.text||'')+'__'+(normalized.ts||'');
+    var existing=byId[normalized.id]||bySignature[signature];
     if(!existing){
-      /* 云端有本地没有，直接加入 */
-      map[d.id]=d;
-    }else{
-      /* 两边都有，按时间戳保留更新的 */
-      var localTs=new Date(existing.ts||0).getTime();
-      var cloudTs=new Date(d.ts||0).getTime();
-      if(cloudTs>localTs){
-        map[d.id]=d;
-      }
-      /* 否则保留本地版本（本地更新或相同） */
+      merged.push(normalized);
+      byId[normalized.id]=normalized;
+      bySignature[signature]=normalized;
+      return;
     }
-  });
-  var merged=Object.keys(map).map(function(k){return map[k]});
+    var existingTs=new Date(existing.ts||0).getTime();
+    var nextTs=new Date(normalized.ts||0).getTime();
+    if(nextTs>=existingTs){
+      existing.text=normalized.text;
+      existing.emotion=normalized.emotion;
+      existing.ts=normalized.ts;
+      existing.aiTurns=normalized.aiTurns;
+      existing.type=normalized.type;
+    }
+    if(existing.id!==normalized.id&&(!existing.id||String(existing.id).indexOf('dream_')!==0)){
+      existing.id=normalized.id;
+    }
+    byId[existing.id]=existing;
+    bySignature[(existing.text||'')+'__'+(existing.ts||'')]=existing;
+  }
+  local.forEach(upsertDream);
+  cloud.forEach(upsertDream);
   merged.sort(function(a,b){return new Date(b.ts)-new Date(a.ts)});
   console.log('[Cloud] 合并完成:',local.length,'本地 +',cloud.length,'云端 =',merged.length,'条');
   return merged;
@@ -1829,24 +1919,28 @@ function renderAccountSection(){
   var el=document.getElementById('accountInfo');
   if(!el)return;
   var user=_getCurrentUser();
-  var isAnon=user&&user.isAnonymous;
-  if(user&&!isAnon&&user.email){
+  if(_isRegisteredUser(user)){
     var email=user.email;
     el.innerHTML='<div class="set-row"><div><div class="set-label">已登录</div>'
-      +'<div class="set-sub">'+email+'</div>'
+      +'<div class="set-sub">'+email+' · 当前账号的数据会在下次登录时恢复</div>'
       +'</div></div>'
       +'<div class="set-row"><div><div class="set-label">切换账号</div><div class="set-sub">退出当前账号，登录其他账号</div></div>'
       +'<button class="set-neutral-btn" onclick="switchAccount()">切换</button></div>'
-      +'<div class="set-row"><div><div class="set-label">退出登录</div><div class="set-sub">本地数据仍会保留</div></div>'
+      +'<div class="set-row"><div><div class="set-label">退出登录</div><div class="set-sub">退出后会回到登录页，但当前账号数据仍保留在本机和云端</div></div>'
       +'<button class="set-neutral-btn" onclick="doLogout()">退出</button></div>';
-  }else if(isAnon){
+  }else if(_isCloudAnonymousUser(user)){
     el.innerHTML='<div class="set-row"><div><div class="set-label">匿名体验</div>'
-      +'<div class="set-sub">注册账号可云端保存梦境</div>'
+      +'<div class="set-sub">当前为匿名云体验，可浏览基础内容；正式记录和共鸣互动请注册账号</div>'
       +'</div>'
-      +'<button class="set-accent-btn" onclick="loginWithEmail()">注册</button></div>';
+      +'<button class="set-accent-btn" onclick="loginWithEmail()">创建账号</button></div>';
+  }else if(_isLocalTrialUser(user)){
+    el.innerHTML='<div class="set-row"><div><div class="set-label">试用模式</div>'
+      +'<div class="set-sub">当前记录只保存在这台设备，不会自动并入正式账号</div>'
+      +'</div>'
+      +'<button class="set-accent-btn" onclick="loginWithEmail()">登录保存</button></div>';
   }else{
-    el.innerHTML='<div class="set-row"><div><div class="set-label">未登录</div><div class="set-sub">登录后可云端保存梦境</div></div>'
-      +'<button class="set-accent-btn" onclick="loginWithEmail()">登录</button></div>';
+    el.innerHTML='<div class="set-row"><div><div class="set-label">未登录</div><div class="set-sub">登录后可保存并恢复你的梦境记录</div></div>'
+      +'<button class="set-accent-btn" onclick="loginWithEmail()">登录夜信</button></div>';
   }
 }
 
@@ -3571,10 +3665,10 @@ var currentSquareDream=null;
 
 function shareToSquare(){
   var user=_getCurrentUser();
-  if(!user||!cbReady){
+  if(!_isRegisteredUser(user)||!cbReady){
     document.getElementById('confirmTitle').textContent='需要登录';
-    document.getElementById('confirmDesc').textContent='梦境广场需要登录才能使用，请先注册账号。';
-    document.getElementById('confirmOk').textContent='去登录';
+    document.getElementById('confirmDesc').textContent='登录正式账号后，才能把梦境分享到共鸣角，并接收他人的回应。';
+    document.getElementById('confirmOk').textContent='登录夜信';
     document.getElementById('confirmOk').onclick=function(){closeConfirm();go('set')};
     document.getElementById('confirmModal').classList.add('on');
     return;
@@ -3583,7 +3677,7 @@ function shareToSquare(){
   var dreams=getDreams();
   if(!dreams.length){
     document.getElementById('confirmTitle').textContent='还没有梦境';
-    document.getElementById('confirmDesc').textContent='先去写一个梦吧，然后再分享到广场。';
+    document.getElementById('confirmDesc').textContent='先写下一段梦境，再把想公开的片段分享到共鸣角。';
     document.getElementById('confirmOk').textContent='去写信';
     document.getElementById('confirmOk').onclick=function(){closeConfirm();go('write')};
     document.getElementById('confirmModal').classList.add('on');
@@ -3617,7 +3711,7 @@ function confirmShareDream(idx){
   if(!dream)return;
   
   document.getElementById('confirmTitle').textContent='确认分享';
-  document.getElementById('confirmDesc').textContent='「'+dream.text.slice(0,50)+(dream.text.length>50?'…':'')+'」\n\n分享后将以匿名形式显示在广场，其他人可以看到但不知道是谁写的。';
+  document.getElementById('confirmDesc').textContent='「'+dream.text.slice(0,50)+(dream.text.length>50?'…':'')+'」\n\n分享后会作为公开片段出现在共鸣角，其他人可以回应这段梦，但不会看到你的邮箱信息。';
   document.getElementById('confirmOk').textContent='确认分享';
   document.getElementById('confirmOk').onclick=function(){
     closeConfirm();
@@ -3634,7 +3728,7 @@ function doShareToSquare(dream){
     }
   }).then(function(){
     document.getElementById('confirmTitle').textContent='分享成功';
-    document.getElementById('confirmDesc').textContent='梦境已分享到广场！';
+    document.getElementById('confirmDesc').textContent='梦境片段已分享到共鸣角。';
     document.getElementById('confirmOk').textContent='好的';
     document.getElementById('confirmOk').onclick=function(){closeConfirm()};
     document.getElementById('confirmModal').classList.add('on');
@@ -3834,15 +3928,18 @@ function _checkOnboarding(){
   }
   
   /* Need to show onboarding */
-  if(user){
-    /* User is logged in or anonymous, show onboarding after a brief delay */
+  if(user&&_isRegisteredUser(user)){
+    /* 仅对首次进入的真实账号展示 onboarding，避免试用态挡住主流程 */
     setTimeout(showOnboard,600);
   }else{
-    /* No user — wait for login then onboard */
+    /* 未登录或试用态不强制展示 onboarding */
     var _obCheck=setInterval(function(){
-      if(document.getElementById('loginOverlay').classList.contains('off')){
+      var currentUser=_getCurrentUser();
+      if(currentUser&&_isRegisteredUser(currentUser)&&document.getElementById('loginOverlay').classList.contains('off')){
         clearInterval(_obCheck);
         setTimeout(showOnboard,600);
+      }else if(currentUser&&!_isRegisteredUser(currentUser)){
+        clearInterval(_obCheck);
       }
     },200);
   }
