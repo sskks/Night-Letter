@@ -89,9 +89,20 @@
 
 按照 Vibe Coding 三阶段方法论，将缺陷修复组织为 4 个迭代周期：
 
-### Sprint 1：会话稳定性（1-2天）
+### Sprint 1：会话稳定性（1-2天） ✅ 已完成
 
 > 目标：解决登录态丢失这个最影响体验的 S1 问题
+
+**实际完成内容：**
+- A1 ✅ 页面刷新恢复登录态 — `_checkOnboarding()` 移入 `_cbGetSession()` 回调内
+- A2 ✅ 统一会话恢复机制 — SDK 优先 + localStorage JSON 回退，合并两个重复恢复块
+- A8 ✅ 匿名登录双轨制统一 — 所有路径（登录/注册/匿名/离线）统一使用 JSON session 标记 + `_setUserCache()`
+- 额外：`renderAccountSection()` 改用 `user.isAnonymous` 字段判断
+- 额外：`_checkOnboarding()` 移除旧 `__anon__` 字符串依赖
+- 额外：首页添加齿轮按钮进入设置页
+- 额外：`loadDreamsFromCloud()` 添加 `.catch()` 优雅降级
+- 额外：修正 CloudBase 环境 ID 拼写错误 (d3ga4y → d3g4qv)
+- 额外：`_cbGetSession()` 添加调试日志
 
 **迭代 Prompt 模板：**
 
