@@ -11,7 +11,7 @@
 - **前端**：纯 HTML/CSS/JS 单文件应用（无框架依赖）
 - **后端**：腾讯云 CloudBase（认证 + 数据库）
 - **AI**：通义千问 qwen-turbo API（对话生成）
-- **部署**：GitHub Pages（静态托管）
+- **部署**：GitHub Pages（静态托管，默认入口为 `index.html`）
 - **版本控制**：Git + GitHub
 
 ## 项目结构
@@ -19,8 +19,7 @@
 ```
 Dream/
 ├── index.html          # 主应用（单文件，含 HTML/CSS/JS）
-├── night-letter.html   # Canvas 预览副本
-├── canvas-design.html  # 设计稿参考
+├── canvas-design.html  # Canvas 预览副本 / 设计稿参考
 └── PROJECT-STATUS.md   # 本文件
 ```
 
@@ -35,10 +34,10 @@ Dream/
 | 对话（AI 聊天） | ✅ 完成 | 多人格系统（温柔倾听/理性观察/诗意旅人），轮次限制，温和结束 |
 | 星图（梦境地图） | ✅ 完成 | 可视化梦境分布，按情绪分类 |
 | 历史（梦境列表） | ✅ 完成 | 搜索筛选，关键词高亮，导出梦境卡片 |
-| 广场（匿名分享） | ✅ 完成 | 梦境瀑布流，点赞评论，匿名发布 |
+| 共鸣角（公开分享） | ⚠️ 原型完成 | 页面可打开，但仍是旧版 `publicDreams` 逻辑，点赞去重、留言身份、通知闭环未完成 |
 | 设置 | ✅ 完成 | 对话轮次设置，切换账号，清除数据，深色模式 |
-| 账号系统 | ✅ 完成 | 邮箱注册/登录，匿名登录，CloudBase 认证 |
-| 数据同步 | ✅ 完成 | 本地 localStorage + CloudBase 云端备份 |
+| 账号系统 | ⚠️ 基础接通 | 邮箱注册/登录，匿名登录，CloudBase 认证已接入，但真实重登稳态仍未按 M1 验收完成 |
+| 数据同步 | ⚠️ 部分完成 | 已有本地 localStorage + CloudBase 云端备份基础，但多账号切换、重登不丢数、不串号仍待验证 |
 
 ## 设计规范
 
@@ -56,7 +55,9 @@ Dream/
 - ~~云端同步无去重（重复登录会产生重复文档）~~ → ✅ 已修复 (Sprint 2)
 - ~~合并策略可能丢数据（云端旧数据覆盖本地新数据）~~ → ✅ 已修复 (Sprint 2)
 - ~~注册后 v1 SDK 未自动登录导致卡住~~ → ✅ 已修复，增加重试 (Sprint 2)
-- 广场点赞无去重、评论者身份硬编码 — Sprint 3 待修
+- 共鸣角仍存在旧命名“广场 / 梦境广场”
+- 共鸣角点赞无去重、评论者身份硬编码、通知集合缺失
+- 同账号重登与双账号切换，尚未通过 M1 真实验收
 - ~~CloudBase 环境 ID 拼写错误~~ → ✅ 已修复 (bfd0934)
 - ~~页面刷新丢失登录态~~ → ✅ 已修复 (2096f5b, a2b9b82)
 - ~~匿名登录双轨制判断不一致~~ → ✅ 已修复 (a2b9b82)
@@ -67,15 +68,23 @@ Dream/
 
 | Sprint | 内容 | 状态 | 提交 |
 |--------|------|------|------|
-| Sprint 1 | 会话稳定性：页面刷新恢复登录态、统一会话持久化、JSON session 标记、设置页入口 | ✅ 完成 | 2096f5b, a2b9b82, 0442dc7, 4ad4303, bfd0934 |
-| Sprint 2 | 数据同步安全：云端去重 + 合并策略 + 注册重试 | ✅ 完成 | 47da3ed |
-| Sprint 3 | 广场体验：点赞去重 + 评论身份 + 分页 + 筛选 | ⏳ 待开始 | — |
-| Sprint 4 | 体验打磨：注册确认密码 + 匿名判断统一 | ⏳ 待开始 | — |
+| Sprint 1 | 会话恢复基础：刷新恢复登录态、统一会话持久化、设置页入口 | ✅ 完成 | 2096f5b, a2b9b82, 0442dc7, 4ad4303, bfd0934 |
+| Sprint 2 | 数据同步基础：去重合并、注册后补登录重试 | ✅ 完成 | 47da3ed |
+| Sprint 3A | 账号与云端数据稳态：同账号重登不丢数、双账号不串号 | ⏳ 计划中 | [SPRINT-3A-PLAN.md](/D:/vscode/Microsoft%20VS%20Code/project/Dream/SPRINT-3A-PLAN.md) |
+| Sprint 3B | 共鸣角真实互动：一人一星、留言身份、通知闭环 | ⏳ 未开始 | — |
+| Sprint 3C | 共鸣角命名与登录注册文案统一 | ⏳ 未开始 | — |
 
 ## 下一步规划
 
-- Sprint 3：广场点赞去重 + 评论身份关联 + 分页加载 + 情绪筛选
-- 性能优化：懒加载非首屏资源
-- PWA 支持：离线缓存、添加到主屏幕
-- 更多 AI 人格和对话深度
-- 数据统计仪表盘（梦境趋势、情绪变化）
+当前执行顺序固定为：
+
+1. 先完成 Sprint 3A：真实账号可用
+2. 再完成 Sprint 3B：共鸣角双用户互动闭环
+3. 再完成 Sprint 3C：命名、文案、状态提示统一
+4. 之后再进入 PWA、性能、传播和趋势分析
+
+当前单一事实源：
+
+- [DEVELOPMENT-TRACKER.md](/D:/vscode/Microsoft%20VS%20Code/project/Dream/DEVELOPMENT-TRACKER.md)
+- [SPRINT-3A-PLAN.md](/D:/vscode/Microsoft%20VS%20Code/project/Dream/SPRINT-3A-PLAN.md)
+- [UI-BRIEF-SPRINT-3A.md](/D:/vscode/Microsoft%20VS%20Code/project/Dream/UI-BRIEF-SPRINT-3A.md)
