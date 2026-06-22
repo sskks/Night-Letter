@@ -1,0 +1,64 @@
+# 夜信 Night Letter — 开发规范
+
+## 核心原则
+
+- **只改指定文件**：默认只修改 index.html，不要动其他文件
+- **不要擅自重构**：保持现有代码结构，除非明确要求
+- **保持编码一致**：文件使用 UTF-8 编码，中文直接写入
+- **小步提交**：每完成一个可验证的小功能就提交一次
+
+## 代码风格
+
+- 无缩进/紧凑风格（单文件应用需要控制体积）
+- 变量命名：camelCase
+- 函数命名：camelCase
+- CSS 类名：kebab-case（如 `.persona-chip`、`.hist-search-wrap`）
+- 选择器优先级：使用 BEM 式命名，避免 !important
+
+## 文件结构约定
+
+index.html 内部按以下顺序组织：
+
+1. `<head>` — meta、title、`<style>` 块
+2. `<body>` — HTML 结构，按页面分区（home/write/chat/hist/square/set）
+3. `<script>` — CloudBase SDK 加载、核心逻辑、页面逻辑、初始化代码
+
+## 新增功能规范
+
+1. 新功能必须有对应的 HTML 区块（`<div class="scr" id="s-xxx">`）
+2. CSS 样式添加在 `<style>` 块中对应位置
+3. JS 逻辑添加在 `<script>` 块中对应区域
+4. 新功能必须在 PROJECT-STATUS.md 的功能清单中登记
+5. 每个新功能提供验收标准
+
+## Git 提交规范
+
+```
+feat: 新增xxx功能
+fix: 修复xxx问题
+style: UI/样式调整
+refactor: 重构xxx
+docs: 更新文档
+chore: 构建/工具变更
+```
+
+## 禁止事项
+
+- 禁止删除现有功能代码（除非明确要求）
+- 禁止引入外部 CSS/JS 库（除 CloudBase SDK 和字体 CDN）
+- 禁止修改 CloudBase 配置参数
+- 禁止将 API 密钥移出前端（当前为演示项目）
+- 禁止在 merge 时使用 `-X ours` 策略（已知会导致编码损坏）
+
+## 验证步骤模板
+
+每次功能完成后执行：
+
+```
+1. 本地启动服务器：python -m http.server 8765
+2. 浏览器打开 http://127.0.0.1:8765/index.html
+3. 检查目标功能是否正常
+4. 检查浏览器控制台无红字报错
+5. 检查其他已有功能不受影响
+6. git add + commit + push
+```
