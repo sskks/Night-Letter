@@ -1756,6 +1756,13 @@ function loadDreamsFromCloud(){
         type:doc.type||'梦境'
       };
     });
+  }).catch(function(e){
+    if(e&&e.code==='DATABASE_COLLECTION_NOT_EXIST'){
+      console.warn('[Cloud] dreams 集合不存在，请在腾讯云控制台创建。当前仅使用本地数据。');
+    }else{
+      console.warn('[Cloud] 加载云端梦境失败:',e&&e.message||e);
+    }
+    return [];
   });
 }
 
