@@ -982,6 +982,7 @@ var STORE_KEY_GUEST=STORE_KEY_BASE+'_guest';
 var SESSION_KEY='nightletter_session';
 var ONBOARD_KEY='nightletter_onboard';
 var STREAK_KEY='nightletter_streak';
+var CHECKIN_KEY_BASE='nightletter_checkins';
 
 function _sanitizeStorageToken(value){
   return String(value||'')
@@ -1080,6 +1081,12 @@ function _getStoreKeyForUser(user){
   if(!user)return STORE_KEY_GUEST;
   if(user.mode==='local-anon')return STORE_KEY_LOCAL_TRIAL;
   return STORE_KEY_BASE+'_'+_sanitizeStorageToken(user.stableUserId||'guest');
+}
+
+function _getScopedKey(base,user){
+  user=user||_getCurrentUser();
+  if(!user)return base+'_guest';
+  return base+'_'+_sanitizeStorageToken(user.stableUserId||'guest');
 }
 
 /* 按账号隔离的存储 key：真实账号、云匿名体验、本地试用分开存储 */
@@ -1300,6 +1307,18 @@ function _restoreDreamsForCurrentUser(user){
       return syncDreamsToCloud(merged).then(function(){return merged});
     }
     return merged;
+  });
+}
+
+function _verifyActiveCloudSession(emailHint){
+  if(!cbReady)return Promise.resolve(null);
+  return _cbGetSession().then(function(session){
+    var normalized=_normalizeAuthUser(session,{email:emailHint});
+    if(!_isRegisteredUser(normalized))return null;
+    return normalized;
+  }).catch(function(e){
+    console.warn('[Auth] verify active session failed:',e&&e.message||e);
+    return null;
   });
 }
 
@@ -1652,15 +1671,22 @@ function doLogin(){
   
   _cbSignIn(email,pass).then(function(res){
     console.log('[Auth] login success',res?JSON.stringify({uid:res.uid,uuid:res.uuid}):'');
-    return _completeAuthSession(res,{email:email,isAnonymous:false,type:'email'}).then(function(){
-      _resetAuthBusy('');
+    return _verifyActiveCloudSession(email).then(function(verifiedUser){
+      if(!verifiedUser){
+        throw new Error('CLOUD_LOGIN_SESSION_MISSING');
+      }
+      return _completeAuthSession(verifiedUser,{email:email,isAnonymous:false,type:'email'}).then(function(){
+        _resetAuthBusy('');
+      });
     });
   }).catch(function(e){
     console.error('[Auth] login error:',e);
     var msg=e.message||String(e)||'登录失败';
     if(msg.indexOf('invalid')>=0||msg.indexOf('not exist')>=0||msg.indexOf('INVALID')>=0)msg='邮箱或密码不正确，请重新输入。';
+    else if(msg.indexOf('CLOUD_LOGIN_SESSION_MISSING')>=0)msg='登录请求已发出，但当前域名还没有通过 CloudBase 认证校验。请先在 CloudBase 控制台添加 GitHub Pages 域名到网页安全域名。';
     else if(msg.indexOf('disabled')>=0)msg='该账号已被禁用';
     else if(msg.indexOf('network')>=0)msg='网络连接失败，请检查网络';
+    else if(msg.indexOf('Failed to fetch')>=0||msg.indexOf('fetch')>=0)msg='登录请求被浏览器拦截。请在 CloudBase 控制台为 `sskks.github.io` 配置网页安全域名，并确认邮箱登录已开启。';
     else if(msg.indexOf('不支持')>=0)msg='SDK 版本不兼容，请联系开发者';
     else if(msg==='400'||msg.indexOf('Bad Request')>=0)msg='登录服务暂时不可用，请检查 CloudBase 邮箱登录配置和环境 ID。';
     _resetAuthBusy(msg);
@@ -1685,20 +1711,23 @@ function doRegister(){
   
   _cbSignUp(email,pass).then(function(res){
     console.log('[Auth] signUp success',res?JSON.stringify({uid:res.uid,uuid:res.uuid}):'');
-    /* 注册后尝试登录（v1 的 signUp 不会自动登录，v2 的 signUp 可能已登录） */
-    if(res&&(res.uid||res.uuid)){
-      _setUserCache({uid:res.uid||res.uuid,email:email,isAnonymous:false});
-      return Promise.resolve(res);
-    }
-    /* v1: 需要显式 signIn，失败时重试一次 */
-    return _cbSignIn(email,pass).catch(function(e1){
-      console.warn('[Auth] post-register signIn failed, retrying in 1s:',e1.message||e1);
-      return new Promise(function(resolve){setTimeout(resolve,1000)}).then(function(){
-        return _cbSignIn(email,pass);
+    /* 注册成功后必须验证真实登录态，不能仅因为 signUp 返回成功就视为已登录 */
+    return _verifyActiveCloudSession(email).then(function(verifiedAfterSignUp){
+      if(verifiedAfterSignUp)return verifiedAfterSignUp;
+      return _cbSignIn(email,pass).catch(function(e1){
+        console.warn('[Auth] post-register signIn failed, retrying in 1s:',e1.message||e1);
+        return new Promise(function(resolve){setTimeout(resolve,1000)}).then(function(){
+          return _cbSignIn(email,pass);
+        });
+      }).then(function(){
+        return _verifyActiveCloudSession(email);
       });
     });
   }).then(function(res){
     console.log('[Auth] register+login complete');
+    if(!_isRegisteredUser(res)){
+      throw new Error('REGISTERED_BUT_NOT_AUTHENTICATED');
+    }
     return _completeAuthSession(res,{email:email,isAnonymous:false,type:'email'}).then(function(){
       _resetAuthBusy('');
     });
@@ -1706,10 +1735,13 @@ function doRegister(){
     console.error('[Auth] register error:',e);
     var msg=e.message||String(e)||'注册失败';
     /* 判断是注册失败还是注册成功但登录失败 */
-    if(msg.indexOf('network')>=0||msg.indexOf('timeout')>=0){
+    if(msg.indexOf('REGISTERED_BUT_NOT_AUTHENTICATED')>=0){
+      msg='账号可能已创建，但当前域名没有通过 CloudBase 认证校验，所以没有真正登录成功。请先配置网页安全域名，再返回登录。';
+    }else if(msg.indexOf('network')>=0||msg.indexOf('timeout')>=0){
       msg='账号已创建，但自动登录失败。请回到登录页重新登录。';
     }else if(msg.indexOf('already')>=0||msg.indexOf('exist')>=0||msg.indexOf('ALREADY')>=0)msg='这个邮箱已经注册过了，请直接登录。';
     else if(msg.indexOf('invalid')>=0||msg.indexOf('INVALID')>=0)msg='邮箱格式不正确';
+    else if(msg.indexOf('Failed to fetch')>=0||msg.indexOf('fetch')>=0)msg='注册或自动登录请求被浏览器拦截。请在 CloudBase 控制台为 `sskks.github.io` 配置网页安全域名，并确认邮箱登录已开启。';
     else if(msg.indexOf('weak')>=0)msg='密码强度不够';
     else if(msg.indexOf('不支持')>=0)msg='SDK 版本不兼容，请联系开发者';
     else if(msg==='400'||msg.indexOf('Bad Request')>=0)msg='注册服务暂时不可用，请检查 CloudBase 邮箱登录配置和环境 ID。';
@@ -2623,8 +2655,9 @@ function stopVoice(){
 
 /* === HOME REFRESH === */
 /* === 每日微签到 === */
-var CHECKIN_KEY='nightletter_checkins';
-function getCheckins(){try{return JSON.parse(localStorage.getItem(CHECKIN_KEY))||{}}catch(e){return{}}}
+function getCheckinKey(user){return _getScopedKey(CHECKIN_KEY_BASE,user)}
+function getStreakKey(user){return _getScopedKey(STREAK_KEY,user)}
+function getCheckins(user){try{return JSON.parse(localStorage.getItem(getCheckinKey(user)))||{}}catch(e){return{}}}
 function getTodayCheckin(){
   var today=new Date().toISOString().slice(0,10);
   var checkins=getCheckins();
@@ -2634,7 +2667,7 @@ function doCheckin(mood){
   var today=new Date().toISOString().slice(0,10);
   var checkins=getCheckins();
   checkins[today]={mood:mood,ts:new Date().toISOString()};
-  localStorage.setItem(CHECKIN_KEY,JSON.stringify(checkins));
+  localStorage.setItem(getCheckinKey(),JSON.stringify(checkins));
   console.log('[Checkin] today:',mood);
   /* 更新 UI */
   var bar=document.getElementById('checkinBar');
@@ -2653,20 +2686,25 @@ function doCheckin(mood){
       var streak=getStreakData();
       if(streak.indexOf(today)<0){
         streak.push(today);
-        localStorage.setItem('nightletter_streak',JSON.stringify(streak));
+        localStorage.setItem(getStreakKey(),JSON.stringify(streak));
       }
     }
   }
 }
-function getStreakData(){try{return JSON.parse(localStorage.getItem('nightletter_streak'))||[]}catch(e){return[]}}
+function getStreakData(){try{return JSON.parse(localStorage.getItem(getStreakKey()))||[]}catch(e){return[]}}
 function restoreCheckinUI(){
   var today=getTodayCheckin();
+  document.querySelectorAll('.mood-btn').forEach(function(b){
+    b.classList.remove('checked');
+    b.disabled=false;
+  });
+  var title=document.getElementById('checkinTitle');
+  if(title){title.textContent='今天的你，感觉怎么样？'}
   if(today){
     document.querySelectorAll('.mood-btn').forEach(function(b){
       b.classList.toggle('checked',b.dataset.mood===today.mood);
       b.disabled=true;
     });
-    var title=document.getElementById('checkinTitle');
     if(title){title.textContent='已签到 · '+today.mood}
   }
 }
@@ -3721,11 +3759,16 @@ function confirmShareDream(idx){
 }
 
 function doShareToSquare(dream){
-  cbDb.collection('publicDreams').add({
-    data:{
-      text:dream.text,emotion:dream.emotion,type:dream.type||'梦境',
-      ts:dream.ts,createTime:new Date().toISOString(),likes:0,comments:[]
+  _verifyActiveCloudSession(_getCurrentUser()&&_getCurrentUser().email).then(function(verifiedUser){
+    if(!verifiedUser){
+      throw new Error('SHARE_SESSION_INVALID');
     }
+    return cbDb.collection('publicDreams').add({
+      data:{
+        text:dream.text,emotion:dream.emotion,type:dream.type||'梦境',
+        ts:dream.ts,createTime:new Date().toISOString(),likes:0,comments:[]
+      }
+    });
   }).then(function(){
     document.getElementById('confirmTitle').textContent='分享成功';
     document.getElementById('confirmDesc').textContent='梦境片段已分享到共鸣角。';
@@ -3736,7 +3779,17 @@ function doShareToSquare(dream){
   }).catch(function(e){
     console.error('Share failed:',e);
     document.getElementById('confirmTitle').textContent='分享失败';
-    document.getElementById('confirmDesc').textContent=e.message||'未知错误，请稍后重试。';
+    var shareMsg=(e&&e.message)||'';
+    if(shareMsg.indexOf('SHARE_SESSION_INVALID')>=0){
+      shareMsg='当前账号没有有效登录凭证，请重新登录后再分享。如果你在 GitHub Pages 上测试，还要确认 `sskks.github.io` 已加入 CloudBase 网页安全域名。';
+    }else if((e&&e.error==='unauthenticated')||shareMsg.indexOf('credentials not found')>=0){
+      shareMsg='当前登录态已失效，或当前域名没有通过 CloudBase 认证校验。请重新登录；如果仍失败，请在 CloudBase 控制台把 `sskks.github.io` 加入网页安全域名。';
+    }else if(shareMsg.indexOf('Failed to fetch')>=0||shareMsg.indexOf('fetch')>=0){
+      shareMsg='分享请求被浏览器拦截。请在 CloudBase 控制台检查 `sskks.github.io` 是否已加入网页安全域名。';
+    }else{
+      shareMsg=shareMsg||'未知错误，请稍后重试。';
+    }
+    document.getElementById('confirmDesc').textContent=shareMsg;
     document.getElementById('confirmOk').textContent='确定';
     document.getElementById('confirmOk').onclick=function(){closeConfirm()};
     document.getElementById('confirmModal').classList.add('on');
