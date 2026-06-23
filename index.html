@@ -947,6 +947,7 @@ input,textarea{font-family:inherit;border:none;outline:none;background:none}
   <div class="login-sub" id="loginSub">登录后可保存并恢复你的梦境记录。</div>
   <input class="login-field" id="loginEmail" type="email" placeholder="邮箱" autocomplete="email">
   <input class="login-field" id="loginPass" type="password" placeholder="密码（至少 6 位）" autocomplete="current-password">
+  <input class="login-field" id="loginPassConfirm" type="password" placeholder="再次输入密码" autocomplete="new-password" style="display:none">
   <div class="login-error" id="loginError"></div>
   <button class="login-btn login-btn-primary" id="loginBtn" onclick="doLogin()">登录夜信</button>
   <button class="login-btn login-btn-secondary" id="regBtn" onclick="doRegister()" style="display:none">注 册</button>
@@ -1257,6 +1258,7 @@ function _setAuthMode(nextIsLoginMode){
   var regEl=document.getElementById('regBtn');
   var toggleEl=document.getElementById('loginToggle');
   var passEl=document.getElementById('loginPass');
+  var passConfirmEl=document.getElementById('loginPassConfirm');
   if(titleEl)titleEl.textContent=isLoginMode?'登录夜信':'创建夜信账号';
   if(subEl)subEl.textContent=isLoginMode
     ?'登录后可保存并恢复你的梦境记录。'
@@ -1268,6 +1270,10 @@ function _setAuthMode(nextIsLoginMode){
   if(regEl)regEl.style.display='none';
   if(toggleEl)toggleEl.textContent=isLoginMode?'还没有账号？创建一个':'已经有账号？直接登录';
   if(passEl)passEl.autocomplete=isLoginMode?'current-password':'new-password';
+  if(passConfirmEl){
+    passConfirmEl.style.display=isLoginMode?'none':'';
+    passConfirmEl.value='';
+  }
 }
 
 function _setAuthBusy(message){
@@ -1698,9 +1704,11 @@ function doRegister(){
   errEl.textContent='';
   var email=document.getElementById('loginEmail').value.trim();
   var pass=document.getElementById('loginPass').value;
+  var passConfirm=document.getElementById('loginPassConfirm').value;
   if(!email||!pass){errEl.textContent='请填写邮箱和密码';return}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){errEl.textContent='请输入正确的邮箱格式';return}
   if(pass.length<6){errEl.textContent='密码至少 6 位';return}
+  if(pass!==passConfirm){errEl.textContent='两次输入的密码不一致';return}
   
   _setAuthBusy('正在创建账号...');
   
